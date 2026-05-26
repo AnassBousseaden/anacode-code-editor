@@ -1,0 +1,62 @@
+{
+	"name": "@anacode/code-editor",
+	"version": "0.0.1",
+	"description": "A self-contained, reusable multi-file code editor built on Monaco.",
+	"license": "MIT",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build && npm run package",
+		"preview": "vite preview",
+		"package": "svelte-kit sync && svelte-package && publint",
+		"prepublishOnly": "npm run package",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"format": "prettier --write .",
+		"lint": "prettier --check ."
+	},
+	"exports": {
+		".": "./src/lib/index.ts",
+		"./*.svelte": "./src/lib/*.svelte",
+		"./*": "./src/lib/*.ts"
+	},
+	"files": [
+		"src/lib",
+		"!src/lib/**/*.test.*",
+		"!src/lib/**/*.spec.*"
+	],
+	"peerDependencies": {
+		"@lucide/svelte": "^1.0.0",
+		"bits-ui": "^2.0.0",
+		"mode-watcher": "^1.0.0",
+		"svelte": "^5.0.0",
+		"svelte-sonner": "^1.0.0"
+	},
+	"dependencies": {
+		"clsx": "^2.1.1",
+		"graphology": "^0.26.0",
+		"graphology-dag": "^0.4.1",
+		"graphology-traversal": "^0.3.1",
+		"immer": "^11.1.3",
+		"jszip": "^3.10.1",
+		"lodash": "^4.17.23",
+		"monaco-editor": "^0.55.1",
+		"paneforge": "^1.0.2",
+		"tailwind-merge": "^3.5.0",
+		"tailwind-variants": "^3.2.2"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^3.3.1",
+		"@sveltejs/kit": "^2.48.5",
+		"@sveltejs/package": "^2.3.10",
+		"@sveltejs/vite-plugin-svelte": "^6.2.1",
+		"@types/lodash": "^4.17.23",
+		"graphology-types": "^0.24.8",
+		"publint": "^0.3.0",
+		"shadcn-svelte": "^1.2.1",
+		"svelte": "^5.43.8",
+		"svelte-check": "^4.3.4",
+		"typescript": "^5.9.3",
+		"vite": "^7.2.2",
+		"vitest": "^4.0.18"
+	}
+}
