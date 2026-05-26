@@ -1,0 +1,170 @@
+/*
+ * @anacode/code-editor — shipped stylesheet
+ * -----------------------------------------
+ * Consumers import this once:
+ *   import '@anacode/code-editor/styles.css';
+ *
+ * Opinionated, shadcn-style. The library ships every Tailwind utility
+ * class plus the theme tokens its components actually reference, so a
+ * consumer does NOT need their own Tailwind setup.
+ *
+ * Built with Tailwind CSS v4 (CSS-first config). The @source directive
+ * below scans ONLY this library's source tree, so the published CSS is
+ * self-contained.
+ *
+ * OVERRIDING THEME TOKENS
+ * -----------------------
+ * Every visual token is a CSS variable. To re-skin, declare overrides on
+ * :root / .dark AFTER importing this file:
+ *
+ *   import '@anacode/code-editor/styles.css';
+ *   // then in your app's own CSS:
+ *   :root { --primary: oklch(0.55 0.22 264); --radius: 0.5rem; }
+ *   .dark { --primary: oklch(0.72 0.18 264); }
+ *
+ * PREFLIGHT NOTE
+ * --------------
+ * `@import "tailwindcss"` pulls in Tailwind's preflight (global reset:
+ * removes default margins on <h1>..<h6>, normalizes list styling,
+ * resets buttons to inherit color/background, etc.). When this file is
+ * imported by a host app, preflight applies to the WHOLE page, not just
+ * the editor. That's intentional here because the library is designed
+ * to live inside editor-style hosts that expect a Tailwind baseline.
+ *
+ * If you ship into a non-Tailwind host where preflight clashes,
+ * replace the import below with:
+ *   @import "tailwindcss/theme.css" layer(theme);
+ *   @import "tailwindcss/utilities.css" layer(utilities);
+ * (i.e. drop `tailwindcss/preflight.css`) and re-build.
+ *
+ * THEME TOKENS
+ * ------------
+ * The OKLCH values below are the shadcn-svelte v1 default palette,
+ * extended with the anacode extension tokens that this library's
+ * components actually reference (failure, foreign-foreground, info).
+ * Other anacode app-host tokens (success, warning, notice, stat-x, tests-x)
+ * are intentionally NOT shipped here — they were never referenced by
+ * src/lib and would only be noise. A host app that needs them should
+ * declare them in its own CSS.
+ *
+ * Both :root (light) and .dark are defined because mode-watcher (a
+ * peer dependency) toggles a `.dark` class on <html> at runtime.
+ */
+
+@import 'tailwindcss';
+
+/* Scan this library's source — NOT the consumer's project. */
+@source "./**/*.{svelte,ts,js}";
+
+/* ------------------------------------------------------------------ */
+/* Light theme                                                        */
+/* ------------------------------------------------------------------ */
+:root {
+	--radius: 0.625rem;
+
+	/* shadcn-svelte v1 defaults (OKLCH) */
+	--background: oklch(1 0 0);
+	--foreground: oklch(0.145 0 0);
+	--card: oklch(1 0 0);
+	--card-foreground: oklch(0.145 0 0);
+	--popover: oklch(1 0 0);
+	--popover-foreground: oklch(0.145 0 0);
+	--primary: oklch(0.205 0 0);
+	--primary-foreground: oklch(0.985 0 0);
+	--secondary: oklch(0.97 0 0);
+	--secondary-foreground: oklch(0.205 0 0);
+	--muted: oklch(0.97 0 0);
+	--muted-foreground: oklch(0.556 0 0);
+	--accent: oklch(0.97 0 0);
+	--accent-foreground: oklch(0.205 0 0);
+	--destructive: oklch(0.577 0.245 27.325);
+	--destructive-foreground: oklch(0.985 0 0);
+	--border: oklch(0.922 0 0);
+	--input: oklch(0.922 0 0);
+	--ring: oklch(0.708 0 0);
+
+	/* anacode extension tokens — only those used by src/lib */
+	--failure: oklch(0.955 0.025 27);
+	--failure-foreground: oklch(0.52 0.15 27);
+	--info: oklch(0.955 0.025 195);
+	--foreign-foreground: oklch(0.45 0.15 245);
+}
+
+/* ------------------------------------------------------------------ */
+/* Dark theme — mode-watcher toggles `.dark` on <html>                */
+/* ------------------------------------------------------------------ */
+.dark {
+	--background: oklch(0.145 0 0);
+	--foreground: oklch(0.985 0 0);
+	--card: oklch(0.205 0 0);
+	--card-foreground: oklch(0.985 0 0);
+	--popover: oklch(0.205 0 0);
+	--popover-foreground: oklch(0.985 0 0);
+	--primary: oklch(0.922 0 0);
+	--primary-foreground: oklch(0.205 0 0);
+	--secondary: oklch(0.269 0 0);
+	--secondary-foreground: oklch(0.985 0 0);
+	--muted: oklch(0.269 0 0);
+	--muted-foreground: oklch(0.708 0 0);
+	--accent: oklch(0.269 0 0);
+	--accent-foreground: oklch(0.985 0 0);
+	--destructive: oklch(0.704 0.191 22.216);
+	--destructive-foreground: oklch(0.985 0 0);
+	--border: oklch(1 0 0 / 10%);
+	--input: oklch(1 0 0 / 15%);
+	--ring: oklch(0.556 0 0);
+
+	/* anacode extension tokens — only those used by src/lib */
+	--failure: oklch(0.35 0.1 27);
+	--failure-foreground: oklch(0.75 0.12 27);
+	--info: oklch(0.35 0.1 195);
+	--foreign-foreground: oklch(0.6 0.13 245);
+}
+
+/* ------------------------------------------------------------------ */
+/* Theme mapping                                                      */
+/* ------------------------------------------------------------------ */
+/*
+ * `@theme inline` (not plain `@theme`) is required here: it evaluates
+ * the var() references once at compile time so utility classes resolve
+ * to `var(--background)` etc. directly. That keeps the inner :root /
+ * .dark blocks live — overriding `--background` on `.dark` (or by a
+ * consumer) automatically updates every `bg-background` use site.
+ */
+@theme inline {
+	/* shadcn defaults — keep all 19 even when not directly referenced;
+	 * they form the baseline contract for any shadcn-svelte consumer. */
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-destructive-foreground: var(--destructive-foreground);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+
+	/* anacode extension colors — only those used by src/lib */
+	--color-failure: var(--failure);
+	--color-failure-foreground: var(--failure-foreground);
+	--color-info: var(--info);
+	--color-foreign-foreground: var(--foreign-foreground);
+
+	/* Radius scale — referenced both as utilities (rounded-md/lg) and
+	 * as arbitrary values inside button.svelte:
+	 *   rounded-[min(var(--radius-md),8px)] */
+	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+}
