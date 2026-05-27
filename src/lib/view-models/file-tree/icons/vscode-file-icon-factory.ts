@@ -90,7 +90,7 @@ export type VSCodeFileIconName =
 	| 'storybook';
 
 const VSCODE_ICON_MAP: Record<VSCodeFileIconName, { light: string; dark: string }> = {
-	file: { light: 'file-type-light-default', dark: 'default-file' },
+	file: { light: 'default-file', dark: 'default-file' },
 	folder: { light: 'default-folder', dark: 'default-folder' },
 	'folder-open': { light: 'default-folder-opened', dark: 'default-folder-opened' },
 	java: { light: 'file-type-java', dark: 'file-type-java' },
