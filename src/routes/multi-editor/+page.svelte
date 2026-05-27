@@ -10,17 +10,24 @@
 		EMPTY_CONTENT_HASH,
 		type FileSystemMapReadonly,
 		type FileSystemPath,
+		type IFileSystemEngine,
 		type NodeID,
 		NodeType,
+		type OperationError,
 		ROOT_NODE_ID,
 		ROOT_PERMISSIONS
 	} from '$lib/core/file-system/domain/file-system-models';
+	import { FileSystemLoader } from '$lib/core/file-system/loader/file-system-loader';
+	import type { IFileSystemService } from '$lib/core/file-system/services/file-system-service';
+	import { FileSystemService } from '$lib/core/file-system/services/file-system-service-impl';
+	import { FileSystemCommandFactory } from '$lib/core/file-system/services/command-factory/file-system-command-factory-impl';
+	import { FileSystemZipImporter } from '$lib/core/file-system/persistance/import/file-system-importer-impl';
 	import type {
 		CreateEditorSessionError,
 		IEditorSession
 	} from '$lib/core/session/editor-session';
 	import { EditorSessionFactory } from '$lib/core/session/editor-session-factory-impl';
-	import { FileSystemZipImporter } from '$lib/core/file-system/persistance/import/file-system-importer-impl';
+	import { EditorUserSpaceStateService } from '$lib/core/state/user-space/editor-user-space-state-impl';
 	import type { Result } from '$lib/core/shared/models-utils';
 	import { initMonacoWorkers } from '$lib/core/editor/utils/workers/code-editor-workers';
 
@@ -28,8 +35,6 @@
 	const SOLUTION_ID: NodeID = 2 as NodeID;
 	const NOTES_ID: NodeID = 3 as NodeID;
 	const README_ID: NodeID = 4 as NodeID;
-	const UNKNOWN_ID: NodeID = 5 as NodeID;
-	const NOEXT_ID: NodeID = 6 as NodeID;
 
 	const initialState: FileSystemMapReadonly = {
 		[ROOT_NODE_ID]: {
@@ -39,7 +44,7 @@
 			path: '/project' as FileSystemPath,
 			parentID: null,
 			permissions: ROOT_PERMISSIONS,
-			children: [SRC_FOLDER_ID, README_ID, UNKNOWN_ID, NOEXT_ID],
+			children: [SRC_FOLDER_ID, README_ID],
 			userSpace: null
 		},
 		[SRC_FOLDER_ID]: {
@@ -59,7 +64,7 @@
 			path: '/project/src/solution.py' as FileSystemPath,
 			parentID: SRC_FOLDER_ID,
 			content:
-				'def solve() -> None:\n\tmessage = "test editor route"\n\tprint(message)\n\n\nif __name__ == "__main__":\n\tsolve()\n',
+				'def solve() -> None:\n\tmessage = "multi editor route"\n\tprint(message)\n\n\nif __name__ == "__main__":\n\tsolve()\n',
 			contentHash: EMPTY_CONTENT_HASH,
 			permissions: { read: true, write: true, rename: true, delete: true },
 			userSpace: null
@@ -70,7 +75,7 @@
 			name: 'notes.md',
 			path: '/project/src/notes.md' as FileSystemPath,
 			parentID: SRC_FOLDER_ID,
-			content: '# Notes\n\nScratch pad for the test editor route.\n',
+			content: '# Notes\n\nShared scratch pad across both editors.\n',
 			contentHash: EMPTY_CONTENT_HASH,
 			permissions: { read: true, write: true, rename: true, delete: true },
 			userSpace: null
@@ -81,41 +86,21 @@
 			name: 'README.md',
 			path: '/project/README.md' as FileSystemPath,
 			parentID: ROOT_NODE_ID,
-			content: '# Test Editor\n\nIn-memory workspace for local UI iteration.\n',
-			contentHash: EMPTY_CONTENT_HASH,
-			permissions: { read: true, write: true, rename: true, delete: true },
-			userSpace: null
-		},
-		[UNKNOWN_ID]: {
-			id: UNKNOWN_ID,
-			type: NodeType.FILE,
-			name: 'mystery.xyz',
-			path: '/project/mystery.xyz' as FileSystemPath,
-			parentID: ROOT_NODE_ID,
-			content: 'unknown extension — should render the default-file icon\n',
-			contentHash: EMPTY_CONTENT_HASH,
-			permissions: { read: true, write: true, rename: true, delete: true },
-			userSpace: null
-		},
-		[NOEXT_ID]: {
-			id: NOEXT_ID,
-			type: NodeType.FILE,
-			name: 'NOTICE',
-			path: '/project/NOTICE' as FileSystemPath,
-			parentID: ROOT_NODE_ID,
-			content: 'no extension — should also render the default-file icon\n',
+			content:
+				'# Multi Editor\n\nTwo independent EditorSession instances writing the same in-memory file system.\n',
 			contentHash: EMPTY_CONTENT_HASH,
 			permissions: { read: true, write: true, rename: true, delete: true },
 			userSpace: null
 		}
 	};
 
-	let session: IEditorSession | null = $state(null);
+	let sessionA: IEditorSession | null = $state(null);
+	let sessionB: IEditorSession | null = $state(null);
 	let loadErrorMessage: string | null = $state(null);
+	let fileSystemService: IFileSystemService | null = null;
 
 	const codeEditorConfigurationService: IEditorConfigurationService =
 		new StaticDefaultEditorConfigurationService();
-
 	const sessionFactory: EditorSessionFactory = new EditorSessionFactory(
 		new FileSystemZipImporter()
 	);
@@ -123,24 +108,51 @@
 	onMount(async (): Promise<void> => {
 		initMonacoWorkers();
 
-		const result: Result<IEditorSession, CreateEditorSessionError> =
-			await sessionFactory.createFromFileSystemMap(
-				initialState,
-				codeEditorConfigurationService
-			);
-
-		if (!result.ok) {
-			loadErrorMessage = result.error.message;
+		const loadResult: Result<IFileSystemEngine, OperationError> =
+			await FileSystemLoader.load(initialState);
+		if (!loadResult.ok) {
+			loadErrorMessage = loadResult.error.message;
 			return;
 		}
 
-		session = result.value;
+		const fileSystemEngine: IFileSystemEngine = loadResult.value;
+		const userSpaceStateService: EditorUserSpaceStateService = new EditorUserSpaceStateService();
+		const commandFactory: FileSystemCommandFactory = new FileSystemCommandFactory(
+			userSpaceStateService
+		);
+		const sharedFileSystemService: IFileSystemService = new FileSystemService(
+			fileSystemEngine,
+			commandFactory
+		);
+		fileSystemService = sharedFileSystemService;
+
+		const resultA: Result<IEditorSession, CreateEditorSessionError> =
+			await sessionFactory.createFromFileSystem(
+				sharedFileSystemService,
+				codeEditorConfigurationService
+			);
+		if (!resultA.ok) {
+			loadErrorMessage = resultA.error.message;
+			return;
+		}
+		sessionA = resultA.value;
+
+		const resultB: Result<IEditorSession, CreateEditorSessionError> =
+			await sessionFactory.createFromFileSystem(
+				sharedFileSystemService,
+				codeEditorConfigurationService
+			);
+		if (!resultB.ok) {
+			loadErrorMessage = resultB.error.message;
+			return;
+		}
+		sessionB = resultB.value;
 	});
 
 	onDestroy((): void => {
-		if (session !== null) {
-			session.dispose();
-		}
+		if (sessionA !== null) sessionA.dispose();
+		if (sessionB !== null) sessionB.dispose();
+		if (fileSystemService !== null) fileSystemService.destroy();
 	});
 </script>
 
@@ -153,9 +165,14 @@
 				{loadErrorMessage}
 			</div>
 		</div>
-	{:else if session !== null}
-		<div class="min-h-0 flex-1">
-			<EditorSession {session} />
+	{:else if sessionA !== null && sessionB !== null}
+		<div class="flex min-h-0 flex-1 flex-row">
+			<div class="min-h-0 min-w-0 flex-1 border-r border-border">
+				<EditorSession session={sessionA} />
+			</div>
+			<div class="min-h-0 min-w-0 flex-1">
+				<EditorSession session={sessionB} />
+			</div>
 		</div>
 	{:else}
 		<div class="flex flex-1 items-center justify-center text-sm text-muted-foreground">
