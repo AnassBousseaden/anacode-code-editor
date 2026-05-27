@@ -1,6 +1,11 @@
-<script lang="ts">
-	import IconifyIcon from '@iconify/svelte';
+<script lang="ts" module>
+	import IconifyIcon, { addCollection } from '@iconify/svelte';
+	import vscodeIcons from '@iconify-json/vscode-icons/icons.json';
 
+	addCollection(vscodeIcons);
+</script>
+
+<script lang="ts">
 	interface Props {
 		icon: string;
 		size?: number;
