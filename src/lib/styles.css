@@ -1,87 +1,66 @@
 /*
- * @anacode/code-editor — shipped stylesheet
- * -----------------------------------------
- * Consumers import this once:
- *   import '@anacode/code-editor/styles.css';
+ * @anacode/code-editor — token sheet (source distribution)
+ * --------------------------------------------------------
+ * This file is SOURCE, not compiled output. The consumer's Tailwind v4
+ * build processes it: scans the @source path below, registers the
+ * @custom-variants, applies the @theme tokens, and emits ONE merged
+ * stylesheet alongside the consumer's own code.
  *
- * Opinionated, shadcn-style. The library ships every Tailwind utility
- * class plus the theme tokens its components actually reference, so a
- * consumer does NOT need their own Tailwind setup.
+ * The library does NOT compile Tailwind. There is no preflight or any
+ * utility class shipped here — the consumer's single Tailwind pass
+ * produces all of that, once.
  *
- * Built with Tailwind CSS v4 (CSS-first config). The @source directive
- * below scans ONLY this library's source tree, so the published CSS is
- * self-contained.
+ * Consumer setup (in their app's main CSS):
+ *   @import 'tailwindcss';
+ *   @import '@anacode/code-editor/styles.css';
+ *   // ...optional consumer overrides come after
  *
- * OVERRIDING THEME TOKENS
- * -----------------------
- * Every visual token is a CSS variable. To re-skin, declare overrides on
- * :root / .dark AFTER importing this file:
+ * Requirements (peer dependencies):
+ *   - tailwindcss ^4
+ *   - tw-animate-css (re-imported below for ergonomics)
+ *   - mode-watcher (toggles `.dark` on <html>)
  *
- *   import '@anacode/code-editor/styles.css';
- *   // then in your app's own CSS:
- *   :root { --primary: oklch(0.55 0.22 264); --radius: 0.5rem; }
- *   .dark { --primary: oklch(0.72 0.18 264); }
+ * Geist font is the consumer's responsibility (heavy network asset):
+ *   npm i @fontsource-variable/geist
+ *   @import '@fontsource-variable/geist';
+ * Without it, --font-sans falls through to the system sans-serif.
  *
- * PREFLIGHT NOTE
- * --------------
- * `@import "tailwindcss"` pulls in Tailwind's preflight (global reset:
- * removes default margins on <h1>..<h6>, normalizes list styling,
- * resets buttons to inherit color/background, etc.). When this file is
- * imported by a host app, preflight applies to the WHOLE page, not just
- * the editor. That's intentional here because the library is designed
- * to live inside editor-style hosts that expect a Tailwind baseline.
- *
- * If you ship into a non-Tailwind host where preflight clashes,
- * replace the import below with:
- *   @import "tailwindcss/theme.css" layer(theme);
- *   @import "tailwindcss/utilities.css" layer(utilities);
- * (i.e. drop `tailwindcss/preflight.css`) and re-build.
- *
- * THEME TOKENS
- * ------------
- * The OKLCH values below are the shadcn-svelte v1 default palette,
- * extended with the anacode extension tokens that this library's
- * components actually reference (failure, foreign-foreground, info).
- * Other anacode app-host tokens (success, warning, notice, stat-x, tests-x)
- * are intentionally NOT shipped here — they were never referenced by
- * src/lib and would only be noise. A host app that needs them should
- * declare them in its own CSS.
- *
- * Both :root (light) and .dark are defined because mode-watcher (a
- * peer dependency) toggles a `.dark` class on <html> at runtime.
+ * Overriding tokens — declare on :root / .dark AFTER importing this file.
  */
 
-@import 'tailwindcss';
+/* Tell the consumer's Tailwind build to scan our shipped components. */
+@source './**/*.{svelte,js}';
 
-/* Scan this library's source — NOT the consumer's project. */
-@source "./**/*.{svelte,ts,js}";
+/* Animation utilities used by dialog/dropdown/context-menu/tooltip. */
+@import 'tw-animate-css';
+
+/* Class-based dark mode — mode-watcher toggles `.dark` on <html>. */
+@custom-variant dark (&:is(.dark *));
 
 /* ------------------------------------------------------------------ */
-/* Light theme                                                        */
+/* Light theme — anacode palette (purple-tinted shadcn, 0.3rem radius) */
 /* ------------------------------------------------------------------ */
 :root {
-	--radius: 0.625rem;
+	--radius: 0.3rem;
 
-	/* shadcn-svelte v1 defaults (OKLCH) */
 	--background: oklch(1 0 0);
-	--foreground: oklch(0.145 0 0);
+	--foreground: oklch(0.141 0.005 285.823);
 	--card: oklch(1 0 0);
-	--card-foreground: oklch(0.145 0 0);
+	--card-foreground: oklch(0.141 0.005 285.823);
 	--popover: oklch(1 0 0);
-	--popover-foreground: oklch(0.145 0 0);
-	--primary: oklch(0.205 0 0);
-	--primary-foreground: oklch(0.985 0 0);
-	--secondary: oklch(0.97 0 0);
-	--secondary-foreground: oklch(0.205 0 0);
-	--muted: oklch(0.97 0 0);
-	--muted-foreground: oklch(0.556 0 0);
-	--accent: oklch(0.97 0 0);
-	--accent-foreground: oklch(0.205 0 0);
+	--popover-foreground: oklch(0.141 0.005 285.823);
+	--primary: oklch(0.457 0.24 277.023);
+	--primary-foreground: oklch(0.962 0.018 272.314);
+	--secondary: oklch(0.967 0.001 286.375);
+	--secondary-foreground: oklch(0.21 0.006 285.885);
+	--muted: oklch(0.967 0.001 286.375);
+	--muted-foreground: oklch(0.552 0.016 285.938);
+	--accent: oklch(0.967 0.001 286.375);
+	--accent-foreground: oklch(0.21 0.006 285.885);
 	--destructive: oklch(0.577 0.245 27.325);
-	--destructive-foreground: oklch(0.985 0 0);
-	--border: oklch(0.922 0 0);
-	--input: oklch(0.922 0 0);
-	--ring: oklch(0.708 0 0);
+	--border: oklch(0.92 0.004 286.32);
+	--input: oklch(0.92 0.004 286.32);
+	--ring: oklch(0.705 0.015 286.067);
 
 	/* anacode extension tokens — only those used by src/lib */
 	--failure: oklch(0.955 0.025 27);
@@ -91,30 +70,28 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Dark theme — mode-watcher toggles `.dark` on <html>                */
+/* Dark theme                                                         */
 /* ------------------------------------------------------------------ */
 .dark {
-	--background: oklch(0.145 0 0);
+	--background: oklch(0.141 0.005 285.823);
 	--foreground: oklch(0.985 0 0);
-	--card: oklch(0.205 0 0);
+	--card: oklch(0.21 0.006 285.885);
 	--card-foreground: oklch(0.985 0 0);
-	--popover: oklch(0.205 0 0);
+	--popover: oklch(0.21 0.006 285.885);
 	--popover-foreground: oklch(0.985 0 0);
-	--primary: oklch(0.922 0 0);
-	--primary-foreground: oklch(0.205 0 0);
-	--secondary: oklch(0.269 0 0);
+	--primary: oklch(0.398 0.195 277.366);
+	--primary-foreground: oklch(0.962 0.018 272.314);
+	--secondary: oklch(0.274 0.006 286.033);
 	--secondary-foreground: oklch(0.985 0 0);
-	--muted: oklch(0.269 0 0);
-	--muted-foreground: oklch(0.708 0 0);
-	--accent: oklch(0.269 0 0);
+	--muted: oklch(0.274 0.006 286.033);
+	--muted-foreground: oklch(0.705 0.015 286.067);
+	--accent: oklch(0.274 0.006 286.033);
 	--accent-foreground: oklch(0.985 0 0);
 	--destructive: oklch(0.704 0.191 22.216);
-	--destructive-foreground: oklch(0.985 0 0);
 	--border: oklch(1 0 0 / 10%);
 	--input: oklch(1 0 0 / 15%);
-	--ring: oklch(0.556 0 0);
+	--ring: oklch(0.552 0.016 285.938);
 
-	/* anacode extension tokens — only those used by src/lib */
 	--failure: oklch(0.35 0.1 27);
 	--failure-foreground: oklch(0.75 0.12 27);
 	--info: oklch(0.35 0.1 195);
@@ -122,18 +99,10 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Theme mapping                                                      */
+/* Theme mapping — `inline` so .dark overrides drive utilities at     */
+/* runtime via the inner :root/.dark blocks.                          */
 /* ------------------------------------------------------------------ */
-/*
- * `@theme inline` (not plain `@theme`) is required here: it evaluates
- * the var() references once at compile time so utility classes resolve
- * to `var(--background)` etc. directly. That keeps the inner :root /
- * .dark blocks live — overriding `--background` on `.dark` (or by a
- * consumer) automatically updates every `bg-background` use site.
- */
 @theme inline {
-	/* shadcn defaults — keep all 19 even when not directly referenced;
-	 * they form the baseline contract for any shadcn-svelte consumer. */
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
 	--color-card: var(--card);
@@ -149,22 +118,106 @@
 	--color-accent: var(--accent);
 	--color-accent-foreground: var(--accent-foreground);
 	--color-destructive: var(--destructive);
-	--color-destructive-foreground: var(--destructive-foreground);
 	--color-border: var(--border);
 	--color-input: var(--input);
 	--color-ring: var(--ring);
 
-	/* anacode extension colors — only those used by src/lib */
+	/* anacode extension colors */
 	--color-failure: var(--failure);
 	--color-failure-foreground: var(--failure-foreground);
 	--color-info: var(--info);
 	--color-foreign-foreground: var(--foreign-foreground);
 
-	/* Radius scale — referenced both as utilities (rounded-md/lg) and
-	 * as arbitrary values inside button.svelte:
-	 *   rounded-[min(var(--radius-md),8px)] */
+	/* Radius scale — button.svelte references --radius-md as an
+	 * arbitrary value: rounded-[min(var(--radius-md),8px)] */
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
 	--radius-xl: calc(var(--radius) + 4px);
+
+	--font-sans: 'Geist Variable', sans-serif;
+}
+
+/* ------------------------------------------------------------------ */
+/* Custom variants for bits-ui / shadcn state attributes.             */
+/* Without these, classes like `data-open:animate-in` silently drop.  */
+/* ------------------------------------------------------------------ */
+@custom-variant data-open {
+	&:where([data-state='open']),
+	&:where([data-open]:not([data-open='false'])) {
+		@slot;
+	}
+}
+
+@custom-variant data-closed {
+	&:where([data-state='closed']),
+	&:where([data-closed]:not([data-closed='false'])) {
+		@slot;
+	}
+}
+
+@custom-variant data-checked {
+	&:where([data-state='checked']),
+	&:where([data-checked]:not([data-checked='false'])) {
+		@slot;
+	}
+}
+
+@custom-variant data-unchecked {
+	&:where([data-state='unchecked']),
+	&:where([data-unchecked]:not([data-unchecked='false'])) {
+		@slot;
+	}
+}
+
+@custom-variant data-selected {
+	&:where([data-selected]) {
+		@slot;
+	}
+}
+
+@custom-variant data-disabled {
+	&:where([data-disabled='true']),
+	&:where([data-disabled]:not([data-disabled='false'])) {
+		@slot;
+	}
+}
+
+@custom-variant data-active {
+	&:where([data-state='active']),
+	&:where([data-active]:not([data-active='false'])) {
+		@slot;
+	}
+}
+
+@custom-variant data-horizontal {
+	&:where([data-orientation='horizontal']) {
+		@slot;
+	}
+}
+
+@custom-variant data-vertical {
+	&:where([data-orientation='vertical']) {
+		@slot;
+	}
+}
+
+/* ------------------------------------------------------------------ */
+/* Opinionated baseline — shadcn pattern. Compiled into the           */
+/* consumer's single Tailwind output, so no duplication concerns.     */
+/* Shadcn components use `border` shorthand without an explicit       */
+/* color, so the universal `*` rule is required for them to render.   */
+/* ------------------------------------------------------------------ */
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+
+	body {
+		@apply bg-background text-foreground;
+	}
+
+	html {
+		@apply font-sans;
+	}
 }
