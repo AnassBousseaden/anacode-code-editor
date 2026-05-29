@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { Moon, Settings, Sun } from '@lucide/svelte';
 	import { ModeWatcher, toggleMode } from 'mode-watcher';
@@ -18,17 +19,18 @@
 
 	let { children }: Props = $props();
 
-	const NAV_ITEMS: ReadonlyArray<{ href: string; label: string }> = [
+	const NAV_ITEMS = [
 		{ href: '/', label: 'Editor' },
 		{ href: '/import-export', label: 'Import / Export' },
 		{ href: '/multi-editor', label: 'Multi-editor' }
-	];
+	] as const;
 
-	function isActive(href: string): boolean {
+	function isActive(href: (typeof NAV_ITEMS)[number]['href']): boolean {
+		const target: string = resolve(href);
 		if (href === '/') {
-			return page.url.pathname === '/';
+			return page.url.pathname === target || page.url.pathname === target.replace(/\/$/, '');
 		}
-		return page.url.pathname === href || page.url.pathname.startsWith(href + '/');
+		return page.url.pathname === target || page.url.pathname.startsWith(target + '/');
 	}
 </script>
 
@@ -43,7 +45,7 @@
 		<nav class="flex items-center gap-1">
 			{#each NAV_ITEMS as item (item.href)}
 				<a
-					href={item.href}
+					href={resolve(item.href)}
 					class={cn(
 						'rounded-md px-3 py-1.5 text-sm transition-colors',
 						isActive(item.href)

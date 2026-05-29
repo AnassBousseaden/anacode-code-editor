@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
+	import { asset } from '$app/paths';
 	import { CircleAlert, Download, FilePlus, LoaderCircle, Upload } from '@lucide/svelte';
 
 	import EditorSession from '$lib/components/EditorSession.svelte';
@@ -237,7 +238,7 @@
 	async function loadPreset(preset: PresetProject): Promise<void> {
 		transitionToLoading(`Downloading ${preset.label}...`);
 		try {
-			const response: Response = await fetch(preset.url);
+			const response: Response = await fetch(asset(preset.url));
 			if (!response.ok) {
 				handleError(new Error(`Failed to fetch ${preset.label}: ${response.status}`));
 				return;
