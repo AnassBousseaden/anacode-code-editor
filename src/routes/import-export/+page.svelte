@@ -1,11 +1,10 @@
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import { CircleAlert, Download, FilePlus, LoaderCircle, Upload } from '@lucide/svelte';
 
 	import EditorSession from '$lib/components/EditorSession.svelte';
-	import {
-		StaticDefaultEditorConfigurationService,
-		type IEditorConfigurationService
-	} from '$lib/core/editor/configuration/editor-config-models';
+	import type { IEditorConfigurationService } from '$lib/core/editor/configuration/editor-config-models';
+	import { EditorConfigurationService } from '../../playground/editor-config.svelte';
 	import {
 		type FileSystemMapReadonly,
 		type NodeID,
@@ -28,6 +27,12 @@
 	import { EditorSessionFactory } from '$lib/core/session/editor-session-factory-impl';
 	import type { Result } from '$lib/core/shared/models-utils';
 	import { initMonacoWorkers } from '$lib/core/editor/utils/workers/code-editor-workers';
+	import {
+		Description as AlertDescription,
+		Root as AlertRoot,
+		Title as AlertTitle
+	} from '$lib/ui-primitives/alert';
+	import { Badge, type BadgeVariant } from '$lib/ui-primitives/badge';
 	import { Button } from '$lib/ui-primitives/button';
 	import {
 		Content as CardContent,
@@ -50,13 +55,19 @@
 	let fileInputElement: HTMLInputElement;
 
 	const codeEditorConfigurationService: IEditorConfigurationService =
-		new StaticDefaultEditorConfigurationService();
+		EditorConfigurationService.getInstance();
 	const coordinator: IFileSystemZipCoordinator = new FileSystemZipCoordinator();
 	const sessionFactory: EditorSessionFactory = new EditorSessionFactory(
 		new FileSystemZipImporter()
 	);
 
 	initMonacoWorkers();
+
+	onDestroy((): void => {
+		if (session !== null) {
+			session.dispose();
+		}
+	});
 
 	function transitionToLoading(message: string): void {
 		uiState = 'loading';
@@ -174,19 +185,85 @@
 	function dismissError(): void {
 		errorMessage = null;
 	}
+
+	type PresetTier = 'bigger' | 'big' | 'medium' | 'light';
+
+	interface PresetProject {
+		readonly label: string;
+		readonly description: string;
+		readonly url: string;
+		readonly sizeLabel: string;
+		readonly tier: PresetTier;
+	}
+
+	const TIER_VARIANT: Record<PresetTier, BadgeVariant> = {
+		bigger: 'destructive',
+		big: 'default',
+		medium: 'secondary',
+		light: 'outline'
+	};
+
+	const PRESETS: ReadonlyArray<PresetProject> = [
+		{
+			label: 'FastAPI',
+			description: 'tiangolo/fastapi · MIT',
+			url: '/projects/fastapi.zip',
+			sizeLabel: '19 MB',
+			tier: 'bigger'
+		},
+		{
+			label: 'Resilience4j',
+			description: 'resilience4j/resilience4j · Apache 2.0',
+			url: '/projects/resilience4j.zip',
+			sizeLabel: '2.1 MB',
+			tier: 'big'
+		},
+		{
+			label: 'Caddy',
+			description: 'caddyserver/caddy · Apache 2.0',
+			url: '/projects/caddy.zip',
+			sizeLabel: '1.2 MB',
+			tier: 'medium'
+		},
+		{
+			label: 'Cobra',
+			description: 'spf13/cobra · Apache 2.0',
+			url: '/projects/cobra.zip',
+			sizeLabel: '234 KB',
+			tier: 'light'
+		}
+	];
+
+	async function loadPreset(preset: PresetProject): Promise<void> {
+		transitionToLoading(`Downloading ${preset.label}...`);
+		try {
+			const response: Response = await fetch(preset.url);
+			if (!response.ok) {
+				handleError(new Error(`Failed to fetch ${preset.label}: ${response.status}`));
+				return;
+			}
+			const blob: Blob = await response.blob();
+			const file: File = new File([blob], `${preset.label.toLowerCase()}.zip`, {
+				type: 'application/zip'
+			});
+			await importFromFile(file);
+		} catch (error: unknown) {
+			const message: string = error instanceof Error ? error.message : String(error);
+			handleError(new Error(message));
+		}
+	}
 </script>
 
 <div class="flex h-full min-h-0 w-full flex-col overflow-hidden bg-background">
 	{#if errorMessage !== null}
-		<div
-			class="m-2 flex items-start gap-3 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive"
-		>
-			<CircleAlert class="mt-0.5 size-4 shrink-0" />
-			<div class="flex flex-1 items-center justify-between gap-3">
+		<AlertRoot variant="destructive" class="m-2">
+			<CircleAlert />
+			<AlertTitle>Error</AlertTitle>
+			<AlertDescription class="flex w-full items-center justify-between gap-3">
 				<span>{errorMessage}</span>
 				<Button variant="ghost" size="sm" onclick={dismissError}>Dismiss</Button>
-			</div>
-		</div>
+			</AlertDescription>
+		</AlertRoot>
 	{/if}
 
 	{#if uiState === 'idle'}
@@ -223,6 +300,33 @@
 						class="hidden"
 						onchange={handleFileSelect}
 					/>
+
+					<div class="flex items-center gap-3">
+						<div class="h-px flex-1 bg-border"></div>
+						<span class="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+							or pick a sample project
+						</span>
+						<div class="h-px flex-1 bg-border"></div>
+					</div>
+
+					<div class="grid grid-cols-2 gap-3">
+						{#each PRESETS as preset (preset.url)}
+							<button
+								type="button"
+								onclick={() => loadPreset(preset)}
+								class="group flex flex-col items-start gap-1.5 rounded-lg border border-border bg-card p-3 text-left transition-colors hover:border-primary hover:bg-accent/50"
+							>
+								<div class="flex w-full items-center justify-between gap-2">
+									<span class="text-sm font-medium text-foreground">{preset.label}</span>
+									<Badge variant={TIER_VARIANT[preset.tier]}>{preset.tier}</Badge>
+								</div>
+								<div class="flex w-full items-center justify-between gap-2">
+									<span class="text-xs text-muted-foreground">{preset.description}</span>
+									<span class="text-xs text-muted-foreground">{preset.sizeLabel}</span>
+								</div>
+							</button>
+						{/each}
+					</div>
 				</CardContent>
 			</CardRoot>
 		</div>

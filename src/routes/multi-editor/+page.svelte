@@ -2,10 +2,8 @@
 	import { onDestroy, onMount } from 'svelte';
 
 	import EditorSession from '$lib/components/EditorSession.svelte';
-	import {
-		StaticDefaultEditorConfigurationService,
-		type IEditorConfigurationService
-	} from '$lib/core/editor/configuration/editor-config-models';
+	import type { IEditorConfigurationService } from '$lib/core/editor/configuration/editor-config-models';
+	import { EditorConfigurationService } from '../../playground/editor-config.svelte';
 	import {
 		EMPTY_CONTENT_HASH,
 		type FileSystemMapReadonly,
@@ -100,7 +98,7 @@
 	let fileSystemService: IFileSystemService | null = null;
 
 	const codeEditorConfigurationService: IEditorConfigurationService =
-		new StaticDefaultEditorConfigurationService();
+		EditorConfigurationService.getInstance();
 	const sessionFactory: EditorSessionFactory = new EditorSessionFactory(
 		new FileSystemZipImporter()
 	);
