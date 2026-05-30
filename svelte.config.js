@@ -8,7 +8,10 @@ const config = {
 	preprocess: vitePreprocess(),
 	kit: {
 		adapter: adapter({ fallback: 'index.html' }),
-		paths: { base }
+		paths: { base },
+		alias: {
+			$playground: 'src/playground'
+		}
 	}
 };
 

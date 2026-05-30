@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { get } from 'svelte/store';
 
-	import type { IEditorConfigurationService } from '$lib/core/editor/configuration/editor-config-models';
+	import type { IEditorConfigurationService } from '$lib/config';
 	import { Button } from '$lib/ui-primitives/button';
 	import {
 		Content as DialogContent,

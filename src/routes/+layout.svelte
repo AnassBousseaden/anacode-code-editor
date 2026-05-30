@@ -10,8 +10,8 @@
 	import { Button } from '$lib/ui-primitives/button';
 	import { cn } from '$lib/utils/cn';
 
-	import EditorSettingsModal from '../playground/EditorSettingsModal.svelte';
-	import { onOpenEditorSettings } from '../playground/editor-settings-modal-controller';
+	import EditorSettingsModal from '$playground/EditorSettingsModal.svelte';
+	import { onOpenEditorSettings } from '$playground/editor-settings-modal-controller';
 
 	interface Props {
 		children: Snippet;

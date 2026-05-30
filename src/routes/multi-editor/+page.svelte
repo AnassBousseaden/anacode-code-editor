@@ -1,33 +1,33 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 
-	import EditorSession from '$lib/components/EditorSession.svelte';
-	import type { IEditorConfigurationService } from '$lib/core/editor/configuration/editor-config-models';
-	import { EditorConfigurationService } from '../../playground/editor-config.svelte';
+	import {
+		EditorSession,
+		EditorSessionFactory,
+		type CreateEditorSessionError,
+		type IEditorSession,
+		type Result
+	} from '$lib';
 	import {
 		EMPTY_CONTENT_HASH,
+		FileSystemCommandFactory,
+		FileSystemLoader,
+		FileSystemService,
+		NodeType,
+		ROOT_NODE_ID,
+		ROOT_PERMISSIONS,
 		type FileSystemMapReadonly,
 		type FileSystemPath,
 		type IFileSystemEngine,
+		type IFileSystemService,
 		type NodeID,
-		NodeType,
-		type OperationError,
-		ROOT_NODE_ID,
-		ROOT_PERMISSIONS
-	} from '$lib/core/file-system/domain/file-system-models';
-	import { FileSystemLoader } from '$lib/core/file-system/loader/file-system-loader';
-	import type { IFileSystemService } from '$lib/core/file-system/services/file-system-service';
-	import { FileSystemService } from '$lib/core/file-system/services/file-system-service-impl';
-	import { FileSystemCommandFactory } from '$lib/core/file-system/services/command-factory/file-system-command-factory-impl';
-	import { FileSystemZipImporter } from '$lib/core/file-system/persistance/import/file-system-importer-impl';
-	import type {
-		CreateEditorSessionError,
-		IEditorSession
-	} from '$lib/core/session/editor-session';
-	import { EditorSessionFactory } from '$lib/core/session/editor-session-factory-impl';
-	import { EditorUserSpaceStateService } from '$lib/core/state/user-space/editor-user-space-state-impl';
-	import type { Result } from '$lib/core/shared/models-utils';
-	import { initMonacoWorkers } from '$lib/core/editor/utils/workers/code-editor-workers';
+		type OperationError
+	} from '$lib/file-system';
+	import { FileSystemZipImporter } from '$lib/persistence';
+	import { EditorUserSpaceStateService } from '$lib/state';
+	import type { IEditorConfigurationService } from '$lib/config';
+
+	import { EditorConfigurationService } from '$playground/editor-config.svelte';
 
 	const SRC_FOLDER_ID: NodeID = 1 as NodeID;
 	const SOLUTION_ID: NodeID = 2 as NodeID;
@@ -104,8 +104,6 @@
 	);
 
 	onMount(async (): Promise<void> => {
-		initMonacoWorkers();
-
 		const loadResult: Result<IFileSystemEngine, OperationError> =
 			await FileSystemLoader.load(initialState);
 		if (!loadResult.ok) {

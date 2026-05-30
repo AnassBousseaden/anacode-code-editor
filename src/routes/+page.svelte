@@ -1,26 +1,24 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 
-	import EditorSession from '$lib/components/EditorSession.svelte';
-	import type { IEditorConfigurationService } from '$lib/core/editor/configuration/editor-config-models';
-	import { EditorConfigurationService } from '../playground/editor-config.svelte';
 	import {
+		EditorSession,
+		EditorSessionFactory,
 		EMPTY_CONTENT_HASH,
-		type FileSystemMapReadonly,
-		type FileSystemPath,
-		type NodeID,
 		NodeType,
 		ROOT_NODE_ID,
-		ROOT_PERMISSIONS
-	} from '$lib/core/file-system/domain/file-system-models';
-	import type {
-		CreateEditorSessionError,
-		IEditorSession
-	} from '$lib/core/session/editor-session';
-	import { EditorSessionFactory } from '$lib/core/session/editor-session-factory-impl';
-	import { FileSystemZipImporter } from '$lib/core/file-system/persistance/import/file-system-importer-impl';
-	import type { Result } from '$lib/core/shared/models-utils';
-	import { initMonacoWorkers } from '$lib/core/editor/utils/workers/code-editor-workers';
+		ROOT_PERMISSIONS,
+		type CreateEditorSessionError,
+		type FileSystemMapReadonly,
+		type FileSystemPath,
+		type IEditorSession,
+		type NodeID,
+		type Result
+	} from '$lib';
+	import type { IEditorConfigurationService } from '$lib/config';
+	import { FileSystemZipImporter } from '$lib/persistence';
+
+	import { EditorConfigurationService } from '$playground/editor-config.svelte';
 
 	const SRC_FOLDER_ID: NodeID = 1 as NodeID;
 	const SOLUTION_ID: NodeID = 2 as NodeID;
@@ -119,8 +117,6 @@
 	);
 
 	onMount(async (): Promise<void> => {
-		initMonacoWorkers();
-
 		const result: Result<IEditorSession, CreateEditorSessionError> =
 			await sessionFactory.createFromFileSystemMap(
 				initialState,

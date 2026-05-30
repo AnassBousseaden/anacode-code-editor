@@ -3,31 +3,29 @@
 	import { asset } from '$app/paths';
 	import { CircleAlert, Download, FilePlus, LoaderCircle, Upload } from '@lucide/svelte';
 
-	import EditorSession from '$lib/components/EditorSession.svelte';
-	import type { IEditorConfigurationService } from '$lib/core/editor/configuration/editor-config-models';
-	import { EditorConfigurationService } from '../../playground/editor-config.svelte';
 	import {
+		EditorSession,
+		EditorSessionFactory,
+		ROOT_NODE_ID,
+		type CreateEditorSessionError,
 		type FileSystemMapReadonly,
+		type IEditorSession,
 		type NodeID,
-		ROOT_NODE_ID
-	} from '$lib/core/file-system/domain/file-system-models';
-	import type { ZipExportError } from '$lib/core/file-system/persistance/export/file-system-exporter';
-	import { ZipBrowserDownloadStrategy } from '$lib/core/file-system/persistance/export/file-system-export-strategy-impls';
-	import type { IFileSystemZipCoordinator } from '$lib/core/file-system/persistance/file-system-coordinator';
-	import { FileSystemZipCoordinator } from '$lib/core/file-system/persistance/file-system-coordinator-impl';
-	import type {
-		ImportedFileSystemState,
-		ZipImportError
-	} from '$lib/core/file-system/persistance/import/file-system-import';
-	import { FileSystemZipImporter } from '$lib/core/file-system/persistance/import/file-system-importer-impl';
-	import { ZipFileInputStrategy } from '$lib/core/file-system/persistance/import/file-system-importer-strategy-impls';
-	import type {
-		CreateEditorSessionError,
-		IEditorSession
-	} from '$lib/core/session/editor-session';
-	import { EditorSessionFactory } from '$lib/core/session/editor-session-factory-impl';
-	import type { Result } from '$lib/core/shared/models-utils';
-	import { initMonacoWorkers } from '$lib/core/editor/utils/workers/code-editor-workers';
+		type Result
+	} from '$lib';
+	import type { IEditorConfigurationService } from '$lib/config';
+	import {
+		FileSystemZipCoordinator,
+		FileSystemZipImporter,
+		ZipBrowserDownloadStrategy,
+		ZipFileInputStrategy,
+		type IFileSystemZipCoordinator,
+		type ImportedFileSystemState,
+		type ZipExportError,
+		type ZipImportError
+	} from '$lib/persistence';
+
+	import { EditorConfigurationService } from '$playground/editor-config.svelte';
 	import {
 		Description as AlertDescription,
 		Root as AlertRoot,
@@ -61,8 +59,6 @@
 	const sessionFactory: EditorSessionFactory = new EditorSessionFactory(
 		new FileSystemZipImporter()
 	);
-
-	initMonacoWorkers();
 
 	onDestroy((): void => {
 		if (session !== null) {

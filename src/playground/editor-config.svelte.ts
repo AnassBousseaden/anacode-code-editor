@@ -15,7 +15,7 @@ import {
 	type EditorModelConfiguration,
 	type GlobalEditorConfiguration,
 	type IEditorConfigurationService
-} from '$lib/core/editor/configuration/editor-config-models';
+} from '$lib/config';
 
 import { ThemeBridge } from './application-theme-bridge.svelte';
 import { LocalStorageItem, type IPersistentStorage } from './local-storage';
