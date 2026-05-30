@@ -97,6 +97,7 @@
 						fileTreeWorkspace={session.workspace.fileTreeWorkspace}
 						selectionIntent={session.selection}
 						intentCommands={session.intent}
+						notificationPublisher={session.promptManager}
 						onCollapseSidebar={toggleSidebar}
 						{sidebarFooter}
 					/>

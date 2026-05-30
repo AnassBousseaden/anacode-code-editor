@@ -7,6 +7,7 @@
 	import FileTreeActionBar from '$lib/components/action-bar/FileTreeActionBar.svelte';
 	import FileTreeView from '$lib/components/file-tree/FileTreeView.svelte';
 	import type { IEditorIntentCommands } from '$lib/core/editor/intent/editor-intent-service';
+	import type { IEditorNotificationPublisher } from '$lib/core/editor-prompt/editor-prompt-manager';
 	import type { IFileTreeSelectionIntent } from '$lib/core/state/selection/file-tree-selection-intent';
 	import type { IEditorFileTreeWorkspaceV2 } from '$lib/core/workspace/editor-workspace-v2';
 	import type { IFileTreeActionErrorFactory } from '$lib/core/file-tree-v2/commands/file-system/file-tree-action-error-factory';
@@ -28,6 +29,7 @@
 		fileTreeWorkspace: IEditorFileTreeWorkspaceV2;
 		selectionIntent: IFileTreeSelectionIntent;
 		intentCommands: IEditorIntentCommands;
+		notificationPublisher: IEditorNotificationPublisher;
 		onCollapseSidebar: () => void;
 		sidebarFooter?: Snippet;
 	}
@@ -36,6 +38,7 @@
 		fileTreeWorkspace,
 		selectionIntent,
 		intentCommands,
+		notificationPublisher,
 		onCollapseSidebar,
 		sidebarFooter
 	}: Props = $props();
@@ -46,13 +49,15 @@
 	);
 	const actionBarViewModel: IFileTreeActionBarViewModel = new FileTreeActionBarViewModelImpl(
 		fileTreeWorkspace.commandRegistry,
-		actionDialogViewModel
+		actionDialogViewModel,
+		notificationPublisher
 	);
 	const contextMenuViewModel: IFileTreeContextMenuViewModelV2 =
 		new FileTreeContextMenuViewModelV2Impl(
 			fileTreeWorkspace.commandRegistry,
 			actionErrorFactory,
-			actionDialogViewModel
+			actionDialogViewModel,
+			notificationPublisher
 		);
 	const fileTreeViewModel: IFileTreeViewModel = new FileTreeViewModelImpl(
 		fileTreeWorkspace.fileTree,
