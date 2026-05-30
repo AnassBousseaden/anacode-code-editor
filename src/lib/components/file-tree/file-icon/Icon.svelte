@@ -1,7 +1,8 @@
 <script lang="ts" module>
+	import IconifyIcon, {addCollection} from '@iconify/svelte';
 	import collection from '@iconify-json/vscode-icons/icons.json';
 
-	const icons = collection.icons as Record<string, { body: string }>;
+	addCollection(collection);
 </script>
 
 <script lang="ts">
@@ -11,16 +12,7 @@
 		class?: string;
 	}
 
-	let { icon, size = 16, class: className = '' }: Props = $props();
-
-	// `icon` is `vscode-icons:<name>` — look up the body by the part after the colon.
-	const body: string = $derived(icons[icon.split(':').pop() ?? '']?.body ?? '');
+	let {icon, size = 16, class: className = ''}: Props = $props();
 </script>
 
-<svg
-	class={className}
-	width={size}
-	height={size}
-	viewBox="0 0 {collection.width} {collection.height}"
-	aria-hidden="true"
->{@html body}</svg>
+<IconifyIcon {icon} width={size} height={size} class={className} aria-hidden="true"/>

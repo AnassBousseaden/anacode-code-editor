@@ -19,7 +19,10 @@ export interface IIconFactory<TIconName extends string> {
 	readonly component: IconComponent;
 
 	getIconID(name: TIconName, theme: ThemeMode): string;
+
 	getThemedIconID(name: TIconName): ThemedIconID;
+
 	getAllIconNames(): ReadonlyArray<TIconName>;
+
 	hasIcon(name: string): name is TIconName;
 }
