@@ -21,6 +21,8 @@ import {
 } from '$lib/core/file-tree-v2/commands/file-system/file-tree-action';
 import type { IFileTreeActionErrorFactory } from '$lib/core/file-tree-v2/commands/file-system/file-tree-action-error-factory';
 import type { IPrimitiveCommandRegistry } from '$lib/core/file-tree-v2/commands/command-registry';
+import { NotificationPromptToneKind } from '$lib/core/editor-prompt/editor-prompt';
+import type { IEditorNotificationPublisher } from '$lib/core/editor-prompt/editor-prompt-manager';
 import type { Result } from '$lib/core/shared/models-utils';
 import {
 	type ActionDialogRequestInput,
@@ -98,15 +100,18 @@ export class FileTreeContextMenuViewModelV2Impl implements IFileTreeContextMenuV
 	private readonly primitiveRegistry: IPrimitiveCommandRegistry;
 	private readonly errorFactory: IFileTreeActionErrorFactory;
 	private readonly requestController: IActionDialogRequestController;
+	private readonly notificationPublisher: IEditorNotificationPublisher;
 
 	constructor(
 		primitiveRegistry: IPrimitiveCommandRegistry,
 		errorFactory: IFileTreeActionErrorFactory,
-		requestController: IActionDialogRequestController
+		requestController: IActionDialogRequestController,
+		notificationPublisher: IEditorNotificationPublisher
 	) {
 		this.primitiveRegistry = primitiveRegistry;
 		this.errorFactory = errorFactory;
 		this.requestController = requestController;
+		this.notificationPublisher = notificationPublisher;
 	}
 
 	public capabilitiesFor(target: FileTreeContextTarget): FileTreeContextMenuCapabilities {
@@ -228,7 +233,7 @@ export class FileTreeContextMenuViewModelV2Impl implements IFileTreeContextMenuV
 		const action: IFileTreeAction<CopyPathActionResult> = this.primitiveRegistry.getPrimitive(
 			FileTreeActionID.COPY_PATH
 		);
-		const availability: FileTreeContextMenuActionAvailability<CopyPathActionResult> =
+		const availability: FileTreeContextMenuActionAvailability =
 			this.buildCopyPathAvailability(action, targetNodeID);
 
 		const actionItem: CopyPathContextMenuActionItem = {
@@ -244,7 +249,7 @@ export class FileTreeContextMenuViewModelV2Impl implements IFileTreeContextMenuV
 	private buildCopyPathAvailability(
 		action: IFileTreeAction<CopyPathActionResult>,
 		targetNodeID: NodeID | null
-	): FileTreeContextMenuActionAvailability<CopyPathActionResult> {
+	): FileTreeContextMenuActionAvailability {
 		const commandContext: FileTreeCommandContext = this.buildSelectionContext(targetNodeID);
 		const commandAvailability: CommandFileTreeActionAvailability =
 			action.getAvailability(commandContext);
@@ -255,13 +260,26 @@ export class FileTreeContextMenuViewModelV2Impl implements IFileTreeContextMenuV
 			return unavailable;
 		}
 
-		const available: DeliverAvailableFileTreeContextMenuAction<CopyPathActionResult> = {
+		const available: DeliverAvailableFileTreeContextMenuAction = {
 			kind: FileTreeContextMenuActionAvailabilityKind.AVAILABLE,
 			availableKind: AvailableFileTreeContextMenuActionKind.DELIVER,
-			deliver: async (): Promise<Result<CopyPathActionResult, FileTreeActionError>> => {
+			deliver: async (): Promise<void> => {
 				const result: Result<CopyPathActionResult, FileTreeActionError> =
 					await action.perform(commandContext);
-				return result;
+				if (!result.ok) {
+					this.notificationPublisher.publish({
+						tone: NotificationPromptToneKind.ERROR,
+						title: 'Copy failed',
+						content: result.error.message
+					});
+					return;
+				}
+				await navigator.clipboard.writeText(result.value.copiedPath);
+				this.notificationPublisher.publish({
+					tone: NotificationPromptToneKind.INFO,
+					title: 'Path copied',
+					content: result.value.copiedPath
+				});
 			}
 		};
 		return available;
@@ -382,10 +400,16 @@ export class FileTreeContextMenuViewModelV2Impl implements IFileTreeContextMenuV
 		const availability: PerformAvailableFileTreeContextMenuAction = {
 			kind: FileTreeContextMenuActionAvailabilityKind.AVAILABLE,
 			availableKind: AvailableFileTreeContextMenuActionKind.PERFORM,
-			perform: (): Result<void, FileTreeActionError> => {
+			perform: (): void => {
 				const result: Result<void, FileTreeActionError> =
 					this.requestController.request(requestInput);
-				return result;
+				if (!result.ok) {
+					this.notificationPublisher.publish({
+						tone: NotificationPromptToneKind.ERROR,
+						title: 'Action failed',
+						content: result.error.message
+					});
+				}
 			}
 		};
 		return availability;

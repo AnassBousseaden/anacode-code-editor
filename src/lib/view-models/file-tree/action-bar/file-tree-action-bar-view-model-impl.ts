@@ -32,7 +32,9 @@ import {
 	FileTreeUICommandID,
 	type LocateActiveFileUICommandResult
 } from '$lib/core/file-tree-v2/commands/ui/file-tree-ui-command';
-import { failure, success, type Result } from '$lib/core/shared/models-utils';
+import { NotificationPromptToneKind } from '$lib/core/editor-prompt/editor-prompt';
+import type { IEditorNotificationPublisher } from '$lib/core/editor-prompt/editor-prompt-manager';
+import type { Result } from '$lib/core/shared/models-utils';
 import {
 	type ActionDialogRequestInput,
 	ActionDialogRequestInputKind,
@@ -181,13 +183,16 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 
 	private readonly commandRegistry: ICommandRegistry;
 	private readonly requestController: IActionDialogRequestController;
+	private readonly notificationPublisher: IEditorNotificationPublisher;
 
 	constructor(
 		commandRegistry: ICommandRegistry,
-		requestController: IActionDialogRequestController
+		requestController: IActionDialogRequestController,
+		notificationPublisher: IEditorNotificationPublisher
 	) {
 		this.commandRegistry = commandRegistry;
 		this.requestController = requestController;
+		this.notificationPublisher = notificationPublisher;
 
 		const createFileBundle: IBundledInputCommand<
 			FileTreeActionID,
@@ -408,54 +413,61 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 		);
 	}
 
-	public request(input: ActionDialogRequestInput): Result<void, FileTreeActionError> {
+	public request(input: ActionDialogRequestInput): void {
 		const result: Result<void, FileTreeActionError> = this.requestController.request(input);
-		return result;
+		if (!result.ok) {
+			this.publishError('Action failed', result.error.message);
+		}
 	}
 
-	public async expandAll(): Promise<Result<void, FileTreeUICommandError>> {
+	public async expandAll(): Promise<void> {
 		const bundle: IBundledCommand<FileTreeUICommandID, void, FileTreeUICommandError> =
 			this.commandRegistry.getCommand(FileTreeUICommandID.EXPAND_NODE);
 		const result: Result<void, FileTreeUICommandError> = await bundle.perform();
-		return result;
+		if (!result.ok) {
+			this.publishError('Action failed', result.error.message);
+		}
 	}
 
-	public async collapseAll(): Promise<Result<void, FileTreeUICommandError>> {
+	public async collapseAll(): Promise<void> {
 		const bundle: IBundledCommand<FileTreeUICommandID, void, FileTreeUICommandError> =
 			this.commandRegistry.getCommand(FileTreeUICommandID.COLLAPSE_NODE);
 		const result: Result<void, FileTreeUICommandError> = await bundle.perform();
-		return result;
+		if (!result.ok) {
+			this.publishError('Action failed', result.error.message);
+		}
 	}
 
-	public async triggerSaveAll(): Promise<Result<void, FileTreeSaveCommandError>> {
+	public async triggerSaveAll(): Promise<void> {
 		const bundle: IBundledCommand<
 			FileTreeSaveCommandID,
 			SaveAllCommandResult,
 			FileTreeSaveCommandError
 		> = this.commandRegistry.getCommand(FileTreeSaveCommandID.SAVE_ALL);
-		const performResult: Result<SaveAllCommandResult, FileTreeSaveCommandError> =
-			await bundle.perform();
-		if (!performResult.ok) {
-			const result: Result<void, FileTreeSaveCommandError> = failure(performResult.error);
-			return result;
+		const result: Result<SaveAllCommandResult, FileTreeSaveCommandError> = await bundle.perform();
+		if (!result.ok) {
+			this.publishError('Save failed', result.error.message);
 		}
-		const result: Result<void, FileTreeSaveCommandError> = success<void>(undefined);
-		return result;
 	}
 
-	public async revealActiveFile(): Promise<Result<void, FileTreeUICommandError>> {
+	public async revealActiveFile(): Promise<void> {
 		const bundle: IBundledCommand<
 			FileTreeUICommandID,
 			LocateActiveFileUICommandResult,
 			FileTreeUICommandError
 		> = this.commandRegistry.getCommand(FileTreeUICommandID.LOCATE_ACTIVE_FILE);
-		const performResult: Result<LocateActiveFileUICommandResult, FileTreeUICommandError> =
+		const result: Result<LocateActiveFileUICommandResult, FileTreeUICommandError> =
 			await bundle.perform();
-		if (!performResult.ok) {
-			const result: Result<void, FileTreeUICommandError> = failure(performResult.error);
-			return result;
+		if (!result.ok) {
+			this.publishError('Action failed', result.error.message);
 		}
-		const result: Result<void, FileTreeUICommandError> = success<void>(undefined);
-		return result;
+	}
+
+	private publishError(title: string, content: string): void {
+		this.notificationPublisher.publish({
+			tone: NotificationPromptToneKind.ERROR,
+			title: title,
+			content: content
+		});
 	}
 }

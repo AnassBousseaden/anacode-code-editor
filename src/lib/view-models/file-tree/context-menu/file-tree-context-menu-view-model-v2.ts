@@ -1,10 +1,8 @@
 import type { NodeID } from '$lib/core/file-system/domain/file-system-models';
 import type {
-	CopyPathActionResult,
 	FileTreeActionDescriptor,
 	FileTreeActionError
 } from '$lib/core/file-tree-v2/commands/file-system/file-tree-action';
-import type { Result } from '$lib/core/shared/models-utils';
 
 export enum FileTreeContextMenuActionKind {
 	CREATE_FILE = 'create-file',
@@ -61,26 +59,26 @@ export enum AvailableFileTreeContextMenuActionKind {
 export interface PerformAvailableFileTreeContextMenuAction {
 	readonly kind: FileTreeContextMenuActionAvailabilityKind.AVAILABLE;
 	readonly availableKind: AvailableFileTreeContextMenuActionKind.PERFORM;
-	perform(): Result<void, FileTreeActionError>;
+	perform(): void;
 }
 
-export interface DeliverAvailableFileTreeContextMenuAction<TOutput> {
+export interface DeliverAvailableFileTreeContextMenuAction {
 	readonly kind: FileTreeContextMenuActionAvailabilityKind.AVAILABLE;
 	readonly availableKind: AvailableFileTreeContextMenuActionKind.DELIVER;
-	deliver(): Promise<Result<TOutput, FileTreeActionError>>;
+	deliver(): Promise<void>;
 }
 
-export type AvailableFileTreeContextMenuAction<TOutput = void> =
+export type AvailableFileTreeContextMenuAction =
 	| PerformAvailableFileTreeContextMenuAction
-	| DeliverAvailableFileTreeContextMenuAction<TOutput>;
+	| DeliverAvailableFileTreeContextMenuAction;
 
 export interface UnavailableFileTreeContextMenuAction {
 	readonly kind: FileTreeContextMenuActionAvailabilityKind.UNAVAILABLE;
 	readonly reason: FileTreeActionError;
 }
 
-export type FileTreeContextMenuActionAvailability<TOutput = void> =
-	| AvailableFileTreeContextMenuAction<TOutput>
+export type FileTreeContextMenuActionAvailability =
+	| AvailableFileTreeContextMenuAction
 	| UnavailableFileTreeContextMenuAction;
 
 export interface CreateFileContextMenuActionItem {
@@ -120,7 +118,7 @@ export interface CopyPathContextMenuActionItem {
 	readonly descriptor: FileTreeActionDescriptor;
 	readonly icon: FileTreeContextMenuIcon;
 	readonly accelerator: FileTreeContextMenuAccelerator;
-	readonly availability: FileTreeContextMenuActionAvailability<CopyPathActionResult>;
+	readonly availability: FileTreeContextMenuActionAvailability;
 }
 
 export type FileTreeContextMenuActionItem =

@@ -2,7 +2,6 @@
 	import { ClipboardCopy, Pen, Plus, Trash2 } from '@lucide/svelte';
 	import { mode } from 'mode-watcher';
 	import type { Snippet } from 'svelte';
-	import { toast } from 'svelte-sonner';
 
 	import {
 		ContextMenu,
@@ -22,11 +21,6 @@
 		FILE_TREE_NODE_ID_SELECTOR
 	} from '$lib/components/file-tree/file-tree-data-attributes';
 	import type { NodeID } from '$lib/core/file-system/domain/file-system-models';
-	import type {
-		CopyPathActionResult,
-		FileTreeActionError
-	} from '$lib/core/file-tree-v2/commands/file-system/file-tree-action';
-	import type { Result } from '$lib/core/shared/models-utils';
 	import {
 		AvailableFileTreeContextMenuActionKind,
 		type CopyPathContextMenuActionItem,
@@ -160,11 +154,7 @@
 		if (item.availability.availableKind !== AvailableFileTreeContextMenuActionKind.PERFORM) {
 			return;
 		}
-		const result: Result<void, FileTreeActionError> = item.availability.perform();
-		if (result.ok) {
-			return;
-		}
-		toast.error(result.error.message);
+		item.availability.perform();
 	}
 
 	async function handleCopyPath(): Promise<void> {
@@ -183,15 +173,7 @@
 		) {
 			return;
 		}
-		const deliverResult: Result<CopyPathActionResult, FileTreeActionError> =
-			await copyPathItem.availability.deliver();
-		if (!deliverResult.ok) {
-			toast.error(deliverResult.error.message);
-			return;
-		}
-		const copiedPath: string = deliverResult.value.copiedPath;
-		await navigator.clipboard.writeText(copiedPath);
-		toast.success('Path copied');
+		await copyPathItem.availability.deliver();
 	}
 
 	function handleCreateFile(): void {

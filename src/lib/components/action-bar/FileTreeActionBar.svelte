@@ -13,7 +13,6 @@
 	import { mode } from 'mode-watcher';
 	import type { Component } from 'svelte';
 	import type { Readable } from 'svelte/store';
-	import { toast } from 'svelte-sonner';
 
 	import { buttonVariants } from '$lib/ui-primitives/button';
 	import {
@@ -32,10 +31,6 @@
 	import Icon from '$lib/components/file-tree/file-icon/Icon.svelte';
 	import type { ThemeMode } from '$lib/components/file-tree/file-icon/icon-factory';
 
-	import type { FileTreeActionError } from '$lib/core/file-tree-v2/commands/file-system/file-tree-action';
-	import type { FileTreeSaveCommandError } from '$lib/core/file-tree-v2/commands/save/file-tree-save-command';
-	import type { FileTreeUICommandError } from '$lib/core/file-tree-v2/commands/ui/file-tree-ui-command';
-	import type { Result } from '$lib/core/shared/models-utils';
 	import {
 		type CollapseNodeUICommandPresentation,
 		type CreateFileActionBarPresentation,
@@ -142,13 +137,7 @@
 		if (presentation.availability.kind !== FileTreeActionAvailabilityKind.AVAILABLE) {
 			return;
 		}
-		const result: Result<void, FileTreeActionError> = viewModel.request(
-			presentation.availability.requestInput
-		);
-		if (result.ok) {
-			return;
-		}
-		toast.error(result.error.message);
+		viewModel.request(presentation.availability.requestInput);
 	}
 
 	function handleCreateFile(): void {
@@ -167,36 +156,20 @@
 		perform(deletePresentation);
 	}
 
-	async function runUICommand(
-		perform: () => Promise<Result<void, FileTreeUICommandError>>
-	): Promise<void> {
-		const result: Result<void, FileTreeUICommandError> = await perform();
-		if (result.ok) {
-			return;
-		}
-		toast.error(result.error.message);
-	}
-
 	function handleCollapseNode(): void {
-		void runUICommand((): Promise<Result<void, FileTreeUICommandError>> => viewModel.collapseAll());
+		void viewModel.collapseAll();
 	}
 
 	function handleExpandNode(): void {
-		void runUICommand((): Promise<Result<void, FileTreeUICommandError>> => viewModel.expandAll());
+		void viewModel.expandAll();
 	}
 
 	function handleLocateFile(): void {
-		void runUICommand(
-			(): Promise<Result<void, FileTreeUICommandError>> => viewModel.revealActiveFile()
-		);
+		void viewModel.revealActiveFile();
 	}
 
-	async function handleSaveAll(): Promise<void> {
-		const result: Result<void, FileTreeSaveCommandError> = await viewModel.triggerSaveAll();
-		if (result.ok) {
-			return;
-		}
-		toast.error(result.error.message);
+	function handleSaveAll(): void {
+		void viewModel.triggerSaveAll();
 	}
 </script>
 
@@ -328,9 +301,7 @@
 						className: 'size-7 rounded-md hover:bg-accent/80'
 					})}
 					disabled={!isSaveAllEnabled}
-					onclick={(): void => {
-						void handleSaveAll();
-					}}
+					onclick={handleSaveAll}
 				>
 					<SaveAll class="size-3.5 text-muted-foreground" />
 				</TooltipTrigger>

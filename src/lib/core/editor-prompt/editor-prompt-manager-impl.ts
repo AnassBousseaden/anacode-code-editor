@@ -39,7 +39,10 @@ import {
 	InvalidDocumentPromptStatusKind,
 	NotificationPromptToneKind
 } from '$lib/core/editor-prompt/editor-prompt';
-import type { IEditorPromptManager } from '$lib/core/editor-prompt/editor-prompt-manager';
+import type {
+	IEditorPromptManager,
+	NotificationRequest
+} from '$lib/core/editor-prompt/editor-prompt-manager';
 import {
 	CloseInvalidDocumentPromptMessages,
 	IntentCloseFailurePromptMessages,
@@ -127,6 +130,20 @@ export class EditorPromptManager implements IEditorPromptManager {
 			}
 		}
 		return null;
+	}
+
+	public publish(request: NotificationRequest): EditorPromptID {
+		const promptID: EditorPromptID = this.allocatePromptID();
+		const notification: NotificationPrompt = {
+			id: promptID,
+			kind: EditorPromptKind.NOTIFICATION,
+			tone: request.tone,
+			title: request.title,
+			content: request.content,
+			hidden: false
+		};
+		this.setPrompts(this.currentPrompts.concat(notification));
+		return promptID;
 	}
 
 	public respondToConflict(
@@ -245,16 +262,11 @@ export class EditorPromptManager implements IEditorPromptManager {
 
 	private appendCloseFailureNotification(errorKind: CloseIntentErrorKind): void {
 		const copy = IntentCloseFailurePromptMessages[errorKind];
-		const promptID: EditorPromptID = this.allocatePromptID();
-		const notification: NotificationPrompt = {
-			id: promptID,
-			kind: EditorPromptKind.NOTIFICATION,
+		this.publish({
 			tone: NotificationPromptToneKind.WARNING,
 			title: copy.title,
-			content: copy.content,
-			hidden: false
-		};
-		this.setPrompts(this.currentPrompts.concat(notification));
+			content: copy.content
+		});
 	}
 
 	private dispatchConflictStrategy(

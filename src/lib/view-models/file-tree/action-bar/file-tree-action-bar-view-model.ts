@@ -3,7 +3,6 @@ import type { Readable } from 'svelte/store';
 import type { FileTreeActionError } from '$lib/core/file-tree-v2/commands/file-system/file-tree-action';
 import type { FileTreeSaveCommandError } from '$lib/core/file-tree-v2/commands/save/file-tree-save-command';
 import type { FileTreeUICommandError } from '$lib/core/file-tree-v2/commands/ui/file-tree-ui-command';
-import type { Result } from '$lib/core/shared/models-utils';
 import type {
 	ActionDialogRequestInput,
 	CreateFileRequestInput,
@@ -186,19 +185,19 @@ export interface SaveAllSaveCommandPresentation {
 export type FileTreeSaveCommandPresentation = SaveAllSaveCommandPresentation;
 
 export interface IFileTreeActionBarRequestController {
-	request(input: ActionDialogRequestInput): Result<void, FileTreeActionError>;
+	request(input: ActionDialogRequestInput): void;
 }
 
 export interface IFileTreeUICommandController {
-	expandAll(): Promise<Result<void, FileTreeUICommandError>>;
+	expandAll(): Promise<void>;
 
-	collapseAll(): Promise<Result<void, FileTreeUICommandError>>;
+	collapseAll(): Promise<void>;
 
-	revealActiveFile(): Promise<Result<void, FileTreeUICommandError>>;
+	revealActiveFile(): Promise<void>;
 }
 
 export interface IFileTreeSaveCommandController {
-	triggerSaveAll(): Promise<Result<void, FileTreeSaveCommandError>>;
+	triggerSaveAll(): Promise<void>;
 }
 
 export interface IFileTreeActionBarViewModel
