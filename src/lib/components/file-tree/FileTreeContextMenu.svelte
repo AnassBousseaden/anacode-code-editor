@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { ClipboardCopy, Pen, Plus, Trash2 } from '@lucide/svelte';
-	import { mode } from 'mode-watcher';
 	import type { Snippet } from 'svelte';
 
 	import {
@@ -14,8 +13,8 @@
 		ContextMenuTrigger
 	} from '$lib/ui-primitives/context-menu/index';
 
-	import Icon from '$lib/components/file-tree/file-icon/Icon.svelte';
-	import type { ThemeMode } from '$lib/components/file-tree/file-icon/icon-factory';
+	import ThemedIcon from '$lib/components/file-tree/file-icon/ThemedIcon.svelte';
+	import type { ThemedIconID } from '$lib/components/file-tree/file-icon/icon-factory';
 	import {
 		FILE_TREE_NODE_ID_ATTRIBUTE,
 		FILE_TREE_NODE_ID_SELECTOR
@@ -48,9 +47,8 @@
 	let { viewModel, onContextTargetChange, children }: Props = $props();
 
 	const fileIconFactory: IFileIconFactory = createFileIconFactory();
-	const theme: ThemeMode = $derived(mode.current ?? 'light');
-	const fileIconID: string = $derived(fileIconFactory.getDefaultIconID(theme));
-	const folderIconID: string = $derived(fileIconFactory.getFolderIconID(false, theme));
+	const fileIconID: ThemedIconID = $derived(fileIconFactory.getThemedDefaultIconID());
+	const folderIconID: ThemedIconID = $derived(fileIconFactory.getThemedFolderIconID(false));
 
 	const EMPTY_CAPABILITIES: FileTreeContextMenuCapabilities = { actions: [] };
 
@@ -209,7 +207,7 @@
 					disabled={!isCreateFileEnabled}
 					onclick={handleCreateFile}
 				>
-					<Icon size={16} icon={fileIconID} />
+					<ThemedIcon size={16} themed={fileIconID} />
 					<span>File</span>
 				</ContextMenuItem>
 				<ContextMenuItem
@@ -217,7 +215,7 @@
 					disabled={!isCreateFolderEnabled}
 					onclick={handleCreateFolder}
 				>
-					<Icon size={16} icon={folderIconID} />
+					<ThemedIcon size={16} themed={folderIconID} />
 					<span>Folder</span>
 				</ContextMenuItem>
 			</ContextMenuSubContent>

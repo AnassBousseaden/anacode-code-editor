@@ -392,6 +392,9 @@ export interface IVSCodeFileIconFactory extends IIconFactory<VSCodeFileIconName>
 	getIconIDByFileName(fileName: string, theme: ThemeMode): string;
 	getIconNameByFileName(fileName: string): VSCodeFileIconName;
 	getFolderIconID(isOpen: boolean, theme: ThemeMode): string;
+	getThemedDefaultIconID(): ThemedIconID;
+	getThemedIconIDByFileName(fileName: string): ThemedIconID;
+	getThemedFolderIconID(isOpen: boolean): ThemedIconID;
 }
 
 export class VSCodeFileIconFactory implements IVSCodeFileIconFactory {
@@ -436,6 +439,20 @@ export class VSCodeFileIconFactory implements IVSCodeFileIconFactory {
 	getFolderIconID(isOpen: boolean, theme: ThemeMode): string {
 		const iconName: VSCodeFileIconName = isOpen ? 'folder-open' : 'folder';
 		return this.getIconID(iconName, theme);
+	}
+
+	getThemedDefaultIconID(): ThemedIconID {
+		return this.getThemedIconID(this.defaultIcon);
+	}
+
+	getThemedIconIDByFileName(fileName: string): ThemedIconID {
+		const iconName: VSCodeFileIconName = this.getIconNameByFileName(fileName);
+		return this.getThemedIconID(iconName);
+	}
+
+	getThemedFolderIconID(isOpen: boolean): ThemedIconID {
+		const iconName: VSCodeFileIconName = isOpen ? 'folder-open' : 'folder';
+		return this.getThemedIconID(iconName);
 	}
 
 	getThemedIconID(name: VSCodeFileIconName): ThemedIconID {

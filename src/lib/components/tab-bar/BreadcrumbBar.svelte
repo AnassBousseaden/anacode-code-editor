@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { mode } from 'mode-watcher';
-
-	import Icon from '$lib/components/file-tree/file-icon/Icon.svelte';
-	import type { ThemeMode } from '$lib/components/file-tree/file-icon/icon-factory';
+	import ThemedIcon from '$lib/components/file-tree/file-icon/ThemedIcon.svelte';
+	import type { ThemedIconID } from '$lib/components/file-tree/file-icon/icon-factory';
 	import {
 		type ActiveBreadcrumb,
 		ActiveBreadcrumbKind
@@ -30,11 +28,10 @@
 
 	let activeBreadcrumbReadable = $derived(viewModel.activeBreadcrumb);
 	let activeBreadcrumb: ActiveBreadcrumb = $derived($activeBreadcrumbReadable);
-	const THEME: ThemeMode = $derived(mode.current ?? 'light');
-	const folderIconID: string = $derived(fileIconFactory.getFolderIconID(false, THEME));
+	const folderIconID: ThemedIconID = $derived(fileIconFactory.getThemedFolderIconID(false));
 
-	function getFileIconID(fileName: string): string {
-		return fileIconFactory.getIconIDByFileName(fileName, THEME);
+	function getFileIconID(fileName: string): ThemedIconID {
+		return fileIconFactory.getThemedIconIDByFileName(fileName);
 	}
 </script>
 
@@ -51,9 +48,9 @@
 						class="flex items-center gap-2 rounded-md px-1.5 py-0.5 transition-colors hover:bg-muted/50"
 					>
 						{#if segment.isFile}
-							<Icon icon={getFileIconID(segment.name)} size={16} class="shrink-0 opacity-70" />
+							<ThemedIcon themed={getFileIconID(segment.name)} size={16} class="shrink-0 opacity-70" />
 						{:else}
-							<Icon icon={folderIconID} size={16} class="shrink-0 opacity-70" />
+							<ThemedIcon themed={folderIconID} size={16} class="shrink-0 opacity-70" />
 						{/if}
 						<BreadcrumbPage
 							class="max-w-36 truncate text-[13px] font-medium text-muted-foreground"

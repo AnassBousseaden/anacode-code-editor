@@ -80,7 +80,7 @@ Three routes in the [deployed demo](https://anassbousseaden.github.io/anacode-co
 
 ```sh
 # peer dependencies
-npm install svelte bits-ui @lucide/svelte mode-watcher svelte-sonner tailwindcss tw-animate-css
+npm install svelte bits-ui @lucide/svelte mode-watcher tailwindcss tw-animate-css
 ```
 
 ```svelte

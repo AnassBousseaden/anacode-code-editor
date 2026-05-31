@@ -10,7 +10,6 @@
 		SaveAll,
 		Trash2
 	} from '@lucide/svelte';
-	import { mode } from 'mode-watcher';
 	import type { Component } from 'svelte';
 	import type { Readable } from 'svelte/store';
 
@@ -28,8 +27,8 @@
 		Trigger as TooltipTrigger
 	} from '$lib/ui-primitives/tooltip/index';
 
-	import Icon from '$lib/components/file-tree/file-icon/Icon.svelte';
-	import type { ThemeMode } from '$lib/components/file-tree/file-icon/icon-factory';
+	import ThemedIcon from '$lib/components/file-tree/file-icon/ThemedIcon.svelte';
+	import type { ThemedIconID } from '$lib/components/file-tree/file-icon/icon-factory';
 
 	import {
 		type CollapseNodeUICommandPresentation,
@@ -67,9 +66,8 @@
 	};
 
 	const fileIconFactory: IFileIconFactory = createFileIconFactory();
-	const theme: ThemeMode = $derived(mode.current ?? 'light');
-	const fileIconID: string = $derived(fileIconFactory.getDefaultIconID(theme));
-	const folderIconID: string = $derived(fileIconFactory.getFolderIconID(false, theme));
+	const fileIconID: ThemedIconID = $derived(fileIconFactory.getThemedDefaultIconID());
+	const folderIconID: ThemedIconID = $derived(fileIconFactory.getThemedFolderIconID(false));
 
 	const createFileStore: Readable<CreateFileActionBarPresentation> = $derived(viewModel.createFile);
 	const createFolderStore: Readable<CreateFolderActionBarPresentation> = $derived(
@@ -247,7 +245,7 @@
 						disabled={!isCreateFileEnabled}
 						onclick={handleCreateFile}
 					>
-						<Icon size={16} icon={fileIconID} />
+						<ThemedIcon size={16} themed={fileIconID} />
 						<span>{createFile.label}</span>
 					</DropdownMenuItem>
 					<DropdownMenuItem
@@ -255,7 +253,7 @@
 						disabled={!isCreateFolderEnabled}
 						onclick={handleCreateFolder}
 					>
-						<Icon size={16} icon={folderIconID} />
+						<ThemedIcon size={16} themed={folderIconID} />
 						<span>{createFolder.label}</span>
 					</DropdownMenuItem>
 				</DropdownMenuContent>

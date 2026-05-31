@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { CircleAlert, CircleDot, Lock, X } from '@lucide/svelte';
-	import { mode } from 'mode-watcher';
 
-	import Icon from '$lib/components/file-tree/file-icon/Icon.svelte';
-	import type { ThemeMode } from '$lib/components/file-tree/file-icon/icon-factory';
+	import ThemedIcon from '$lib/components/file-tree/file-icon/ThemedIcon.svelte';
+	import type { ThemedIconID } from '$lib/components/file-tree/file-icon/icon-factory';
 	import { SaveEntryKind } from '$lib/core/editor/save/registry/draft-registry';
 	import {
 		type OpenTabSnapshot,
@@ -27,8 +26,7 @@
 
 	let isHovered = $state(false);
 
-	const THEME: ThemeMode = $derived(mode.current ?? 'light');
-	const iconID: string = $derived(fileIconFactory.getIconIDByFileName(tabEntry.name, THEME));
+	const iconID: ThemedIconID = $derived(fileIconFactory.getThemedIconIDByFileName(tabEntry.name));
 
 	function handleClick(): void {
 		viewModel.selectTab(tabEntry.nodeID);
@@ -74,7 +72,7 @@
 		onkeydown={handleKeyDown}
 		title={tabEntry.name}
 	>
-		<Icon class="shrink-0 opacity-80" size={18} icon={iconID} />
+		<ThemedIcon class="shrink-0 opacity-80" size={18} themed={iconID} />
 		<span class="max-w-32 truncate">{tabEntry.name}</span>
 		{#if tabEntry.isReadOnly}
 			<Lock class="size-3 shrink-0 text-muted-foreground/60" />

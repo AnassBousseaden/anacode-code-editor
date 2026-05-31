@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { ChevronRight, CircleDot, CircleAlert } from '@lucide/svelte';
-	import { mode } from 'mode-watcher';
 
 	import { cn } from '$lib/utils/cn';
-	import Icon from '$lib/components/file-tree/file-icon/Icon.svelte';
+	import ThemedIcon from '$lib/components/file-tree/file-icon/ThemedIcon.svelte';
 	import type { IFileIconFactory } from '$lib/view-models/file-tree/icons/file-icon-factory';
-	import type { ThemeMode } from '$lib/components/file-tree/file-icon/icon-factory';
+	import type { ThemedIconID } from '$lib/components/file-tree/file-icon/icon-factory';
 
 	import {
 		type DragStartOutcome,
@@ -28,8 +27,6 @@
 
 	let { viewModel, item, fileIconFactory }: Props = $props();
 
-	const theme: ThemeMode = $derived(mode.current ?? 'light');
-
 	const isExpanded: boolean = $derived(item.type === NodeType.FOLDER ? item.isExpanded : false);
 	const isActive: boolean = $derived(item.type === NodeType.FILE ? item.isActive : false);
 	const saveStatus: FileSaveStatus = $derived(
@@ -40,10 +37,10 @@
 		!item.isForeignUserSpace && item.node.parentID !== null && item.node.permissions.write
 	);
 
-	const nodeIconID: string = $derived(
+	const nodeIconID: ThemedIconID = $derived(
 		item.type === NodeType.FOLDER
-			? fileIconFactory.getFolderIconID(item.isExpanded, theme)
-			: fileIconFactory.getIconIDByFileName(item.node.name, theme)
+			? fileIconFactory.getThemedFolderIconID(item.isExpanded)
+			: fileIconFactory.getThemedIconIDByFileName(item.node.name)
 	);
 
 	const filenameColorClass: string = $derived(
@@ -144,10 +141,10 @@
 		<span class="size-4 shrink-0"></span>
 	{/if}
 
-	<Icon
+	<ThemedIcon
 		class={cn('shrink-0', item.isForeignUserSpace ? 'opacity-50' : 'opacity-80')}
 		size={18}
-		icon={nodeIconID}
+		themed={nodeIconID}
 	/>
 
 	<span class={cn('truncate', filenameColorClass)}>{item.node.name}</span>
