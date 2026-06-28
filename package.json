@@ -1,5 +1,5 @@
 {
-	"name": "@anacode/code-editor",
+	"name": "@anacode-editor/code-editor",
 	"version": "0.0.1",
 	"description": "A self-contained, reusable multi-file code editor built on Monaco.",
 	"license": "MIT",
