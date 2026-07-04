@@ -1,4 +1,4 @@
-import { type Readable, type Unsubscriber, type Writable, writable } from 'svelte/store';
+﻿import { type Readable, type Unsubscriber, type Writable, writable } from 'svelte/store';
 
 import type { EditorPromptAction } from '$lib/view-models/editor-prompt/editor-prompt-action';
 import {
@@ -161,7 +161,7 @@ function projectConflictItem(
 			state: ConflictPromptViewItemStateKind.FAILED,
 			id: promptID,
 			fileName: prompt.fileName,
-			errorMessageKey: status.message,
+			errorMessage: status.message,
 			retry: buildAction(promptID, { kind: ConflictPromptActionKind.RETRY }, PromptActionState.ENABLED),
 			dismiss: buildHideAction(promptID, PromptActionState.ENABLED)
 		};
@@ -215,7 +215,7 @@ function projectInvalidItem(
 			state: InvalidDocumentPromptViewItemStateKind.FAILED,
 			id: promptID,
 			fileName: prompt.fileName,
-			errorMessageKey: status.message,
+			errorMessage: status.message,
 			retry: buildAction(promptID, { kind: InvalidDocumentActionKind.RETRY_CLOSE }, PromptActionState.ENABLED),
 			dismiss: buildHideAction(promptID, PromptActionState.ENABLED)
 		};

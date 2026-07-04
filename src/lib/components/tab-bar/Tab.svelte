@@ -3,7 +3,7 @@
 
 	import ThemedIcon from '$lib/components/file-tree/file-icon/ThemedIcon.svelte';
 	import type { ThemedIconID } from '$lib/components/file-tree/file-icon/icon-factory';
-	import { formatMessage, type EditorMessages } from '$lib/core/localization/localization-models';
+	import type { EditorMessages } from '$lib/core/localization/localization-models';
 	import { getEditorMessages } from '$lib/core/localization/messages-context';
 	import { SaveEntryKind } from '$lib/core/editor/save/registry/draft-registry';
 	import {
@@ -85,25 +85,25 @@
 
 	{#if tabEntry.saveStatus.kind === TabSaveStatusKind.DIRTY}
 		{#if tabEntry.saveStatus.entryKind === SaveEntryKind.SAVEABLE}
-			<span class="ml-1 mr-2 flex shrink-0 items-center" title={messages['common.status.unsaved']}>
+			<span class="ml-1 mr-2 flex shrink-0 items-center" title={messages.commonStatusUnsaved}>
 				<CircleDot class="size-4 text-foreground" />
 			</span>
 		{:else if tabEntry.saveStatus.entryKind === SaveEntryKind.CONFLICTED}
 			<span
 				class="ml-1 mr-2 flex shrink-0 items-center"
-				title={messages['common.status.conflicted']}
+				title={messages.commonStatusConflicted}
 			>
 				<CircleAlert class="size-4 text-primary" />
 			</span>
 		{:else if tabEntry.saveStatus.entryKind === SaveEntryKind.INVALID}
-			<span class="ml-1 mr-2 flex shrink-0 items-center" title={messages['common.status.invalid']}>
+			<span class="ml-1 mr-2 flex shrink-0 items-center" title={messages.commonStatusInvalid}>
 				<CircleAlert class="size-4 text-destructive" />
 			</span>
 		{/if}
 	{/if}
 
 	<button
-		aria-label={formatMessage(messages['tab.close.ariaLabel'], { name: tabEntry.name })}
+		aria-label={messages.tabCloseAriaLabel({ name: tabEntry.name })}
 		class={cn(
 			'mr-2 flex size-5 items-center justify-center rounded-md',
 			'transition-all duration-150 ease-out',
@@ -114,7 +114,7 @@
 		onclick={handleClose}
 		onkeydown={handleCloseKeyDown}
 		tabindex={isHovered || tabEntry.isActive ? 0 : -1}
-		title={messages['common.close']}
+		title={messages.commonClose}
 	>
 		<X class="size-3.5" />
 	</button>

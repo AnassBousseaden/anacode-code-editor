@@ -1,6 +1,5 @@
 import type { DraftRevision } from '$lib/core/editor/document/savable-editor-document';
 import type { NodeID } from '$lib/core/file-system/domain/file-system-models';
-import type { EditorMessageKey } from '$lib/core/localization/localization-models';
 import type { Brand } from '$lib/core/shared/models-utils';
 
 export type EditorPromptID = Brand<number, 'EditorPromptID'>;
@@ -34,7 +33,7 @@ export interface RespondingConflictPromptStatus {
 export interface FailedConflictPromptStatus {
 	readonly kind: ConflictPromptStatusKind.FAILED;
 	readonly strategy: ConflictResolutionStrategy;
-	readonly message: EditorMessageKey;
+	readonly message: string;
 }
 
 export type ConflictPromptStatus =
@@ -72,7 +71,7 @@ export interface ClosingInvalidDocumentPromptStatus {
 
 export interface FailedInvalidDocumentPromptStatus {
 	readonly kind: InvalidDocumentPromptStatusKind.FAILED;
-	readonly message: EditorMessageKey;
+	readonly message: string;
 }
 
 export type InvalidDocumentPromptStatus =

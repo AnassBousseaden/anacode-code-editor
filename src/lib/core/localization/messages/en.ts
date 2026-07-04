@@ -1,124 +1,115 @@
-/**
- * English reference catalog — the full message key set and the fallback source.
- *
- * `en` is mandatory and complete: every {@link EditorMessageKey} lives here, and
- * missing keys in the `fr`/`es` overlays fall back to these strings. Keys are
- * flat, dot-namespaced (`<area>.<subject>.<slot>`); interpolation placeholders
- * use `{camelCase}` names matching the param object passed to `formatMessage`.
- *
- * Later phases extend this catalog as strings are extracted from components and
- * view-models. It is intentionally minimal for now.
- */
-export const en = {
-	// Common — shared words reused across screens
-	'common.cancel': 'Cancel',
-	'common.close': 'Close',
-	'common.retry': 'Retry',
+import type { EditorMessages } from '$lib/core/localization/localization-models';
 
-	// Common status — document save status, shown in tabs and the file tree
-	'common.status.unsaved': 'Unsaved',
-	'common.status.conflicted': 'Conflicted',
-	'common.status.invalid': 'Invalid',
+// English reference pack: implements the full EditorMessages contract;
+// fr/es overlays fall back here.
+export const en: EditorMessages = {
+	commonCancel: 'Cancel',
+	commonClose: 'Close',
+	commonRetry: 'Retry',
 
-	// Tab bar
-	'tab.close.ariaLabel': 'Close {name}',
+	commonStatusUnsaved: 'Unsaved',
+	commonStatusConflicted: 'Conflicted',
+	commonStatusInvalid: 'Invalid',
 
-	// File tree — context-menu commands
-	'fileTree.command.new': 'New',
-	'fileTree.command.file': 'File',
-	'fileTree.command.folder': 'Folder',
-	'fileTree.command.rename': 'Rename',
-	'fileTree.command.delete': 'Delete',
-	'fileTree.command.copyPath': 'Copy path',
+	tabCloseAriaLabel: (params: { readonly name: string }): string => `Close ${params.name}`,
 
-	// File tree — file-system action labels (action-bar tooltips, dialog titles)
-	'fileTree.action.createFile.label': 'Create File',
-	'fileTree.action.createFolder.label': 'Create Folder',
-	'fileTree.action.move.label': 'Move',
+	fileTreeCommandNew: 'New',
+	fileTreeCommandFile: 'File',
+	fileTreeCommandFolder: 'Folder',
+	fileTreeCommandRename: 'Rename',
+	fileTreeCommandDelete: 'Delete',
+	fileTreeCommandCopyPath: 'Copy path',
 
-	// File tree — UI command labels (action-bar tooltips)
-	'fileTree.uiCommand.expandNode.label': 'Expand All',
-	'fileTree.uiCommand.collapseNode.label': 'Collapse All',
-	'fileTree.uiCommand.locateActiveFile.label': 'Locate File',
+	fileTreeActionCreateFileLabel: 'Create File',
+	fileTreeActionCreateFolderLabel: 'Create Folder',
+	fileTreeActionMoveLabel: 'Move',
 
-	// File tree — save command labels (action-bar tooltips)
-	'fileTree.saveCommand.save.label': 'Save',
-	'fileTree.saveCommand.saveAll.label': 'Save All',
+	fileTreeUiCommandExpandNodeLabel: 'Expand All',
+	fileTreeUiCommandCollapseNodeLabel: 'Collapse All',
+	fileTreeUiCommandLocateActiveFileLabel: 'Locate File',
 
-	// File tree — notification titles (in-editor prompts)
-	'fileTree.notification.copyFailed': 'Copy failed',
-	'fileTree.notification.pathCopied': 'Path copied',
-	'fileTree.notification.actionFailed': 'Action failed',
-	'fileTree.notification.saveFailed': 'Save failed',
+	fileTreeSaveCommandSaveLabel: 'Save',
+	fileTreeSaveCommandSaveAllLabel: 'Save All',
 
-	// File tree — error content (notifications and dialogs; resolved from error kind)
-	'fileTree.error.actionDisabled': 'This action is not available right now.',
-	'fileTree.error.missingSelection': 'No item is selected.',
-	'fileTree.error.missingNode': 'The selected item no longer exists.',
-	'fileTree.error.missingName': 'A name is required.',
-	'fileTree.error.permissionDenied': 'You do not have permission to do that.',
-	'fileTree.error.invalidTarget': 'That is not a valid destination.',
-	'fileTree.error.fileSystem': 'A file system error occurred.',
-	'fileTree.error.nameExists': 'A file or folder named "{name}" already exists.',
-	'fileTree.error.unsavedDraft': 'This file has unsaved changes.',
-	'fileTree.error.missingActiveFile': 'No file is currently open.',
-	'fileTree.error.targetNotFolder': 'The target is not a folder.',
-	'fileTree.error.alreadyExpanded': 'The folder is already expanded.',
-	'fileTree.error.alreadyCollapsed': 'The folder is already collapsed.',
-	'fileTree.error.missingTarget': 'No save target is specified.',
-	'fileTree.error.targetNotFile': 'The target is not a file.',
-	'fileTree.error.nothingToSave': 'There is nothing to save.',
-	'fileTree.error.saveFailed': 'Could not save the file.',
+	fileTreeNotificationCopyFailed: 'Copy failed',
+	fileTreeNotificationPathCopied: 'Path copied',
+	fileTreeNotificationActionFailed: 'Action failed',
+	fileTreeNotificationSaveFailed: 'Save failed',
 
-	// Side bar
-	'sideBar.search.placeholder': 'Search',
-	'sideBar.collapse': 'Collapse Sidebar',
-	'sideBar.expand': 'Expand Sidebar',
+	fileTreeErrorActionDisabled: 'This action is not available right now.',
+	fileTreeErrorMissingSelection: 'No item is selected.',
+	fileTreeErrorMissingNode: 'The selected item no longer exists.',
+	fileTreeErrorMissingName: 'A name is required.',
+	fileTreeErrorPermissionDenied: 'You do not have permission to do that.',
+	fileTreeErrorInvalidTarget: 'That is not a valid destination.',
+	fileTreeErrorFileSystem: 'A file system error occurred.',
+	fileTreeErrorNameExists: (params: { readonly name: string }): string =>
+		`A file or folder named "${params.name}" already exists.`,
+	fileTreeErrorUnsavedDraft: 'This file has unsaved changes.',
+	fileTreeErrorMissingActiveFile: 'No file is currently open.',
+	fileTreeErrorTargetNotFolder: 'The target is not a folder.',
+	fileTreeErrorAlreadyExpanded: 'The folder is already expanded.',
+	fileTreeErrorAlreadyCollapsed: 'The folder is already collapsed.',
+	fileTreeErrorMissingTarget: 'No save target is specified.',
+	fileTreeErrorTargetNotFile: 'The target is not a file.',
+	fileTreeErrorNothingToSave: 'There is nothing to save.',
+	fileTreeErrorSaveFailed: 'Could not save the file.',
 
-	// Delete dialog
-	'dialog.delete.warning': 'This action cannot be undone.',
+	sideBarSearchPlaceholder: 'Search',
+	sideBarCollapse: 'Collapse Sidebar',
+	sideBarExpand: 'Expand Sidebar',
 
-	// Name-input dialog
-	'dialog.nameInput.nameLabel': 'Name',
-	'dialog.nameInput.placeholder': 'Enter name...',
+	dialogDeleteWarning: 'This action cannot be undone.',
 
-	// Conflict-resolution prompt
-	'prompt.conflict.title': 'File changed on disk',
-	'prompt.conflict.body': '{fileName} changed on disk since you opened it.',
-	'prompt.conflict.reload': 'Reload from disk',
-	'prompt.conflict.overwrite': 'Overwrite disk',
+	dialogNameInputNameLabel: 'Name',
+	dialogNameInputPlaceholder: 'Enter name...',
 
-	// Conflict-resolution failure messages (resolved from the resolution error kind)
-	'prompt.conflict.notFound': 'Document is no longer open.',
-	'prompt.conflict.staleRevision': 'File changed again on disk — try again.',
-	'prompt.conflict.notConflicted': 'File is no longer conflicted.',
-	'prompt.conflict.invalid': 'File no longer exists on disk.',
-	'prompt.conflict.readOnly': 'File is read-only.',
-	'prompt.conflict.writeFailed': 'Could not write to disk.',
-	'prompt.conflict.readFailed': 'Could not read from disk.',
-	'prompt.conflict.disposed': 'Document was closed.',
+	promptConflictTitle: 'File changed on disk',
+	promptConflictBody: (params: { readonly fileName: string }): string =>
+		`${params.fileName} changed on disk since you opened it.`,
+	promptConflictReload: 'Reload from disk',
+	promptConflictOverwrite: 'Overwrite disk',
 
-	// Invalid-document prompt
-	'prompt.invalidDoc.title': 'File no longer exists',
-	'prompt.invalidDoc.body': '{fileName} was removed from disk.',
-	'prompt.invalidDoc.close': 'Close file',
+	promptConflictNotFound: 'Document is no longer open.',
+	promptConflictStaleRevision: 'File changed again on disk — try again.',
+	promptConflictNotConflicted: 'File is no longer conflicted.',
+	promptConflictInvalid: 'File no longer exists on disk.',
+	promptConflictReadOnly: 'File is read-only.',
+	promptConflictWriteFailed: 'Could not write to disk.',
+	promptConflictReadFailed: 'Could not read from disk.',
+	promptConflictDisposed: 'Document was closed.',
 
-	// Invalid-document failure messages (resolved from the close error kind)
-	'prompt.invalidDoc.staleRevision': 'Document state changed — try again.',
-	'prompt.invalidDoc.notInvalid': 'Document is no longer invalid.',
-	'prompt.invalidDoc.closeFailed': 'Could not close the document.',
-	'prompt.invalidDoc.disposed': 'Editor was closed.',
+	promptInvalidDocTitle: 'File no longer exists',
+	promptInvalidDocBody: (params: { readonly fileName: string }): string =>
+		`${params.fileName} was removed from disk.`,
+	promptInvalidDocClose: 'Close file',
 
-	// Close-intent failure notification
-	'prompt.closeFailure.unsavedDraft.title': 'Unsaved changes',
-	'prompt.closeFailure.unsavedDraft.content': 'Save or discard before closing.',
+	promptInvalidDocStaleRevision: 'Document state changed — try again.',
+	promptInvalidDocNotInvalid: 'Document is no longer invalid.',
+	promptInvalidDocCloseFailed: 'Could not close the document.',
+	promptInvalidDocDisposed: 'Editor was closed.',
 
-	// Prompt notification bar
-	'prompt.notificationBar.hidden': '{count} hidden',
+	promptCloseFailureUnsavedDraftTitle: 'Unsaved changes',
+	promptCloseFailureUnsavedDraftContent: 'Save or discard before closing.',
 
-	// Breadcrumb
-	'breadcrumb.ariaLabel': 'breadcrumb',
-	'breadcrumb.more': 'More'
-} as const;
+	promptNotificationBarHidden: (params: { readonly count: number }): string =>
+		`${params.count} hidden`,
 
-export type EditorMessageKey = keyof typeof en;
+	breadcrumbAriaLabel: 'breadcrumb',
+	breadcrumbMore: 'More',
+
+	sessionErrorHydrationFailed: 'Failed to hydrate the editor session.',
+	sessionErrorFileSystemLoadFailed: (params: { readonly cause: string }): string =>
+		`Failed to load the file system: ${params.cause}`,
+	sessionErrorMonacoLoadFailed: (params: { readonly cause: string }): string =>
+		`Failed to load the Monaco runtime: ${params.cause}`,
+
+	persistenceErrorImportInvalidFormat: 'The provided data is not a valid zip archive.',
+	persistenceErrorImportReadFailed: 'Failed to read content from the archive.',
+	persistenceErrorImportStructureInvalid:
+		'The archive structure cannot be mapped to the file system.',
+	persistenceErrorExportNodeNotFound: 'A referenced item was not found in the file system.',
+	persistenceErrorExportEmptySelection: 'There is nothing to export.',
+	persistenceErrorExportCompressionFailed: 'Failed to create the zip archive.',
+	persistenceErrorExportFormattingFailed: 'Failed to format file content.'
+};

@@ -121,7 +121,7 @@
 	</DialogHeader>
 
 	<div class="space-y-2 py-2">
-		<p class="text-sm text-muted-foreground">{messages['dialog.delete.warning']}</p>
+		<p class="text-sm text-muted-foreground">{messages.dialogDeleteWarning}</p>
 
 		{#if dialogState.kind === DeleteDialogStateKind.SUBMIT_FAILED}
 			<p class="rounded-md bg-failure px-2.5 py-1.5 text-xs text-failure-foreground">
@@ -132,7 +132,7 @@
 
 	<DialogFooter class="gap-2 sm:gap-2">
 		<Button disabled={isCancelDisabled} onclick={handleCancel} variant="outline"
-			>{messages['common.cancel']}</Button
+			>{messages.commonCancel}</Button
 		>
 		<Button disabled={isConfirmDisabled} onclick={handleConfirm} variant="destructive">
 			{#if dialogState.kind === DeleteDialogStateKind.SUBMITTING}

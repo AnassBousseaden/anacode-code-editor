@@ -22,10 +22,7 @@ import type {
 import type { IFileSystemService } from '$lib/core/file-system/services/file-system-service';
 import type { IEditorLogger } from '$lib/core/shared/logger/editor-logger';
 import { EditorLogLevel } from '$lib/core/shared/logger/editor-logger';
-import type {
-	EditorMessageKey,
-	EditorMessages
-} from '$lib/core/localization/localization-models';
+import type { EditorMessages } from '$lib/core/localization/localization-models';
 import type { Result } from '$lib/core/shared/models-utils';
 import type {
 	ConflictResolutionPrompt,
@@ -47,11 +44,12 @@ import type {
 	IEditorPromptManager,
 	NotificationRequest
 } from '$lib/core/editor-prompt/editor-prompt-manager';
+import type { IntentCloseFailureCopy } from '$lib/core/editor-prompt/editor-prompt-messages';
 import {
-	CloseInvalidDocumentPromptMessages,
-	IntentCloseFailurePromptMessages,
-	OverwriteConflictPromptMessages,
-	ReloadConflictPromptMessages
+	resolveCloseInvalidDocumentFailureMessage,
+	resolveIntentCloseFailureCopy,
+	resolveOverwriteConflictFailureMessage,
+	resolveReloadConflictFailureMessage
 } from '$lib/core/editor-prompt/editor-prompt-messages';
 import type {
 	EditorIntentEvent,
@@ -268,11 +266,11 @@ export class EditorPromptManager implements IEditorPromptManager {
 	}
 
 	private appendCloseFailureNotification(errorKind: CloseIntentErrorKind): void {
-		const copy = IntentCloseFailurePromptMessages[errorKind];
+		const copy: IntentCloseFailureCopy = resolveIntentCloseFailureCopy(this.messages, errorKind);
 		this.publish({
 			tone: NotificationPromptToneKind.WARNING,
-			title: this.messages[copy.title],
-			content: this.messages[copy.content]
+			title: copy.title,
+			content: copy.content
 		});
 	}
 
@@ -356,7 +354,7 @@ export class EditorPromptManager implements IEditorPromptManager {
 			return;
 		}
 		const errorKind: OverwriteConflictErrorKind = result.error.kind;
-		const message: EditorMessageKey = OverwriteConflictPromptMessages[errorKind];
+		const message: string = resolveOverwriteConflictFailureMessage(this.messages, errorKind);
 		this.logResolutionFailure('overwrite.failed', nodeID, errorKind, result.error.message);
 		this.markConflictFailed(promptID, ConflictResolutionStrategy.OVERWRITE, message);
 	}
@@ -375,7 +373,7 @@ export class EditorPromptManager implements IEditorPromptManager {
 			return;
 		}
 		const errorKind: ReloadConflictErrorKind = result.error.kind;
-		const message: EditorMessageKey = ReloadConflictPromptMessages[errorKind];
+		const message: string = resolveReloadConflictFailureMessage(this.messages, errorKind);
 		this.logResolutionFailure('reload.failed', nodeID, errorKind, result.error.message);
 		this.markConflictFailed(promptID, ConflictResolutionStrategy.RELOAD, message);
 	}
@@ -394,7 +392,7 @@ export class EditorPromptManager implements IEditorPromptManager {
 			return;
 		}
 		const errorKind: CloseInvalidDocumentErrorKind = result.error.kind;
-		const message: EditorMessageKey = CloseInvalidDocumentPromptMessages[errorKind];
+		const message: string = resolveCloseInvalidDocumentFailureMessage(this.messages, errorKind);
 		this.logResolutionFailure('close.failed', nodeID, errorKind, result.error.message);
 		this.markInvalidFailed(promptID, message);
 	}
@@ -402,7 +400,7 @@ export class EditorPromptManager implements IEditorPromptManager {
 	private markConflictFailed(
 		promptID: EditorPromptID,
 		strategy: ConflictResolutionStrategy,
-		message: EditorMessageKey
+		message: string
 	): void {
 		this.updateConflictPrompt(
 			promptID,
@@ -419,7 +417,7 @@ export class EditorPromptManager implements IEditorPromptManager {
 		);
 	}
 
-	private markInvalidFailed(promptID: EditorPromptID, message: EditorMessageKey): void {
+	private markInvalidFailed(promptID: EditorPromptID, message: string): void {
 		this.updateInvalidPrompt(
 			promptID,
 			(existing: InvalidDocumentPrompt): InvalidDocumentPrompt => {

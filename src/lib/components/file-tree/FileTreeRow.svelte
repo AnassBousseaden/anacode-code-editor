@@ -155,18 +155,18 @@
 
 	{#if item.type === NodeType.FILE}
 		{#if saveStatus === FileSaveStatus.SAVEABLE}
-			<span class="ml-auto mr-2 flex shrink-0 items-center" title={messages['common.status.unsaved']}>
+			<span class="ml-auto mr-2 flex shrink-0 items-center" title={messages.commonStatusUnsaved}>
 				<CircleDot class="size-4 text-foreground" />
 			</span>
 		{:else if saveStatus === FileSaveStatus.CONFLICTED}
 			<span
 				class="ml-auto mr-2 flex shrink-0 items-center"
-				title={messages['common.status.conflicted']}
+				title={messages.commonStatusConflicted}
 			>
 				<CircleAlert class="size-4 text-primary" />
 			</span>
 		{:else if saveStatus === FileSaveStatus.INVALID}
-			<span class="ml-auto mr-2 flex shrink-0 items-center" title={messages['common.status.invalid']}>
+			<span class="ml-auto mr-2 flex shrink-0 items-center" title={messages.commonStatusInvalid}>
 				<CircleAlert class="size-4 text-destructive" />
 			</span>
 		{/if}

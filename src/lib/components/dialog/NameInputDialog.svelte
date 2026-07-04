@@ -282,7 +282,7 @@
 
 	<div class="space-y-2 py-2">
 		<Label class="text-sm font-medium" for="name-input-dialog-input"
-			>{messages['dialog.nameInput.nameLabel']}</Label
+			>{messages.dialogNameInputNameLabel}</Label
 		>
 		<Input
 			bind:ref={inputElement}
@@ -291,7 +291,7 @@
 			id="name-input-dialog-input"
 			oninput={handleInput}
 			onkeydown={handleKeyDown}
-			placeholder={messages['dialog.nameInput.placeholder']}
+			placeholder={messages.dialogNameInputPlaceholder}
 			value={dialogState.name}
 		/>
 
@@ -308,7 +308,7 @@
 
 	<DialogFooter class="gap-2 sm:gap-2">
 		<Button disabled={isCancelDisabled} onclick={handleCancel} variant="outline"
-			>{messages['common.cancel']}</Button
+			>{messages.commonCancel}</Button
 		>
 		<Button disabled={isSubmitDisabled} onclick={handleSubmit}>
 			{#if dialogState.kind === NameInputDialogStateKind.SUBMITTING}

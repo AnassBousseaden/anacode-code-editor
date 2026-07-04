@@ -7,7 +7,7 @@
 	import { ModeWatcher, toggleMode } from 'mode-watcher';
 	import type { Snippet } from 'svelte';
 
-	import type { EditorLocale } from '$lib';
+	import { EditorLocale } from '$lib';
 	import { Button, buttonVariants } from '$lib/ui-primitives/button';
 	import {
 		Content as DropdownMenuContent,
@@ -33,9 +33,9 @@
 	}
 
 	const LOCALE_OPTIONS: readonly LocaleOption[] = [
-		{ value: 'en', label: 'English' },
-		{ value: 'fr', label: 'Français' },
-		{ value: 'es', label: 'Español' }
+		{ value: EditorLocale.EN, label: 'English' },
+		{ value: EditorLocale.FR, label: 'Français' },
+		{ value: EditorLocale.ES, label: 'Español' }
 	];
 
 	// Read once: setDemoLocale() reloads the page, so the active locale never

@@ -23,5 +23,5 @@
 	{...restProps}
 >
 	<MoreHorizontalIcon />
-	<span class="sr-only">{messages['breadcrumb.more']}</span>
+	<span class="sr-only">{messages.breadcrumbMore}</span>
 </span>

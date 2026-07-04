@@ -101,7 +101,7 @@
 		<input
 			class="h-6 w-full bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none"
 			oninput={handleSearchInput}
-			placeholder={messages['sideBar.search.placeholder']}
+			placeholder={messages.sideBarSearchPlaceholder}
 			type="text"
 			value={searchQuery}
 		/>

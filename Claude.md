@@ -414,16 +414,23 @@ return success with a value that says so, such as `success(false)`.
 ## Localization
 
 No user-facing string shall be hardcoded. Every string a user can see — labels,
-tooltips, notification titles, error content — lives in the message catalogs
-(`core/localization/messages/en.ts` is the complete reference; `fr`/`es` are
-overlays) under a flat, dot-namespaced key, and is resolved at the presentation
-edge through `EditorMessages` (`resolveLabel`, `resolveErrorContent`,
-`formatMessage`).
+tooltips, notification titles, error content — is a typed member of the
+`EditorMessages` interface (`core/localization/localization-models.ts`): plain
+`string` for static text, a function with typed params for interpolated text
+(`tabCloseAriaLabel(params: { name: string }): string`). `en` implements the
+full interface, so a missing message is a compile error; `fr`/`es` are
+`Partial` overlays that fall back to English. One frozen record is resolved
+per session by the factory and read by components via context.
 
-The reason is that a hardcoded string is invisible debt: it renders fine in
-English and silently breaks every other locale. Domain errors should carry a
-typed `kind` and params; the localized sentence is produced from the catalog at
-the edge, not baked into the error where no locale can reach it.
+This is the standard component-library pattern (Ant Design/MUI-style typed
+locale packs), not an app-level i18n framework. Message identifiers are
+symbols, never string keys: go-to-definition lands on the member,
+find-references crosses the boundary, params are compile-checked.
+
+Errors never carry rendered copy or message identifiers. A domain error
+carries a typed `kind` (plus raw values); the presentation edge maps kind to
+message with an exhaustive `switch` returning `messages.xxx(...)`. Adding an
+enum member breaks the switch at compile time.
 
 Some existing strings predate this rule and still need extraction. Do not add
 new ones.
@@ -471,6 +478,21 @@ Model multi-state values as discriminated unions with a `kind` enum, where each
 variant carries only the data that exists in that state. `Loadable<T, E>` in
 `view-models/shared/ui-models.ts` is the template. The same reasoning as the
 no-throw policy applies: the shape should convey the whole contract.
+
+Identifiers that connect two pieces of code must be symbols, not strings. A
+string key linking a lookup table to a catalog, an event to a handler, or a
+kind to a template is a hidden contract: go-to-definition goes nowhere,
+find-references cannot cross it, and nothing forces the other side to exist or
+be consumed. Compile-time key safety (`keyof` unions) is not enough —
+navigation and discoverability are part of the contract. Use typed members and
+exhaustive `switch` statements over enums instead of string-keyed indirection.
+
+When a problem is a solved problem — localization, caching, async state,
+virtualized rendering — do not design a bespoke mechanism. Find how
+established libraries in the same position solve it and adopt that shape. For
+this package the peers are other component libraries (Ant Design locale packs,
+MUI, date-fns), not applications. Cleverness in a solved problem space trades
+away familiarity and predictability for nothing.
 
 Use `$lib/` absolute imports for package code. Avoid relative imports across
 package boundaries because they make dependency direction harder to see.

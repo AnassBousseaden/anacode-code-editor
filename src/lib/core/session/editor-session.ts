@@ -41,13 +41,6 @@ export enum CreateEditorSessionErrorKind {
 
 export type CreateEditorSessionError = OperationFailure<CreateEditorSessionErrorKind>;
 
-export const CreateEditorSessionErrorMessages: Readonly<
-	Record<CreateEditorSessionErrorKind, string>
-> = {
-	[CreateEditorSessionErrorKind.HYDRATION_FAILED]: 'Failed to hydrate the editor session.',
-	[CreateEditorSessionErrorKind.FILE_SYSTEM_LOAD_FAILED]: 'Failed to load the file system.',
-	[CreateEditorSessionErrorKind.MONACO_LOAD_FAILED]: 'Failed to load the Monaco runtime.'
-};
 
 export type CreateEditorSessionFromZipError = CreateEditorSessionError | ZipImportError;
 

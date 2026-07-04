@@ -10,7 +10,7 @@
 		CardTitle
 	} from '$lib/ui-primitives/card';
 
-	import { formatMessage, type EditorMessages } from '$lib/core/localization/localization-models';
+	import type { EditorMessages } from '$lib/core/localization/localization-models';
 	import { getEditorMessages } from '$lib/core/localization/messages-context';
 	import type { IEditorPromptStackViewModel } from '$lib/view-models/editor-prompt/editor-prompt-stack-view-model';
 	import type {
@@ -40,13 +40,13 @@
 	<CardHeader class="px-2.5">
 		<CardTitle class="flex items-center gap-2 text-xs">
 			<MessageCircleWarning class="size-5 text-muted-foreground" />
-			{messages['prompt.conflict.title']}
+			{messages.promptConflictTitle}
 		</CardTitle>
 	</CardHeader>
 	<CardContent class="px-2.5 text-xs text-muted-foreground">
-		<p>{formatMessage(messages['prompt.conflict.body'], { fileName: item.fileName })}</p>
+		<p>{messages.promptConflictBody({ fileName: item.fileName })}</p>
 		{#if item.state === ConflictPromptViewItemStateKind.FAILED}
-			<p class="mt-1 text-destructive">{messages[item.errorMessageKey]}</p>
+			<p class="mt-1 text-destructive">{item.errorMessage}</p>
 		{/if}
 	</CardContent>
 	<CardFooter class="gap-1.5 px-2.5">
@@ -60,7 +60,7 @@
 				{#if item.retry.state === PromptActionState.LOADING}
 					<LoaderCircle class="animate-spin" />
 				{/if}
-				{messages['common.retry']}
+				{messages.commonRetry}
 			</Button>
 		{:else}
 			<Button
@@ -73,7 +73,7 @@
 				{#if item.reload.state === PromptActionState.LOADING}
 					<LoaderCircle class="animate-spin" />
 				{/if}
-				{messages['prompt.conflict.reload']}
+				{messages.promptConflictReload}
 			</Button>
 			<Button
 				size="xs"
@@ -84,7 +84,7 @@
 				{#if item.overwrite.state === PromptActionState.LOADING}
 					<LoaderCircle class="animate-spin" />
 				{/if}
-				{messages['prompt.conflict.overwrite']}
+				{messages.promptConflictOverwrite}
 			</Button>
 		{/if}
 		<Button

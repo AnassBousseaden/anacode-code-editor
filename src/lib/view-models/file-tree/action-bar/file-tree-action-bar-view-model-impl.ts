@@ -460,7 +460,7 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 		const result: Result<void, FileTreeActionError> = this.requestController.request(input);
 		if (!result.ok) {
 			this.publishError(
-				this.messages['fileTree.notification.actionFailed'],
+				this.messages.fileTreeNotificationActionFailed,
 				resolveFileTreeActionErrorContent(this.messages, result.error)
 			);
 		}
@@ -472,7 +472,7 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 		const result: Result<void, FileTreeUICommandError> = await bundle.perform();
 		if (!result.ok) {
 			this.publishError(
-				this.messages['fileTree.notification.actionFailed'],
+				this.messages.fileTreeNotificationActionFailed,
 				resolveFileTreeUICommandErrorContent(this.messages, result.error)
 			);
 		}
@@ -484,7 +484,7 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 		const result: Result<void, FileTreeUICommandError> = await bundle.perform();
 		if (!result.ok) {
 			this.publishError(
-				this.messages['fileTree.notification.actionFailed'],
+				this.messages.fileTreeNotificationActionFailed,
 				resolveFileTreeUICommandErrorContent(this.messages, result.error)
 			);
 		}
@@ -499,7 +499,7 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 		const result: Result<SaveAllCommandResult, FileTreeSaveCommandError> = await bundle.perform();
 		if (!result.ok) {
 			this.publishError(
-				this.messages['fileTree.notification.saveFailed'],
+				this.messages.fileTreeNotificationSaveFailed,
 				resolveFileTreeSaveCommandErrorContent(this.messages, result.error)
 			);
 		}
@@ -515,7 +515,7 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 			await bundle.perform();
 		if (!result.ok) {
 			this.publishError(
-				this.messages['fileTree.notification.actionFailed'],
+				this.messages.fileTreeNotificationActionFailed,
 				resolveFileTreeUICommandErrorContent(this.messages, result.error)
 			);
 		}

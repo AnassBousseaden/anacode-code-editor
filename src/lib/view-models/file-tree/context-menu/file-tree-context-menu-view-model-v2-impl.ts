@@ -274,7 +274,7 @@ export class FileTreeContextMenuViewModelV2Impl implements IFileTreeContextMenuV
 				if (!result.ok) {
 					this.notificationPublisher.publish({
 						tone: NotificationPromptToneKind.ERROR,
-						title: this.messages['fileTree.notification.copyFailed'],
+						title: this.messages.fileTreeNotificationCopyFailed,
 						content: resolveFileTreeActionErrorContent(this.messages, result.error)
 					});
 					return;
@@ -282,7 +282,7 @@ export class FileTreeContextMenuViewModelV2Impl implements IFileTreeContextMenuV
 				await navigator.clipboard.writeText(result.value.copiedPath);
 				this.notificationPublisher.publish({
 					tone: NotificationPromptToneKind.INFO,
-					title: this.messages['fileTree.notification.pathCopied'],
+					title: this.messages.fileTreeNotificationPathCopied,
 					content: result.value.copiedPath
 				});
 			}
@@ -411,7 +411,7 @@ export class FileTreeContextMenuViewModelV2Impl implements IFileTreeContextMenuV
 				if (!result.ok) {
 					this.notificationPublisher.publish({
 						tone: NotificationPromptToneKind.ERROR,
-						title: this.messages['fileTree.notification.actionFailed'],
+						title: this.messages.fileTreeNotificationActionFailed,
 						content: resolveFileTreeActionErrorContent(this.messages, result.error)
 					});
 				}

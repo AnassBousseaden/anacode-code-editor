@@ -1,92 +1,171 @@
-import { en, type EditorMessageKey } from '$lib/core/localization/messages/en';
-import { fr } from '$lib/core/localization/messages/fr';
-import { es } from '$lib/core/localization/messages/es';
+import {en} from '$lib/core/localization/messages/en';
+import {fr} from '$lib/core/localization/messages/fr';
+import {es} from '$lib/core/localization/messages/es';
 
-export type { EditorMessageKey };
-
-/** Locales shipped with the editor. Only `en` is complete; the rest are overlays. */
-export type EditorLocale = 'en' | 'fr' | 'es';
-
-/** Runtime values substituted into `{token}` placeholders by {@link formatMessage}. */
-export type MessageParams = Readonly<Record<string, string | number>>;
+export enum EditorLocale {
+	EN = 'en',
+	FR = 'fr',
+	ES = 'es'
+}
 
 /**
- * A partial catalog: an overlay (locale or consumer override) that need only
- * carry the keys it changes. Missing keys fall back to English.
+ * Every user-facing string in the editor, as a typed member: plain `string`
+ * for static text, a function with typed params for interpolated text.
  */
-export type EditorMessageCatalog = Readonly<Partial<Record<EditorMessageKey, string>>>;
+export interface EditorMessages {
+	// Common — shared words reused across screens
+	readonly commonCancel: string;
+	readonly commonClose: string;
+	readonly commonRetry: string;
 
-/** A fully-resolved, frozen message record — every key present, ready to render. */
-export type EditorMessages = Readonly<Record<EditorMessageKey, string>>;
+	// Common status — document save status, shown in tabs and the file tree
+	readonly commonStatusUnsaved: string;
+	readonly commonStatusConflicted: string;
+	readonly commonStatusInvalid: string;
 
-/**
- * Consumer-facing localization configuration, passed to the session factory.
- *
- * Both fields are optional: omit everything for English. `overrides` win over
- * the selected `locale`, which wins over English.
- */
+	// Tab bar
+	tabCloseAriaLabel(params: { readonly name: string }): string;
+
+	// File tree — context-menu commands
+	readonly fileTreeCommandNew: string;
+	readonly fileTreeCommandFile: string;
+	readonly fileTreeCommandFolder: string;
+	readonly fileTreeCommandRename: string;
+	readonly fileTreeCommandDelete: string;
+	readonly fileTreeCommandCopyPath: string;
+
+	// File tree — file-system action labels (action-bar tooltips, dialog titles)
+	readonly fileTreeActionCreateFileLabel: string;
+	readonly fileTreeActionCreateFolderLabel: string;
+	readonly fileTreeActionMoveLabel: string;
+
+	// File tree — UI command labels (action-bar tooltips)
+	readonly fileTreeUiCommandExpandNodeLabel: string;
+	readonly fileTreeUiCommandCollapseNodeLabel: string;
+	readonly fileTreeUiCommandLocateActiveFileLabel: string;
+
+	// File tree — save command labels (action-bar tooltips)
+	readonly fileTreeSaveCommandSaveLabel: string;
+	readonly fileTreeSaveCommandSaveAllLabel: string;
+
+	// File tree — notification titles (in-editor prompts)
+	readonly fileTreeNotificationCopyFailed: string;
+	readonly fileTreeNotificationPathCopied: string;
+	readonly fileTreeNotificationActionFailed: string;
+	readonly fileTreeNotificationSaveFailed: string;
+
+	// File tree — error content (notifications and dialogs)
+	readonly fileTreeErrorActionDisabled: string;
+	readonly fileTreeErrorMissingSelection: string;
+	readonly fileTreeErrorMissingNode: string;
+	readonly fileTreeErrorMissingName: string;
+	readonly fileTreeErrorPermissionDenied: string;
+	readonly fileTreeErrorInvalidTarget: string;
+	readonly fileTreeErrorFileSystem: string;
+
+	fileTreeErrorNameExists(params: { readonly name: string }): string;
+
+	readonly fileTreeErrorUnsavedDraft: string;
+	readonly fileTreeErrorMissingActiveFile: string;
+	readonly fileTreeErrorTargetNotFolder: string;
+	readonly fileTreeErrorAlreadyExpanded: string;
+	readonly fileTreeErrorAlreadyCollapsed: string;
+	readonly fileTreeErrorMissingTarget: string;
+	readonly fileTreeErrorTargetNotFile: string;
+	readonly fileTreeErrorNothingToSave: string;
+	readonly fileTreeErrorSaveFailed: string;
+
+	// Side bar
+	readonly sideBarSearchPlaceholder: string;
+	readonly sideBarCollapse: string;
+	readonly sideBarExpand: string;
+
+	// Delete dialog
+	readonly dialogDeleteWarning: string;
+
+	// Name-input dialog
+	readonly dialogNameInputNameLabel: string;
+	readonly dialogNameInputPlaceholder: string;
+
+	// Conflict-resolution prompt
+	readonly promptConflictTitle: string;
+
+	promptConflictBody(params: { readonly fileName: string }): string;
+
+	readonly promptConflictReload: string;
+	readonly promptConflictOverwrite: string;
+
+	// Conflict-resolution failure messages
+	readonly promptConflictNotFound: string;
+	readonly promptConflictStaleRevision: string;
+	readonly promptConflictNotConflicted: string;
+	readonly promptConflictInvalid: string;
+	readonly promptConflictReadOnly: string;
+	readonly promptConflictWriteFailed: string;
+	readonly promptConflictReadFailed: string;
+	readonly promptConflictDisposed: string;
+
+	// Invalid-document prompt
+	readonly promptInvalidDocTitle: string;
+
+	promptInvalidDocBody(params: { readonly fileName: string }): string;
+
+	readonly promptInvalidDocClose: string;
+
+	// Invalid-document failure messages
+	readonly promptInvalidDocStaleRevision: string;
+	readonly promptInvalidDocNotInvalid: string;
+	readonly promptInvalidDocCloseFailed: string;
+	readonly promptInvalidDocDisposed: string;
+
+	// Close-intent failure notification
+	readonly promptCloseFailureUnsavedDraftTitle: string;
+	readonly promptCloseFailureUnsavedDraftContent: string;
+
+	// Prompt notification bar
+	promptNotificationBarHidden(params: { readonly count: number }): string;
+
+	// Breadcrumb
+	readonly breadcrumbAriaLabel: string;
+	readonly breadcrumbMore: string;
+
+	// Session creation failures
+	readonly sessionErrorHydrationFailed: string;
+
+	sessionErrorFileSystemLoadFailed(params: { readonly cause: string }): string;
+
+	sessionErrorMonacoLoadFailed(params: { readonly cause: string }): string;
+
+	// Zip import/export failures
+	readonly persistenceErrorImportInvalidFormat: string;
+	readonly persistenceErrorImportReadFailed: string;
+	readonly persistenceErrorImportStructureInvalid: string;
+	readonly persistenceErrorExportNodeNotFound: string;
+	readonly persistenceErrorExportEmptySelection: string;
+	readonly persistenceErrorExportCompressionFailed: string;
+	readonly persistenceErrorExportFormattingFailed: string;
+}
+
+export type EditorMessageCatalog = Partial<EditorMessages>;
+
 export interface EditorLocalizationOptions {
 	readonly locale?: EditorLocale;
 	readonly overrides?: EditorMessageCatalog;
 }
 
-const LOCALE_CATALOGS: Readonly<Record<Exclude<EditorLocale, 'en'>, EditorMessageCatalog>> = {
-	fr,
-	es
+const LOCALE_CATALOGS: Readonly<
+	Record<Exclude<EditorLocale, EditorLocale.EN>, EditorMessageCatalog>
+> = {
+	[EditorLocale.FR]: fr,
+	[EditorLocale.ES]: es
 };
 
-/**
- * Resolve the final message record once, at session creation.
- *
- * Precedence (highest last): English base → selected locale overlay →
- * consumer overrides. The result is frozen and never mutated afterwards.
- */
+// Precedence, highest last: English base → locale overlay → consumer overrides.
 export function resolveEditorMessages(options?: EditorLocalizationOptions): EditorMessages {
 	const localeCatalog: EditorMessageCatalog =
-		options?.locale && options.locale !== 'en' ? LOCALE_CATALOGS[options.locale] : {};
+		options?.locale !== undefined && options.locale !== EditorLocale.EN
+			? LOCALE_CATALOGS[options.locale]
+			: {};
 	const overrides: EditorMessageCatalog = options?.overrides ?? {};
-	return Object.freeze({ ...en, ...localeCatalog, ...overrides });
-}
-
-/**
- * Resolve a presentation-edge label: map a domain id to its message key, then
- * to the localized string. Generic over the id union so every command family
- * shares one implementation.
- */
-export function resolveLabel<TId extends string>(
-	labelKeys: Readonly<Record<TId, EditorMessageKey>>,
-	messages: EditorMessages,
-	id: TId
-): string {
-	return messages[labelKeys[id]];
-}
-
-/**
- * Resolve a presentation-edge error content string: map an error kind to its
- * message key, then interpolate the error's params into the localized template.
- * Generic over the kind union so every command family shares one implementation.
- */
-export function resolveErrorContent<TKind extends string>(
-	errorKeys: Readonly<Record<TKind, EditorMessageKey>>,
-	messages: EditorMessages,
-	error: { readonly kind: TKind; readonly params?: MessageParams }
-): string {
-	return formatMessage(messages[errorKeys[error.kind]], error.params);
-}
-
-/**
- * Substitute `{token}` placeholders in `template` with values from `params`.
- *
- * Pure and locale-unaware: `String(value)` is used for each match. Unknown
- * tokens (no matching param key) are left intact. With no params the template
- * is returned unchanged.
- */
-export function formatMessage(template: string, params?: MessageParams): string {
-	if (!params) {
-		return template;
-	}
-	return template.replace(/\{(\w+)\}/g, (match: string, token: string): string => {
-		const value: string | number | undefined = params[token];
-		return value === undefined ? match : String(value);
-	});
+	return Object.freeze({...en, ...localeCatalog, ...overrides});
 }

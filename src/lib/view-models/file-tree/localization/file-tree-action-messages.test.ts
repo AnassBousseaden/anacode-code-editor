@@ -11,7 +11,6 @@ import {
 	type FileTreeActionError
 } from '$lib/core/file-tree-v2/commands/file-system/file-tree-action';
 import {
-	FILE_TREE_ACTION_LABEL_KEYS,
 	resolveFileTreeActionErrorContent,
 	resolveFileTreeActionLabel
 } from '$lib/view-models/file-tree/localization/file-tree-action-messages';
@@ -19,9 +18,8 @@ import {
 const messages: EditorMessages = resolveEditorMessages();
 
 describe('resolveFileTreeActionLabel', () => {
-	it('maps every action id to a defined catalog string', () => {
+	it('maps every action id to a non-empty localized label', () => {
 		for (const id of Object.values(FileTreeActionID)) {
-			expect(FILE_TREE_ACTION_LABEL_KEYS[id]).toBeDefined();
 			expect(resolveFileTreeActionLabel(messages, id)).not.toBe('');
 		}
 	});

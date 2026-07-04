@@ -203,7 +203,7 @@
 		<ContextMenuSub>
 			<ContextMenuSubTrigger disabled={!isCreateEnabled} class="gap-2">
 				<Plus class="size-4 text-muted-foreground" />
-				<span>{messages['fileTree.command.new']}</span>
+				<span>{messages.fileTreeCommandNew}</span>
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent class="min-w-36">
 				<ContextMenuItem
@@ -212,7 +212,7 @@
 					onclick={handleCreateFile}
 				>
 					<ThemedIcon size={16} themed={fileIconID} />
-					<span>{messages['fileTree.command.file']}</span>
+					<span>{messages.fileTreeCommandFile}</span>
 				</ContextMenuItem>
 				<ContextMenuItem
 					class="gap-2"
@@ -220,7 +220,7 @@
 					onclick={handleCreateFolder}
 				>
 					<ThemedIcon size={16} themed={folderIconID} />
-					<span>{messages['fileTree.command.folder']}</span>
+					<span>{messages.fileTreeCommandFolder}</span>
 				</ContextMenuItem>
 			</ContextMenuSubContent>
 		</ContextMenuSub>
@@ -229,7 +229,7 @@
 
 		<ContextMenuItem class="gap-2" disabled={!isRenameEnabled} onclick={handleRename}>
 			<Pen class="size-4 text-muted-foreground" />
-			<span>{messages['fileTree.command.rename']}</span>
+			<span>{messages.fileTreeCommandRename}</span>
 		</ContextMenuItem>
 
 		<ContextMenuSeparator class="my-1" />
@@ -241,14 +241,14 @@
 			variant="destructive"
 		>
 			<Trash2 class="size-4 text-destructive" />
-			<span>{messages['fileTree.command.delete']}</span>
+			<span>{messages.fileTreeCommandDelete}</span>
 		</ContextMenuItem>
 
 		<ContextMenuSeparator class="my-1" />
 
 		<ContextMenuItem class="gap-2" disabled={!isCopyPathEnabled} onclick={handleCopyPath}>
 			<ClipboardCopy class="size-4 text-muted-foreground" />
-			<span>{messages['fileTree.command.copyPath']}</span>
+			<span>{messages.fileTreeCommandCopyPath}</span>
 		</ContextMenuItem>
 	</ContextMenuContent>
 </ContextMenu>

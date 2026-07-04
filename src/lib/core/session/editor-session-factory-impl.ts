@@ -34,10 +34,7 @@ import type {
 	IEditorSession,
 	IEditorSessionFactory
 } from '$lib/core/session/editor-session';
-import {
-	CreateEditorSessionErrorKind,
-	CreateEditorSessionErrorMessages
-} from '$lib/core/session/editor-session';
+import { CreateEditorSessionErrorKind } from '$lib/core/session/editor-session';
 import { EditorSession } from '$lib/core/session/editor-session-impl';
 
 export class EditorSessionFactory implements IEditorSessionFactory {
@@ -57,13 +54,20 @@ export class EditorSessionFactory implements IEditorSessionFactory {
 		editorConfigService: IEditorConfigurationService,
 		localization?: EditorLocalizationOptions
 	): Promise<Result<IEditorSession, CreateEditorSessionError>> {
+		const messages: EditorMessages = resolveEditorMessages(localization);
+
 		const monacoRuntimeResult: Result<IMonacoRuntime, MonacoRuntimeLoadError> =
 			await this.monacoRuntimeProvider.load(localization?.locale);
 		if (!monacoRuntimeResult.ok) {
-			return failure(this.buildMonacoLoadError(monacoRuntimeResult.error.message));
+			return failure(
+				buildCreateSessionError(
+					messages,
+					CreateEditorSessionErrorKind.MONACO_LOAD_FAILED,
+					monacoRuntimeResult.error.message
+				)
+			);
 		}
 
-		const messages: EditorMessages = resolveEditorMessages(localization);
 		const workspace: EditorWorkspaceV2 = new EditorWorkspaceV2(
 			monacoRuntimeResult.value,
 			fileSystemService,
@@ -80,10 +84,18 @@ export class EditorSessionFactory implements IEditorSessionFactory {
 		editorConfigService: IEditorConfigurationService,
 		localization?: EditorLocalizationOptions
 	): Promise<Result<IEditorSession, CreateEditorSessionError>> {
+		const messages: EditorMessages = resolveEditorMessages(localization);
+
 		const loadResult: Result<IFileSystemEngine, OperationError> =
 			await FileSystemLoader.load(fileSystemMap);
 		if (!loadResult.ok) {
-			return failure(this.buildFileSystemLoadError(loadResult.error.message));
+			return failure(
+				buildCreateSessionError(
+					messages,
+					CreateEditorSessionErrorKind.FILE_SYSTEM_LOAD_FAILED,
+					loadResult.error.message
+				)
+			);
 		}
 
 		const engine: IFileSystemEngine = loadResult.value;
@@ -96,10 +108,15 @@ export class EditorSessionFactory implements IEditorSessionFactory {
 		const monacoRuntimeResult: Result<IMonacoRuntime, MonacoRuntimeLoadError> =
 			await this.monacoRuntimeProvider.load(localization?.locale);
 		if (!monacoRuntimeResult.ok) {
-			return failure(this.buildMonacoLoadError(monacoRuntimeResult.error.message));
+			return failure(
+				buildCreateSessionError(
+					messages,
+					CreateEditorSessionErrorKind.MONACO_LOAD_FAILED,
+					monacoRuntimeResult.error.message
+				)
+			);
 		}
 
-		const messages: EditorMessages = resolveEditorMessages(localization);
 		const workspace: EditorWorkspaceV2 = new EditorWorkspaceV2(
 			monacoRuntimeResult.value,
 			fileSystemService,
@@ -131,21 +148,30 @@ export class EditorSessionFactory implements IEditorSessionFactory {
 		);
 	}
 
-	private buildFileSystemLoadError(causeMessage: string): CreateEditorSessionError {
-		const baseMessage: string =
-			CreateEditorSessionErrorMessages[CreateEditorSessionErrorKind.FILE_SYSTEM_LOAD_FAILED];
-		return {
-			kind: CreateEditorSessionErrorKind.FILE_SYSTEM_LOAD_FAILED,
-			message: `${baseMessage}: ${causeMessage}`
-		};
-	}
+}
 
-	private buildMonacoLoadError(causeMessage: string): CreateEditorSessionError {
-		const baseMessage: string =
-			CreateEditorSessionErrorMessages[CreateEditorSessionErrorKind.MONACO_LOAD_FAILED];
-		return {
-			kind: CreateEditorSessionErrorKind.MONACO_LOAD_FAILED,
-			message: `${baseMessage}: ${causeMessage}`
-		};
+function buildCreateSessionError(
+	messages: EditorMessages,
+	kind: CreateEditorSessionErrorKind,
+	causeMessage: string
+): CreateEditorSessionError {
+	return {
+		kind: kind,
+		message: resolveCreateSessionErrorMessage(messages, kind, causeMessage)
+	};
+}
+
+function resolveCreateSessionErrorMessage(
+	messages: EditorMessages,
+	kind: CreateEditorSessionErrorKind,
+	causeMessage: string
+): string {
+	switch (kind) {
+		case CreateEditorSessionErrorKind.HYDRATION_FAILED:
+			return messages.sessionErrorHydrationFailed;
+		case CreateEditorSessionErrorKind.FILE_SYSTEM_LOAD_FAILED:
+			return messages.sessionErrorFileSystemLoadFailed({ cause: causeMessage });
+		case CreateEditorSessionErrorKind.MONACO_LOAD_FAILED:
+			return messages.sessionErrorMonacoLoadFailed({ cause: causeMessage });
 	}
 }

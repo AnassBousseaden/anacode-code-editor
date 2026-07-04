@@ -29,7 +29,7 @@
 	{#if showCloseButton}
 		<DialogPrimitive.Close>
 			{#snippet child({ props })}
-				<Button variant="outline" {...props}>{messages['common.close']}</Button>
+				<Button variant="outline" {...props}>{messages.commonClose}</Button>
 			{/snippet}
 		</DialogPrimitive.Close>
 	{/if}

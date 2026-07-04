@@ -32,12 +32,11 @@ export * from '$lib/core/session/editor-session-factory-impl';
 export * from '$lib/core/editor/monaco/monaco-runtime';
 export * from '$lib/core/editor/monaco/monaco-runtime-provider-impl';
 
-// Localization configuration types needed to localize the drop-in session.
+// Localization configuration needed to localize the drop-in session.
+export { EditorLocale } from '$lib/core/localization/localization-models';
 export type {
-	EditorLocale,
 	EditorLocalizationOptions,
 	EditorMessageCatalog,
-	EditorMessageKey,
 	EditorMessages
 } from '$lib/core/localization/localization-models';
 

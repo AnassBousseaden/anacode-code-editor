@@ -241,7 +241,7 @@
 							<Plus class="size-3.5 text-muted-foreground" />
 						</DropdownMenuTrigger>
 					</TooltipTrigger>
-					<TooltipContent side="bottom">{messages['fileTree.command.new']}</TooltipContent>
+					<TooltipContent side="bottom">{messages.fileTreeCommandNew}</TooltipContent>
 				</TooltipRoot>
 				<DropdownMenuContent align="start" class="min-w-36">
 					<DropdownMenuItem
@@ -322,7 +322,7 @@
 			>
 				<PanelLeftClose class="size-3.5 text-muted-foreground" />
 			</TooltipTrigger>
-			<TooltipContent side="bottom">{messages['sideBar.collapse']}</TooltipContent>
+			<TooltipContent side="bottom">{messages.sideBarCollapse}</TooltipContent>
 		</TooltipRoot>
 	</div>
 </TooltipProvider>

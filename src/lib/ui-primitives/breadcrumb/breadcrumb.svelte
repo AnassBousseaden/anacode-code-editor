@@ -18,7 +18,7 @@
 <nav
 	bind:this={ref}
 	data-slot="breadcrumb"
-	aria-label={messages['breadcrumb.ariaLabel']}
+	aria-label={messages.breadcrumbAriaLabel}
 	class={cn('cn-breadcrumb', className)}
 	{...restProps}
 >

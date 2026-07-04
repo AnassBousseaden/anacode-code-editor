@@ -1,26 +1,13 @@
-// Demo-app locale persistence for the playground.
-//
-// The demo plays the host-app role: it persists the chosen locale, reloads the
-// page, and creates editor sessions with the stored locale. The session
-// factory's MonacoRuntimeProvider loads the matching Monaco NLS pack before
-// Monaco first evaluates. Playground-only — outside src/lib/, not published.
-
-import type { EditorLocale } from '$lib';
+import { EditorLocale } from '$lib';
 
 const DEMO_LOCALE_STORAGE_KEY: string = 'anacode-demo-locale';
 
-const SUPPORTED_LOCALES: readonly EditorLocale[] = ['en', 'fr', 'es'];
-const DEFAULT_LOCALE: EditorLocale = 'en';
+const DEFAULT_LOCALE: EditorLocale = EditorLocale.EN;
 
 function isEditorLocale(value: string | null): value is EditorLocale {
-	return value !== null && (SUPPORTED_LOCALES as readonly string[]).includes(value);
+	return value !== null && (Object.values(EditorLocale) as string[]).includes(value);
 }
 
-/**
- * Reads the persisted demo locale from localStorage, validated against the
- * supported set. Falls back to `'en'` when unset, invalid, or when
- * window/localStorage is unavailable (SSR / prerender).
- */
 export function getDemoLocale(): EditorLocale {
 	if (typeof localStorage === 'undefined') {
 		return DEFAULT_LOCALE;
@@ -29,15 +16,8 @@ export function getDemoLocale(): EditorLocale {
 	return isEditorLocale(raw) ? raw : DEFAULT_LOCALE;
 }
 
-/**
- * Persists the chosen demo locale and reloads the page.
- *
- * The reload is required: Monaco 0.55 localizes its own UI (context menu, find
- * widget, …) through a page-global NLS pack that is bound when the
- * `monaco-editor` module first evaluates. That binding cannot change at
- * runtime, so switching languages must re-bootstrap the page (see
- * MonacoRuntimeProvider, which loads the pack before monaco evaluates).
- */
+// Monaco binds its NLS pack page-wide at first evaluation, so a locale switch
+// must re-bootstrap the page.
 export function setDemoLocale(locale: EditorLocale): void {
 	if (typeof localStorage === 'undefined') {
 		return;

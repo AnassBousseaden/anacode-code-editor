@@ -12,3 +12,4 @@ export * from '$lib/core/file-system/persistance/import/file-system-importer-str
 export * from '$lib/core/file-system/persistance/export/file-system-exporter';
 export * from '$lib/core/file-system/persistance/export/file-system-exporter-impl';
 export * from '$lib/core/file-system/persistance/export/file-system-export-strategy-impls';
+export * from '$lib/core/file-system/persistance/persistence-error-messages';

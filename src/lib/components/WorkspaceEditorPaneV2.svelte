@@ -89,7 +89,7 @@
 							>
 								<PanelLeft class="size-4 text-muted-foreground" />
 							</TooltipTrigger>
-							<TooltipContent side="right">{messages['sideBar.expand']}</TooltipContent>
+							<TooltipContent side="right">{messages.sideBarExpand}</TooltipContent>
 						</TooltipRoot>
 					</div>
 				{:else if $statusStore === WorkspaceStatus.LOADING}
