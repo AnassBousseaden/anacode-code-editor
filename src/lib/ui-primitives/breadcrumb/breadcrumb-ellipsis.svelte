@@ -2,12 +2,16 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { cn, type WithElementRef, type WithoutChildren } from '$lib/utils/cn.js';
 	import MoreHorizontalIcon from '@lucide/svelte/icons/more-horizontal';
+	import type { EditorMessages } from '$lib/core/localization/localization-models';
+	import { getEditorMessages } from '$lib/core/localization/messages-context';
 
 	let {
 		ref = $bindable(null),
 		class: className,
 		...restProps
 	}: WithoutChildren<WithElementRef<HTMLAttributes<HTMLSpanElement>>> = $props();
+
+	const messages: EditorMessages = getEditorMessages();
 </script>
 
 <span
@@ -19,5 +23,5 @@
 	{...restProps}
 >
 	<MoreHorizontalIcon />
-	<span class="sr-only">More</span>
+	<span class="sr-only">{messages['breadcrumb.more']}</span>
 </span>

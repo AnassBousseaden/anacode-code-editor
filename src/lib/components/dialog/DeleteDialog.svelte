@@ -11,6 +11,12 @@
 		Title as DialogTitle
 	} from '$lib/ui-primitives/dialog';
 
+	import type { EditorMessages } from '$lib/core/localization/localization-models';
+	import { getEditorMessages } from '$lib/core/localization/messages-context';
+	import {
+		resolveFileTreeActionErrorContent,
+		resolveFileTreeActionLabel
+	} from '$lib/view-models/file-tree/localization/file-tree-action-messages';
 	import type { FileTreeActionError } from '$lib/core/file-tree-v2/commands/file-system/file-tree-action';
 	import type {
 		IActionDialogViewModel,
@@ -37,9 +43,11 @@
 
 	let { viewModel, openState }: Props = $props();
 
-	const titleLabel: string = openState.request.descriptor.label;
+	const messages: EditorMessages = getEditorMessages();
+
+	const titleLabel: string = resolveFileTreeActionLabel(messages, openState.request.descriptor.id);
 	const contextLabel: string = openState.request.contextLabel;
-	const submitLabel: string = openState.request.descriptor.label;
+	const submitLabel: string = titleLabel;
 
 	let dialogState: DeleteDialogState = $state(buildConfirmingState());
 
@@ -113,17 +121,19 @@
 	</DialogHeader>
 
 	<div class="space-y-2 py-2">
-		<p class="text-sm text-muted-foreground">This action cannot be undone.</p>
+		<p class="text-sm text-muted-foreground">{messages['dialog.delete.warning']}</p>
 
 		{#if dialogState.kind === DeleteDialogStateKind.SUBMIT_FAILED}
 			<p class="rounded-md bg-failure px-2.5 py-1.5 text-xs text-failure-foreground">
-				{dialogState.submitError.message}
+				{resolveFileTreeActionErrorContent(messages, dialogState.submitError)}
 			</p>
 		{/if}
 	</div>
 
 	<DialogFooter class="gap-2 sm:gap-2">
-		<Button disabled={isCancelDisabled} onclick={handleCancel} variant="outline">Cancel</Button>
+		<Button disabled={isCancelDisabled} onclick={handleCancel} variant="outline"
+			>{messages['common.cancel']}</Button
+		>
 		<Button disabled={isConfirmDisabled} onclick={handleConfirm} variant="destructive">
 			{#if dialogState.kind === DeleteDialogStateKind.SUBMITTING}
 				<Loader2 class="mr-1.5 size-4 animate-spin" />

@@ -3,13 +3,21 @@
 
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { Moon, Settings, Sun } from '@lucide/svelte';
+	import { Check, Languages, Moon, Settings, Sun } from '@lucide/svelte';
 	import { ModeWatcher, toggleMode } from 'mode-watcher';
 	import type { Snippet } from 'svelte';
 
-	import { Button } from '$lib/ui-primitives/button';
+	import type { EditorLocale } from '$lib';
+	import { Button, buttonVariants } from '$lib/ui-primitives/button';
+	import {
+		Content as DropdownMenuContent,
+		Item as DropdownMenuItem,
+		Root as DropdownMenuRoot,
+		Trigger as DropdownMenuTrigger
+	} from '$lib/ui-primitives/dropdown-menu/index';
 	import { cn } from '$lib/utils/cn';
 
+	import { getDemoLocale, setDemoLocale } from '$playground/demo-locale';
 	import EditorSettingsModal from '$playground/EditorSettingsModal.svelte';
 	import { onOpenEditorSettings } from '$playground/editor-settings-modal-controller';
 
@@ -18,6 +26,21 @@
 	}
 
 	let { children }: Props = $props();
+
+	interface LocaleOption {
+		readonly value: EditorLocale;
+		readonly label: string;
+	}
+
+	const LOCALE_OPTIONS: readonly LocaleOption[] = [
+		{ value: 'en', label: 'English' },
+		{ value: 'fr', label: 'Français' },
+		{ value: 'es', label: 'Español' }
+	];
+
+	// Read once: setDemoLocale() reloads the page, so the active locale never
+	// changes within a single page lifetime.
+	const currentLocale: EditorLocale = getDemoLocale();
 
 	const NAV_ITEMS = [
 		{ href: '/', label: 'Editor' },
@@ -59,6 +82,27 @@
 		</nav>
 
 		<div class="ml-auto flex items-center gap-1">
+			<DropdownMenuRoot>
+				<DropdownMenuTrigger
+					class={buttonVariants({ variant: 'ghost', size: 'icon' })}
+					aria-label="Language"
+				>
+					<Languages class="size-4" />
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="end" class="min-w-40">
+					{#each LOCALE_OPTIONS as option (option.value)}
+						<DropdownMenuItem
+							class={cn('justify-between gap-2', option.value === currentLocale && 'text-accent-foreground')}
+							onclick={() => setDemoLocale(option.value)}
+						>
+							<span>{option.label}</span>
+							{#if option.value === currentLocale}
+								<Check class="size-4" />
+							{/if}
+						</DropdownMenuItem>
+					{/each}
+				</DropdownMenuContent>
+			</DropdownMenuRoot>
 			<Button
 				variant="ghost"
 				size="icon"

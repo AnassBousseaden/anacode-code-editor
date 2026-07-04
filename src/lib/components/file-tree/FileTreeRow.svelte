@@ -2,6 +2,8 @@
 	import { ChevronRight, CircleDot, CircleAlert } from '@lucide/svelte';
 
 	import { cn } from '$lib/utils/cn';
+	import type { EditorMessages } from '$lib/core/localization/localization-models';
+	import { getEditorMessages } from '$lib/core/localization/messages-context';
 	import ThemedIcon from '$lib/components/file-tree/file-icon/ThemedIcon.svelte';
 	import type { IFileIconFactory } from '$lib/view-models/file-tree/icons/file-icon-factory';
 	import type { ThemedIconID } from '$lib/components/file-tree/file-icon/icon-factory';
@@ -26,6 +28,8 @@
 	}
 
 	let { viewModel, item, fileIconFactory }: Props = $props();
+
+	const messages: EditorMessages = getEditorMessages();
 
 	const isExpanded: boolean = $derived(item.type === NodeType.FOLDER ? item.isExpanded : false);
 	const isActive: boolean = $derived(item.type === NodeType.FILE ? item.isActive : false);
@@ -151,15 +155,18 @@
 
 	{#if item.type === NodeType.FILE}
 		{#if saveStatus === FileSaveStatus.SAVEABLE}
-			<span class="ml-auto mr-2 flex shrink-0 items-center" title="Unsaved">
+			<span class="ml-auto mr-2 flex shrink-0 items-center" title={messages['common.status.unsaved']}>
 				<CircleDot class="size-4 text-foreground" />
 			</span>
 		{:else if saveStatus === FileSaveStatus.CONFLICTED}
-			<span class="ml-auto mr-2 flex shrink-0 items-center" title="Conflicted">
+			<span
+				class="ml-auto mr-2 flex shrink-0 items-center"
+				title={messages['common.status.conflicted']}
+			>
 				<CircleAlert class="size-4 text-primary" />
 			</span>
 		{:else if saveStatus === FileSaveStatus.INVALID}
-			<span class="ml-auto mr-2 flex shrink-0 items-center" title="Invalid">
+			<span class="ml-auto mr-2 flex shrink-0 items-center" title={messages['common.status.invalid']}>
 				<CircleAlert class="size-4 text-destructive" />
 			</span>
 		{/if}

@@ -11,6 +11,10 @@ import type { FileSystemMapReadonly } from '$lib/core/file-system/domain/file-sy
 import type { IEditorConfigurationService } from '$lib/core/editor/configuration/editor-config-models';
 import type { ZipImportError } from '$lib/core/file-system/persistance/import/file-system-import';
 import type {
+	EditorLocalizationOptions,
+	EditorMessages
+} from '$lib/core/localization/localization-models';
+import type {
 	IDisposable1,
 	OperationFailure,
 	Result
@@ -26,6 +30,7 @@ export interface IEditorSession extends IDisposable1 {
 	readonly promptManager: IEditorPromptManager;
 	readonly tabProjection: ITabProjectionService;
 	readonly fileTreeProjection: IFileTreeProjection;
+	readonly messages: EditorMessages;
 }
 
 export enum CreateEditorSessionErrorKind {
@@ -47,16 +52,19 @@ export type CreateEditorSessionFromZipError = CreateEditorSessionError | ZipImpo
 export interface IEditorSessionFactory {
 	createFromFileSystem(
 		fileSystemService: IFileSystemService,
-		editorConfigService: IEditorConfigurationService
+		editorConfigService: IEditorConfigurationService,
+		localization?: EditorLocalizationOptions
 	): Promise<Result<IEditorSession, CreateEditorSessionError>>;
 
 	createFromFileSystemMap(
 		fileSystemMap: FileSystemMapReadonly,
-		editorConfigService: IEditorConfigurationService
+		editorConfigService: IEditorConfigurationService,
+		localization?: EditorLocalizationOptions
 	): Promise<Result<IEditorSession, CreateEditorSessionError>>;
 
 	createFromZip(
 		zipData: Blob,
-		editorConfigService: IEditorConfigurationService
+		editorConfigService: IEditorConfigurationService,
+		localization?: EditorLocalizationOptions
 	): Promise<Result<IEditorSession, CreateEditorSessionFromZipError>>;
 }

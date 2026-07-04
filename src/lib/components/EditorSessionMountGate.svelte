@@ -3,6 +3,7 @@
 	import { LoaderCircle } from '@lucide/svelte';
 
 	import WorkspaceEditorPaneV2 from '$lib/components/WorkspaceEditorPaneV2.svelte';
+	import { provideEditorMessages } from '$lib/core/localization/messages-context';
 	import type { IEditorSession } from '$lib/core/session/editor-session';
 
 	interface Props {
@@ -11,6 +12,8 @@
 	}
 
 	let { session, sidebarFooter }: Props = $props();
+
+	provideEditorMessages(session.messages);
 
 	let mounted: boolean = $state(false);
 

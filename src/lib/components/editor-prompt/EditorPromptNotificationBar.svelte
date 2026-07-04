@@ -5,6 +5,8 @@
 
 	import { Button } from '$lib/ui-primitives/button';
 
+	import { formatMessage, type EditorMessages } from '$lib/core/localization/localization-models';
+	import { getEditorMessages } from '$lib/core/localization/messages-context';
 	import type { IEditorPromptStackViewModel } from '$lib/view-models/editor-prompt/editor-prompt-stack-view-model';
 	import { EditorPromptStackViewModel } from '$lib/view-models/editor-prompt/editor-prompt-stack-view-model-impl';
 	import type { IEditorSession } from '$lib/core/session/editor-session';
@@ -14,6 +16,8 @@
 	}
 
 	let { session }: Props = $props();
+
+	const messages: EditorMessages = getEditorMessages();
 
 	const viewModel: IEditorPromptStackViewModel = new EditorPromptStackViewModel(
 		session.promptManager
@@ -30,6 +34,6 @@
 {#if hiddenCount > 0}
 	<Button variant="ghost" size="xs" onclick={() => viewModel.showAll()}>
 		<MessageCircleWarning class="size-3 text-muted-foreground" />
-		{hiddenCount} hidden
+		{formatMessage(messages['prompt.notificationBar.hidden'], { count: hiddenCount })}
 	</Button>
 {/if}

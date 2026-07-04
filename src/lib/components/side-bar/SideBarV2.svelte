@@ -6,6 +6,8 @@
 	import ActionDialog from '$lib/components/dialog/ActionDialog.svelte';
 	import FileTreeActionBar from '$lib/components/action-bar/FileTreeActionBar.svelte';
 	import FileTreeView from '$lib/components/file-tree/FileTreeView.svelte';
+	import type { EditorMessages } from '$lib/core/localization/localization-models';
+	import { getEditorMessages } from '$lib/core/localization/messages-context';
 	import type { IEditorIntentCommands } from '$lib/core/editor/intent/editor-intent-service';
 	import type { IEditorNotificationPublisher } from '$lib/core/editor-prompt/editor-prompt-manager';
 	import type { IFileTreeSelectionIntent } from '$lib/core/state/selection/file-tree-selection-intent';
@@ -43,17 +45,21 @@
 		sidebarFooter
 	}: Props = $props();
 
+	const messages: EditorMessages = getEditorMessages();
+
 	const actionErrorFactory: IFileTreeActionErrorFactory = new FileTreeActionErrorFactory();
 	const actionDialogViewModel: IActionDialogViewModel = new ActionDialogViewModelImpl(
 		fileTreeWorkspace.commandRegistry
 	);
 	const actionBarViewModel: IFileTreeActionBarViewModel = new FileTreeActionBarViewModelImpl(
+		messages,
 		fileTreeWorkspace.commandRegistry,
 		actionDialogViewModel,
 		notificationPublisher
 	);
 	const contextMenuViewModel: IFileTreeContextMenuViewModelV2 =
 		new FileTreeContextMenuViewModelV2Impl(
+			messages,
 			fileTreeWorkspace.commandRegistry,
 			actionErrorFactory,
 			actionDialogViewModel,
@@ -95,7 +101,7 @@
 		<input
 			class="h-6 w-full bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none"
 			oninput={handleSearchInput}
-			placeholder="Search"
+			placeholder={messages['sideBar.search.placeholder']}
 			type="text"
 			value={searchQuery}
 		/>

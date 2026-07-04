@@ -14,6 +14,13 @@
 	import { Input } from '$lib/ui-primitives/input';
 	import { Label } from '$lib/ui-primitives/label';
 
+	import type { EditorMessages } from '$lib/core/localization/localization-models';
+	import { getEditorMessages } from '$lib/core/localization/messages-context';
+	import {
+		resolveFileTreeActionErrorContent,
+		resolveFileTreeActionLabel
+	} from '$lib/view-models/file-tree/localization/file-tree-action-messages';
+
 	import type {
 		CreateFileActionInput,
 		CreateFolderActionInput,
@@ -54,9 +61,11 @@
 
 	let { viewModel, openState }: Props = $props();
 
-	const titleLabel: string = openState.request.descriptor.label;
+	const messages: EditorMessages = getEditorMessages();
+
+	const titleLabel: string = resolveFileTreeActionLabel(messages, openState.request.descriptor.id);
 	const contextLabel: string = openState.request.contextLabel;
-	const submitLabel: string = openState.request.descriptor.label;
+	const submitLabel: string = titleLabel;
 
 	let inputElement: HTMLInputElement | null = $state(null);
 
@@ -272,7 +281,9 @@
 	</DialogHeader>
 
 	<div class="space-y-2 py-2">
-		<Label class="text-sm font-medium" for="name-input-dialog-input">Name</Label>
+		<Label class="text-sm font-medium" for="name-input-dialog-input"
+			>{messages['dialog.nameInput.nameLabel']}</Label
+		>
 		<Input
 			bind:ref={inputElement}
 			class="h-10"
@@ -280,21 +291,25 @@
 			id="name-input-dialog-input"
 			oninput={handleInput}
 			onkeydown={handleKeyDown}
-			placeholder="Enter name..."
+			placeholder={messages['dialog.nameInput.placeholder']}
 			value={dialogState.name}
 		/>
 
 		{#if dialogState.kind === NameInputDialogStateKind.EDITING_INVALID}
-			<p class="text-xs text-failure-foreground">{dialogState.validationError.message}</p>
+			<p class="text-xs text-failure-foreground">
+				{resolveFileTreeActionErrorContent(messages, dialogState.validationError)}
+			</p>
 		{:else if dialogState.kind === NameInputDialogStateKind.SUBMIT_FAILED}
 			<p class="rounded-md bg-failure px-2.5 py-1.5 text-xs text-failure-foreground">
-				{dialogState.submitError.message}
+				{resolveFileTreeActionErrorContent(messages, dialogState.submitError)}
 			</p>
 		{/if}
 	</div>
 
 	<DialogFooter class="gap-2 sm:gap-2">
-		<Button disabled={isCancelDisabled} onclick={handleCancel} variant="outline">Cancel</Button>
+		<Button disabled={isCancelDisabled} onclick={handleCancel} variant="outline"
+			>{messages['common.cancel']}</Button
+		>
 		<Button disabled={isSubmitDisabled} onclick={handleSubmit}>
 			{#if dialogState.kind === NameInputDialogStateKind.SUBMITTING}
 				<Loader2 class="mr-1.5 size-4 animate-spin" />

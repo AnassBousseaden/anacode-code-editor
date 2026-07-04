@@ -20,6 +20,8 @@
 		Trigger as TooltipTrigger
 	} from '$lib/ui-primitives/tooltip/index';
 	import type { IEditorSession } from '$lib/core/session/editor-session';
+	import type { EditorMessages } from '$lib/core/localization/localization-models';
+	import { getEditorMessages } from '$lib/core/localization/messages-context';
 	import { WorkspaceStatus } from '$lib/core/workspace/editor-workspace-v2';
 
 	interface Props {
@@ -28,6 +30,8 @@
 	}
 
 	let { session, sidebarFooter }: Props = $props();
+
+	const messages: EditorMessages = getEditorMessages();
 
 	const SIDEBAR_DEFAULT_SIZE = 40;
 	const SIDEBAR_MIN_SIZE = 15;
@@ -85,7 +89,7 @@
 							>
 								<PanelLeft class="size-4 text-muted-foreground" />
 							</TooltipTrigger>
-							<TooltipContent side="right">Expand Sidebar</TooltipContent>
+							<TooltipContent side="right">{messages['sideBar.expand']}</TooltipContent>
 						</TooltipRoot>
 					</div>
 				{:else if $statusStore === WorkspaceStatus.LOADING}

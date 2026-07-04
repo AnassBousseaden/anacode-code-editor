@@ -9,6 +9,13 @@ import {
 import { ErrorMessages } from '$lib/core/file-system/domain/errors/file-system-model-errors-registry';
 
 /**
+ * Stable machine-readable discriminant attached to a name-collision failure so
+ * the presentation edge can select the `{name}`-interpolated template without
+ * sniffing params. Kept localization-free in the domain.
+ */
+export const DUPLICATE_NAME_ERROR_CODE = 'DUPLICATE_NAME' as const;
+
+/**
  * Validates that a node name is valid.
  * Names cannot be empty or contain path separators.
  */
@@ -52,7 +59,7 @@ export function checkNameCollision(
 
 		const childName: string = childNode.name;
 		if (childName === name) {
-			return invalid(ErrorMessages.NAME_EXISTS(name));
+			return invalid(ErrorMessages.NAME_EXISTS(name), { name }, DUPLICATE_NAME_ERROR_CODE);
 		}
 	}
 

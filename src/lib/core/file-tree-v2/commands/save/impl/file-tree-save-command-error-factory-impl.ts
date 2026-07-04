@@ -54,7 +54,9 @@ export class FileTreeSaveCommandErrorFactory implements IFileTreeSaveCommandErro
 		const message: string = FileTreeSaveCommandErrorMessages.SAVE_ERROR(operationError.message);
 		const error: FileTreeSaveCommandError = {
 			kind: FileTreeSaveCommandErrorKind.SAVE_ERROR,
-			message: message
+			message: message,
+			params: operationError.params,
+			code: operationError.code
 		};
 		return error;
 	}

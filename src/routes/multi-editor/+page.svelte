@@ -27,6 +27,7 @@
 	import { EditorUserSpaceStateService } from '$lib/state';
 	import type { IEditorConfigurationService } from '$lib/config';
 
+	import { getDemoLocale } from '$playground/demo-locale';
 	import { EditorConfigurationService } from '$playground/editor-config.svelte';
 
 	const SRC_FOLDER_ID: NodeID = 1 as NodeID;
@@ -125,7 +126,8 @@
 		const resultA: Result<IEditorSession, CreateEditorSessionError> =
 			await sessionFactory.createFromFileSystem(
 				sharedFileSystemService,
-				codeEditorConfigurationService
+				codeEditorConfigurationService,
+				{ locale: getDemoLocale() }
 			);
 		if (!resultA.ok) {
 			loadErrorMessage = resultA.error.message;
@@ -136,7 +138,8 @@
 		const resultB: Result<IEditorSession, CreateEditorSessionError> =
 			await sessionFactory.createFromFileSystem(
 				sharedFileSystemService,
-				codeEditorConfigurationService
+				codeEditorConfigurationService,
+				{ locale: getDemoLocale() }
 			);
 		if (!resultB.ok) {
 			loadErrorMessage = resultB.error.message;

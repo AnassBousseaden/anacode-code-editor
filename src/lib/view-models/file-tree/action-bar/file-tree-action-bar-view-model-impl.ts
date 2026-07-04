@@ -34,7 +34,20 @@ import {
 } from '$lib/core/file-tree-v2/commands/ui/file-tree-ui-command';
 import { NotificationPromptToneKind } from '$lib/core/editor-prompt/editor-prompt';
 import type { IEditorNotificationPublisher } from '$lib/core/editor-prompt/editor-prompt-manager';
+import type { EditorMessages } from '$lib/core/localization/localization-models';
 import type { Result } from '$lib/core/shared/models-utils';
+import {
+	resolveFileTreeActionErrorContent,
+	resolveFileTreeActionLabel
+} from '$lib/view-models/file-tree/localization/file-tree-action-messages';
+import {
+	resolveFileTreeUICommandErrorContent,
+	resolveFileTreeUICommandLabel
+} from '$lib/view-models/file-tree/localization/file-tree-ui-command-messages';
+import {
+	resolveFileTreeSaveCommandErrorContent,
+	resolveFileTreeSaveCommandLabel
+} from '$lib/view-models/file-tree/localization/file-tree-save-command-messages';
 import {
 	type ActionDialogRequestInput,
 	ActionDialogRequestInputKind,
@@ -184,8 +197,10 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 	private readonly commandRegistry: ICommandRegistry;
 	private readonly requestController: IActionDialogRequestController;
 	private readonly notificationPublisher: IEditorNotificationPublisher;
+	private readonly messages: EditorMessages;
 
 	constructor(
+		messages: EditorMessages,
 		commandRegistry: ICommandRegistry,
 		requestController: IActionDialogRequestController,
 		notificationPublisher: IEditorNotificationPublisher
@@ -193,6 +208,7 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 		this.commandRegistry = commandRegistry;
 		this.requestController = requestController;
 		this.notificationPublisher = notificationPublisher;
+		this.messages = messages;
 
 		const createFileBundle: IBundledInputCommand<
 			FileTreeActionID,
@@ -236,6 +252,33 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 			FileTreeSaveCommandError
 		> = this.commandRegistry.getCommand(FileTreeSaveCommandID.SAVE_ALL);
 
+		const createFileLabel: string = resolveFileTreeActionLabel(
+			messages,
+			createFileBundle.descriptor.id
+		);
+		const createFolderLabel: string = resolveFileTreeActionLabel(
+			messages,
+			createFolderBundle.descriptor.id
+		);
+		const renameLabel: string = resolveFileTreeActionLabel(messages, renameBundle.descriptor.id);
+		const deleteLabel: string = resolveFileTreeActionLabel(messages, deleteBundle.descriptor.id);
+		const expandNodeLabel: string = resolveFileTreeUICommandLabel(
+			messages,
+			expandBundle.descriptor.id
+		);
+		const collapseNodeLabel: string = resolveFileTreeUICommandLabel(
+			messages,
+			collapseBundle.descriptor.id
+		);
+		const locateActiveFileLabel: string = resolveFileTreeUICommandLabel(
+			messages,
+			locateBundle.descriptor.id
+		);
+		const saveAllLabel: string = resolveFileTreeSaveCommandLabel(
+			messages,
+			saveAllBundle.descriptor.id
+		);
+
 		this.createFile = derived(
 			[createFileBundle.availability, createFileBundle.commandContext],
 			([
@@ -253,7 +296,7 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 					mapInputBundleAvailability(bundleAvail, requestInput);
 				const presentation: CreateFileActionBarPresentation = {
 					kind: FileTreeActionBarPresentationKind.CREATE_FILE,
-					label: createFileBundle.descriptor.label,
+					label: createFileLabel,
 					icon: CREATE_FILE_ICON,
 					accelerator: NO_ACCELERATOR,
 					availability: availability
@@ -279,7 +322,7 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 					mapInputBundleAvailability(bundleAvail, requestInput);
 				const presentation: CreateFolderActionBarPresentation = {
 					kind: FileTreeActionBarPresentationKind.CREATE_FOLDER,
-					label: createFolderBundle.descriptor.label,
+					label: createFolderLabel,
 					icon: CREATE_FOLDER_ICON,
 					accelerator: NO_ACCELERATOR,
 					availability: availability
@@ -305,7 +348,7 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 					mapInputBundleAvailability(bundleAvail, requestInput);
 				const presentation: RenameActionBarPresentation = {
 					kind: FileTreeActionBarPresentationKind.RENAME,
-					label: renameBundle.descriptor.label,
+					label: renameLabel,
 					icon: RENAME_ICON,
 					accelerator: RENAME_ACCELERATOR,
 					availability: availability
@@ -333,7 +376,7 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 						: { kind: FileTreeActionAvailabilityKind.AVAILABLE, requestInput: requestInput };
 				const presentation: DeleteActionBarPresentation = {
 					kind: FileTreeActionBarPresentationKind.DELETE,
-					label: deleteBundle.descriptor.label,
+					label: deleteLabel,
 					icon: DELETE_ICON,
 					accelerator: DELETE_ACCELERATOR,
 					availability: availability
@@ -349,7 +392,7 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 					mapCommandBundleAvailability(bundleAvail);
 				const presentation: ExpandNodeUICommandPresentation = {
 					kind: FileTreeUICommandPresentationKind.EXPAND_NODE,
-					label: expandBundle.descriptor.label,
+					label: expandNodeLabel,
 					icon: EXPAND_NODE_ICON,
 					accelerator: NO_ACCELERATOR,
 					availability: availability
@@ -367,7 +410,7 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 					mapCommandBundleAvailability(bundleAvail);
 				const presentation: CollapseNodeUICommandPresentation = {
 					kind: FileTreeUICommandPresentationKind.COLLAPSE_NODE,
-					label: collapseBundle.descriptor.label,
+					label: collapseNodeLabel,
 					icon: COLLAPSE_NODE_ICON,
 					accelerator: NO_ACCELERATOR,
 					availability: availability
@@ -385,7 +428,7 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 					mapCommandBundleAvailability(bundleAvail);
 				const presentation: LocateActiveFileUICommandPresentation = {
 					kind: FileTreeUICommandPresentationKind.LOCATE_ACTIVE_FILE,
-					label: locateBundle.descriptor.label,
+					label: locateActiveFileLabel,
 					icon: LOCATE_ACTIVE_FILE_ICON,
 					accelerator: NO_ACCELERATOR,
 					availability: availability
@@ -403,7 +446,7 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 					mapSaveBundleAvailability(bundleAvail);
 				const presentation: SaveAllSaveCommandPresentation = {
 					kind: FileTreeSaveCommandPresentationKind.SAVE_ALL,
-					label: saveAllBundle.descriptor.label,
+					label: saveAllLabel,
 					icon: SAVE_ALL_ICON,
 					accelerator: NO_ACCELERATOR,
 					availability: availability
@@ -416,7 +459,10 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 	public request(input: ActionDialogRequestInput): void {
 		const result: Result<void, FileTreeActionError> = this.requestController.request(input);
 		if (!result.ok) {
-			this.publishError('Action failed', result.error.message);
+			this.publishError(
+				this.messages['fileTree.notification.actionFailed'],
+				resolveFileTreeActionErrorContent(this.messages, result.error)
+			);
 		}
 	}
 
@@ -425,7 +471,10 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 			this.commandRegistry.getCommand(FileTreeUICommandID.EXPAND_NODE);
 		const result: Result<void, FileTreeUICommandError> = await bundle.perform();
 		if (!result.ok) {
-			this.publishError('Action failed', result.error.message);
+			this.publishError(
+				this.messages['fileTree.notification.actionFailed'],
+				resolveFileTreeUICommandErrorContent(this.messages, result.error)
+			);
 		}
 	}
 
@@ -434,7 +483,10 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 			this.commandRegistry.getCommand(FileTreeUICommandID.COLLAPSE_NODE);
 		const result: Result<void, FileTreeUICommandError> = await bundle.perform();
 		if (!result.ok) {
-			this.publishError('Action failed', result.error.message);
+			this.publishError(
+				this.messages['fileTree.notification.actionFailed'],
+				resolveFileTreeUICommandErrorContent(this.messages, result.error)
+			);
 		}
 	}
 
@@ -446,7 +498,10 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 		> = this.commandRegistry.getCommand(FileTreeSaveCommandID.SAVE_ALL);
 		const result: Result<SaveAllCommandResult, FileTreeSaveCommandError> = await bundle.perform();
 		if (!result.ok) {
-			this.publishError('Save failed', result.error.message);
+			this.publishError(
+				this.messages['fileTree.notification.saveFailed'],
+				resolveFileTreeSaveCommandErrorContent(this.messages, result.error)
+			);
 		}
 	}
 
@@ -459,7 +514,10 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 		const result: Result<LocateActiveFileUICommandResult, FileTreeUICommandError> =
 			await bundle.perform();
 		if (!result.ok) {
-			this.publishError('Action failed', result.error.message);
+			this.publishError(
+				this.messages['fileTree.notification.actionFailed'],
+				resolveFileTreeUICommandErrorContent(this.messages, result.error)
+			);
 		}
 	}
 

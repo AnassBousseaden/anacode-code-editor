@@ -161,7 +161,7 @@ function projectConflictItem(
 			state: ConflictPromptViewItemStateKind.FAILED,
 			id: promptID,
 			fileName: prompt.fileName,
-			errorMessage: status.message,
+			errorMessageKey: status.message,
 			retry: buildAction(promptID, { kind: ConflictPromptActionKind.RETRY }, PromptActionState.ENABLED),
 			dismiss: buildHideAction(promptID, PromptActionState.ENABLED)
 		};
@@ -215,7 +215,7 @@ function projectInvalidItem(
 			state: InvalidDocumentPromptViewItemStateKind.FAILED,
 			id: promptID,
 			fileName: prompt.fileName,
-			errorMessage: status.message,
+			errorMessageKey: status.message,
 			retry: buildAction(promptID, { kind: InvalidDocumentActionKind.RETRY_CLOSE }, PromptActionState.ENABLED),
 			dismiss: buildHideAction(promptID, PromptActionState.ENABLED)
 		};

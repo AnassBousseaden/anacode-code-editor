@@ -8,8 +8,19 @@ export function valid<T>(value: T): ValidationResult<T> {
 	return { ok: true, value };
 }
 
-export function invalid<T>(message: string): ValidationResult<T> {
-	return { ok: false, error: { message } };
+export function invalid<T>(
+	message: string,
+	params?: Readonly<Record<string, string | number>>,
+	code?: string
+): ValidationResult<T> {
+	return {
+		ok: false,
+		error: {
+			message,
+			...(params !== undefined ? { params } : {}),
+			...(code !== undefined ? { code } : {})
+		}
+	};
 }
 
 export interface IIDGenerator<T> {

@@ -1,5 +1,6 @@
 import type { EditorPromptAction } from '$lib/view-models/editor-prompt/editor-prompt-action';
 import type { EditorPromptID } from '$lib/core/editor-prompt/editor-prompt';
+import type { EditorMessageKey } from '$lib/core/localization/localization-models';
 
 export enum PromptActionState {
 	ENABLED = 'ENABLED',
@@ -54,7 +55,7 @@ export interface FailedConflictResolutionPromptViewItem {
 	readonly state: ConflictPromptViewItemStateKind.FAILED;
 	readonly id: EditorPromptID;
 	readonly fileName: string;
-	readonly errorMessage: string;
+	readonly errorMessageKey: EditorMessageKey;
 	readonly retry: PromptActionViewItem;
 	readonly dismiss: PromptActionViewItem;
 }
@@ -82,7 +83,7 @@ export interface FailedInvalidDocumentPromptViewItem {
 	readonly state: InvalidDocumentPromptViewItemStateKind.FAILED;
 	readonly id: EditorPromptID;
 	readonly fileName: string;
-	readonly errorMessage: string;
+	readonly errorMessageKey: EditorMessageKey;
 	readonly retry: PromptActionViewItem;
 	readonly dismiss: PromptActionViewItem;
 }

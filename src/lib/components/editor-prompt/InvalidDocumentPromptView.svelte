@@ -10,6 +10,8 @@
 		CardTitle
 	} from '$lib/ui-primitives/card';
 
+	import { formatMessage, type EditorMessages } from '$lib/core/localization/localization-models';
+	import { getEditorMessages } from '$lib/core/localization/messages-context';
 	import type { IEditorPromptStackViewModel } from '$lib/view-models/editor-prompt/editor-prompt-stack-view-model';
 	import type {
 		InvalidDocumentPromptViewItem,
@@ -27,6 +29,8 @@
 
 	let { item, viewModel }: Props = $props();
 
+	const messages: EditorMessages = getEditorMessages();
+
 	function dispatch(entry: PromptActionViewItem): void {
 		viewModel.perform(entry.promptID, entry.action);
 	}
@@ -36,15 +40,13 @@
 	<CardHeader class="px-2.5">
 		<CardTitle class="flex items-center gap-2 text-nowrap text-xs">
 			<Shredder class="size-5 text-muted-foreground" />
-			File no longer exists
+			{messages['prompt.invalidDoc.title']}
 		</CardTitle>
 	</CardHeader>
 	<CardContent class="px-2.5 text-xs text-muted-foreground">
-		<p>
-			<span class="font-medium text-foreground">{item.fileName}</span> was removed from disk.
-		</p>
+		<p>{formatMessage(messages['prompt.invalidDoc.body'], { fileName: item.fileName })}</p>
 		{#if item.state === InvalidDocumentPromptViewItemStateKind.FAILED}
-			<p class="mt-1 text-destructive">{item.errorMessage}</p>
+			<p class="mt-1 text-destructive">{messages[item.errorMessageKey]}</p>
 		{/if}
 	</CardContent>
 	<CardFooter class="gap-1.5 px-2.5">
@@ -58,7 +60,7 @@
 				{#if item.retry.state === PromptActionState.LOADING}
 					<LoaderCircle class="animate-spin" />
 				{/if}
-				Retry
+				{messages['common.retry']}
 			</Button>
 		{:else}
 			<Button
@@ -70,7 +72,7 @@
 				{#if item.close.state === PromptActionState.LOADING}
 					<LoaderCircle class="animate-spin" />
 				{/if}
-				Close file
+				{messages['prompt.invalidDoc.close']}
 			</Button>
 		{/if}
 		<Button

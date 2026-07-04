@@ -29,6 +29,8 @@
 
 	import ThemedIcon from '$lib/components/file-tree/file-icon/ThemedIcon.svelte';
 	import type { ThemedIconID } from '$lib/components/file-tree/file-icon/icon-factory';
+	import type { EditorMessages } from '$lib/core/localization/localization-models';
+	import { getEditorMessages } from '$lib/core/localization/messages-context';
 
 	import {
 		type CollapseNodeUICommandPresentation,
@@ -56,6 +58,8 @@
 	}
 
 	let { viewModel, onCollapseSidebar }: Props = $props();
+
+	const messages: EditorMessages = getEditorMessages();
 
 	const FALLBACK_ICON: Component = Plus;
 	const ACTION_ICON_REGISTRY: Record<string, Component> = {
@@ -237,7 +241,7 @@
 							<Plus class="size-3.5 text-muted-foreground" />
 						</DropdownMenuTrigger>
 					</TooltipTrigger>
-					<TooltipContent side="bottom">New</TooltipContent>
+					<TooltipContent side="bottom">{messages['fileTree.command.new']}</TooltipContent>
 				</TooltipRoot>
 				<DropdownMenuContent align="start" class="min-w-36">
 					<DropdownMenuItem
@@ -318,7 +322,7 @@
 			>
 				<PanelLeftClose class="size-3.5 text-muted-foreground" />
 			</TooltipTrigger>
-			<TooltipContent side="bottom">Collapse Sidebar</TooltipContent>
+			<TooltipContent side="bottom">{messages['sideBar.collapse']}</TooltipContent>
 		</TooltipRoot>
 	</div>
 </TooltipProvider>

@@ -23,7 +23,9 @@ import type { IFileTreeActionErrorFactory } from '$lib/core/file-tree-v2/command
 import type { IPrimitiveCommandRegistry } from '$lib/core/file-tree-v2/commands/command-registry';
 import { NotificationPromptToneKind } from '$lib/core/editor-prompt/editor-prompt';
 import type { IEditorNotificationPublisher } from '$lib/core/editor-prompt/editor-prompt-manager';
+import type { EditorMessages } from '$lib/core/localization/localization-models';
 import type { Result } from '$lib/core/shared/models-utils';
+import { resolveFileTreeActionErrorContent } from '$lib/view-models/file-tree/localization/file-tree-action-messages';
 import {
 	type ActionDialogRequestInput,
 	ActionDialogRequestInputKind,
@@ -101,8 +103,10 @@ export class FileTreeContextMenuViewModelV2Impl implements IFileTreeContextMenuV
 	private readonly errorFactory: IFileTreeActionErrorFactory;
 	private readonly requestController: IActionDialogRequestController;
 	private readonly notificationPublisher: IEditorNotificationPublisher;
+	private readonly messages: EditorMessages;
 
 	constructor(
+		messages: EditorMessages,
 		primitiveRegistry: IPrimitiveCommandRegistry,
 		errorFactory: IFileTreeActionErrorFactory,
 		requestController: IActionDialogRequestController,
@@ -112,6 +116,7 @@ export class FileTreeContextMenuViewModelV2Impl implements IFileTreeContextMenuV
 		this.errorFactory = errorFactory;
 		this.requestController = requestController;
 		this.notificationPublisher = notificationPublisher;
+		this.messages = messages;
 	}
 
 	public capabilitiesFor(target: FileTreeContextTarget): FileTreeContextMenuCapabilities {
@@ -269,15 +274,15 @@ export class FileTreeContextMenuViewModelV2Impl implements IFileTreeContextMenuV
 				if (!result.ok) {
 					this.notificationPublisher.publish({
 						tone: NotificationPromptToneKind.ERROR,
-						title: 'Copy failed',
-						content: result.error.message
+						title: this.messages['fileTree.notification.copyFailed'],
+						content: resolveFileTreeActionErrorContent(this.messages, result.error)
 					});
 					return;
 				}
 				await navigator.clipboard.writeText(result.value.copiedPath);
 				this.notificationPublisher.publish({
 					tone: NotificationPromptToneKind.INFO,
-					title: 'Path copied',
+					title: this.messages['fileTree.notification.pathCopied'],
 					content: result.value.copiedPath
 				});
 			}
@@ -406,8 +411,8 @@ export class FileTreeContextMenuViewModelV2Impl implements IFileTreeContextMenuV
 				if (!result.ok) {
 					this.notificationPublisher.publish({
 						tone: NotificationPromptToneKind.ERROR,
-						title: 'Action failed',
-						content: result.error.message
+						title: this.messages['fileTree.notification.actionFailed'],
+						content: resolveFileTreeActionErrorContent(this.messages, result.error)
 					});
 				}
 			}

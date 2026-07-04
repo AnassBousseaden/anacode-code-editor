@@ -7,6 +7,8 @@
 	import type { ComponentProps } from 'svelte';
 	import { Button } from '$lib/ui-primitives/button/index.js';
 	import XIcon from '@lucide/svelte/icons/x';
+	import type { EditorMessages } from '$lib/core/localization/localization-models';
+	import { getEditorMessages } from '$lib/core/localization/messages-context';
 
 	let {
 		ref = $bindable(null),
@@ -20,6 +22,8 @@
 		children: Snippet;
 		showCloseButton?: boolean;
 	} = $props();
+
+	const messages: EditorMessages = getEditorMessages();
 </script>
 
 <DialogPortal {...portalProps}>
@@ -39,7 +43,7 @@
 				{#snippet child({ props })}
 					<Button variant="ghost" class="absolute top-4 right-4" size="icon-sm" {...props}>
 						<XIcon />
-						<span class="sr-only">Close</span>
+						<span class="sr-only">{messages['common.close']}</span>
 					</Button>
 				{/snippet}
 			</DialogPrimitive.Close>

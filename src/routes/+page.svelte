@@ -18,6 +18,7 @@
 	import type { IEditorConfigurationService } from '$lib/config';
 	import { FileSystemZipImporter } from '$lib/persistence';
 
+	import { getDemoLocale } from '$playground/demo-locale';
 	import { EditorConfigurationService } from '$playground/editor-config.svelte';
 
 	const SRC_FOLDER_ID: NodeID = 1 as NodeID;
@@ -116,12 +117,32 @@
 		new FileSystemZipImporter()
 	);
 
-	onMount(async (): Promise<void> => {
+	let creationToken: number = 0;
+
+	async function createSession(): Promise<void> {
+		const token: number = ++creationToken;
+
+		if (session !== null) {
+			session.dispose();
+			session = null;
+		}
+		loadErrorMessage = null;
+
 		const result: Result<IEditorSession, CreateEditorSessionError> =
 			await sessionFactory.createFromFileSystemMap(
 				initialState,
-				codeEditorConfigurationService
+				codeEditorConfigurationService,
+				{ locale: getDemoLocale() }
 			);
+
+		// A newer createSession() superseded this one while it was awaiting;
+		// drop this result so it cannot leak past the active session.
+		if (token !== creationToken) {
+			if (result.ok) {
+				result.value.dispose();
+			}
+			return;
+		}
 
 		if (!result.ok) {
 			loadErrorMessage = result.error.message;
@@ -129,6 +150,10 @@
 		}
 
 		session = result.value;
+	}
+
+	onMount(async (): Promise<void> => {
+		await createSession();
 	});
 
 	onDestroy((): void => {

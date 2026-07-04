@@ -1,6 +1,6 @@
 <div align="center">
 
-# @anacode/code-editor
+# @anacode-editor/code-editor
 
 **A self-contained, multi-file code editor for the web — built on [Monaco](https://github.com/microsoft/monaco-editor), packaged as a drop-in Svelte 5 component.**
 
@@ -9,6 +9,7 @@
 [Import / Export](https://anassbousseaden.github.io/anacode-code-editor/import-export) &nbsp;·&nbsp;
 [Multi-editor](https://anassbousseaden.github.io/anacode-code-editor/multi-editor)
 
+[![npm](https://img.shields.io/npm/v/%40anacode-editor%2Fcode-editor?logo=npm&color=CB3837)](https://www.npmjs.com/package/@anacode-editor/code-editor)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green)
 ![Svelte 5](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
@@ -28,7 +29,7 @@ _File tree, tabs, and Monaco in a single `<EditorSession>` component (shown in b
 
 ## What it is
 
-`@anacode/code-editor` provides the pieces around Monaco that a multi-file editing experience needs: a file tree, tabs, an in-memory file system, per-file save/dirty state, and detection of when a file has changed underneath the editor. It's packaged as a single Svelte 5 component you can drop in, or as individual services you can compose.
+`@anacode-editor/code-editor` provides the pieces around Monaco that a multi-file editing experience needs: a file tree, tabs, an in-memory file system, per-file save/dirty state, and detection of when a file has changed underneath the editor. It's packaged as a single Svelte 5 component you can drop in, or as individual services you can compose.
 
 - **Drop-in or composable** — render one `<EditorSession>`, or wire the underlying services yourself through subpath exports.
 - **Works with real projects** — the demo loads full open-source repositories (FastAPI, Caddy, Cobra, Resilience4j) from a zip.
@@ -76,12 +77,16 @@ Three routes in the [deployed demo](https://anassbousseaden.github.io/anacode-co
 
 ## Quick start
 
-> **Status:** pre-release (`v0.0.1`). Not yet published to npm — for now, clone this repo or install from GitHub. The snippet below is the condensed version of the fully runnable demo in [`src/routes/+page.svelte`](src/routes/+page.svelte).
+Available on npm as [`@anacode-editor/code-editor`](https://www.npmjs.com/package/@anacode-editor/code-editor):
 
 ```sh
+npm install @anacode-editor/code-editor
+
 # peer dependencies
 npm install svelte bits-ui @lucide/svelte mode-watcher tailwindcss tw-animate-css
 ```
+
+The snippet below is the condensed version of the fully runnable demo in [`src/routes/+page.svelte`](src/routes/+page.svelte).
 
 ```svelte
 <script lang="ts">
@@ -97,10 +102,10 @@ npm install svelte bits-ui @lucide/svelte mode-watcher tailwindcss tw-animate-cs
     type FileSystemPath,
     type NodeID,
     type IEditorSession
-  } from '@anacode/code-editor';
-  import { FileSystemZipImporter } from '@anacode/code-editor/persistence';
-  import { StaticDefaultEditorConfigurationService } from '@anacode/code-editor/config';
-  import '@anacode/code-editor/styles.css';
+  } from '@anacode-editor/code-editor';
+  import { FileSystemZipImporter } from '@anacode-editor/code-editor/persistence';
+  import { StaticDefaultEditorConfigurationService } from '@anacode-editor/code-editor/config';
+  import '@anacode-editor/code-editor/styles.css';
 
   // A minimal two-file workspace.
   const initialState: FileSystemMapReadonly = {
@@ -140,13 +145,39 @@ The factory also offers `createFromFileSystem(...)` (bring your own `IFileSystem
 
 ---
 
+## Localization
+
+The editor's own UI (file tree, tabs, dialogs, prompts, notifications) ships in English, French, and Spanish. Pass a locale — and optionally per-string overrides — as the last argument to any factory method:
+
+```ts
+const result = await factory.createFromFileSystemMap(initialState, config, {
+  locale: 'fr',
+  // optional: reword any string, in any locale
+  overrides: { 'common.cancel': 'Abandonner' }
+});
+```
+
+Only English is complete by design: it defines the key set and is the fallback for any key a locale (or your overrides) doesn't cover. The full key catalog and types are exposed via `@anacode-editor/code-editor/localization`. Locale is fixed per session — to switch languages, recreate the session.
+
+**Monaco's built-in UI** (context menu, find widget, …) localizes separately: Monaco's locale is global per page and must be set before its module first evaluates, so it belongs to the host app. Load the matching NLS pack before importing anything editor-related:
+
+```ts
+if (locale === 'fr') await import('monaco-editor/esm/nls.messages.fr.js');
+else if (locale === 'es') await import('monaco-editor/esm/nls.messages.es.js');
+const { EditorSession, EditorSessionFactory } = await import('@anacode-editor/code-editor');
+```
+
+Skipping this is fine — Monaco's chrome simply stays English while the editor's own UI follows your locale.
+
+---
+
 ## Two ways to use it
 
 | | Drop-in | Compose |
 |---|---|---|
 | **You write** | `<EditorSession {session} />` | wire the individual services yourself |
 | **You get** | the full editor experience | full control over file system, save, conflict, tree, tabs |
-| **Import from** | `@anacode/code-editor` | `@anacode/code-editor/file-system`, `/session`, `/persistence`, `/state`, `/config`, `/shared`, … |
+| **Import from** | `@anacode-editor/code-editor` | `@anacode-editor/code-editor/file-system`, `/session`, `/persistence`, `/state`, `/config`, `/shared`, … |
 
 The root entry exposes the drop-in surface; concern-scoped entry points expose the underlying services for composing the stack yourself. Internals not promoted to a barrel remain reachable via deep subpath imports.
 

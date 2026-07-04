@@ -6,6 +6,7 @@ import type { IEditorUserSpaceStateService } from '$lib/core/state/user-space/ed
 import type { IEditorPromptManager } from '$lib/core/editor-prompt/editor-prompt-manager';
 import type { ITabProjectionService } from '$lib/core/tab-bar/tab-projection-service';
 import type { IFileTreeProjection } from '$lib/core/file-tree-v2/projection/file-tree-projection';
+import type { EditorMessages } from '$lib/core/localization/localization-models';
 import type { IEditorSession } from '$lib/core/session/editor-session';
 
 export class EditorSession implements IEditorSession {
@@ -17,8 +18,9 @@ export class EditorSession implements IEditorSession {
 	public readonly promptManager: IEditorPromptManager;
 	public readonly tabProjection: ITabProjectionService;
 	public readonly fileTreeProjection: IFileTreeProjection;
+	public readonly messages: EditorMessages;
 
-	public constructor(workspace: IEditorWorkspaceV2) {
+	public constructor(workspace: IEditorWorkspaceV2, messages: EditorMessages) {
 		this.workspace = workspace;
 		this.codeEditor = workspace.codeEditor;
 		this.intent = workspace.intentService;
@@ -27,6 +29,7 @@ export class EditorSession implements IEditorSession {
 		this.promptManager = workspace.editorPromptManager;
 		this.tabProjection = workspace.tabProjection;
 		this.fileTreeProjection = workspace.fileTreeWorkspace.fileTreeProjection;
+		this.messages = messages;
 	}
 
 	public dispose(): void {

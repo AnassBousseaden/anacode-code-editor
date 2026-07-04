@@ -13,6 +13,7 @@
  *   - `@anacode/code-editor/session`      — session interfaces, factory, errors
  *   - `@anacode/code-editor/state`        — user-space and related state services
  *   - `@anacode/code-editor/config`       — editor configuration service
+ *   - `@anacode/code-editor/localization` — message catalogs, resolver, context
  *   - `@anacode/code-editor/icons`        — Icon component + icon factories
  *   - `@anacode/code-editor/shared`       — Result, Brand, IDisposable1, errors
  *
@@ -26,6 +27,15 @@ export { default as EditorSession } from '$lib/components/EditorSession.svelte';
 // The assembled session: interfaces, factory, errors.
 export * from '$lib/core/session/editor-session';
 export * from '$lib/core/session/editor-session-factory-impl';
+
+// Localization configuration types needed to localize the drop-in session.
+export type {
+	EditorLocale,
+	EditorLocalizationOptions,
+	EditorMessageCatalog,
+	EditorMessageKey,
+	EditorMessages
+} from '$lib/core/localization/localization-models';
 
 // Universally needed primitives.
 export * from '$lib/core/file-system/domain/file-system-models';

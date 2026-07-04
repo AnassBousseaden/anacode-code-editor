@@ -15,6 +15,8 @@
 
 	import ThemedIcon from '$lib/components/file-tree/file-icon/ThemedIcon.svelte';
 	import type { ThemedIconID } from '$lib/components/file-tree/file-icon/icon-factory';
+	import type { EditorMessages } from '$lib/core/localization/localization-models';
+	import { getEditorMessages } from '$lib/core/localization/messages-context';
 	import {
 		FILE_TREE_NODE_ID_ATTRIBUTE,
 		FILE_TREE_NODE_ID_SELECTOR
@@ -45,6 +47,8 @@
 	}
 
 	let { viewModel, onContextTargetChange, children }: Props = $props();
+
+	const messages: EditorMessages = getEditorMessages();
 
 	const fileIconFactory: IFileIconFactory = createFileIconFactory();
 	const fileIconID: ThemedIconID = $derived(fileIconFactory.getThemedDefaultIconID());
@@ -199,7 +203,7 @@
 		<ContextMenuSub>
 			<ContextMenuSubTrigger disabled={!isCreateEnabled} class="gap-2">
 				<Plus class="size-4 text-muted-foreground" />
-				<span>New</span>
+				<span>{messages['fileTree.command.new']}</span>
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent class="min-w-36">
 				<ContextMenuItem
@@ -208,7 +212,7 @@
 					onclick={handleCreateFile}
 				>
 					<ThemedIcon size={16} themed={fileIconID} />
-					<span>File</span>
+					<span>{messages['fileTree.command.file']}</span>
 				</ContextMenuItem>
 				<ContextMenuItem
 					class="gap-2"
@@ -216,7 +220,7 @@
 					onclick={handleCreateFolder}
 				>
 					<ThemedIcon size={16} themed={folderIconID} />
-					<span>Folder</span>
+					<span>{messages['fileTree.command.folder']}</span>
 				</ContextMenuItem>
 			</ContextMenuSubContent>
 		</ContextMenuSub>
@@ -225,7 +229,7 @@
 
 		<ContextMenuItem class="gap-2" disabled={!isRenameEnabled} onclick={handleRename}>
 			<Pen class="size-4 text-muted-foreground" />
-			<span>Rename</span>
+			<span>{messages['fileTree.command.rename']}</span>
 		</ContextMenuItem>
 
 		<ContextMenuSeparator class="my-1" />
@@ -237,14 +241,14 @@
 			variant="destructive"
 		>
 			<Trash2 class="size-4 text-destructive" />
-			<span>Delete</span>
+			<span>{messages['fileTree.command.delete']}</span>
 		</ContextMenuItem>
 
 		<ContextMenuSeparator class="my-1" />
 
 		<ContextMenuItem class="gap-2" disabled={!isCopyPathEnabled} onclick={handleCopyPath}>
 			<ClipboardCopy class="size-4 text-muted-foreground" />
-			<span>Copy path</span>
+			<span>{messages['fileTree.command.copyPath']}</span>
 		</ContextMenuItem>
 	</ContextMenuContent>
 </ContextMenu>

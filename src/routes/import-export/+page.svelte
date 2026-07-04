@@ -25,6 +25,7 @@
 		type ZipImportError
 	} from '$lib/persistence';
 
+	import { getDemoLocale } from '$playground/demo-locale';
 	import { EditorConfigurationService } from '$playground/editor-config.svelte';
 	import {
 		Description as AlertDescription,
@@ -77,7 +78,9 @@
 		nodeID: NodeID
 	): Promise<void> {
 		const result: Result<IEditorSession, CreateEditorSessionError> =
-			await sessionFactory.createFromFileSystemMap(state, codeEditorConfigurationService);
+			await sessionFactory.createFromFileSystemMap(state, codeEditorConfigurationService, {
+				locale: getDemoLocale()
+			});
 		if (!result.ok) {
 			handleError(new Error(result.error.message));
 			return;

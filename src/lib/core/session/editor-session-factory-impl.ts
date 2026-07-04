@@ -13,6 +13,11 @@ import type {
 	ZipImportError
 } from '$lib/core/file-system/persistance/import/file-system-import';
 import type { IEditorConfigurationService } from '$lib/core/editor/configuration/editor-config-models';
+import type {
+	EditorLocalizationOptions,
+	EditorMessages
+} from '$lib/core/localization/localization-models';
+import { resolveEditorMessages } from '$lib/core/localization/localization-models';
 import { EditorUserSpaceStateService } from '$lib/core/state/user-space/editor-user-space-state-impl';
 import { EditorWorkspaceV2 } from '$lib/core/workspace/editor-workspace-v2-impl';
 import { failure, success, type Result } from '$lib/core/shared/models-utils';
@@ -38,20 +43,24 @@ export class EditorSessionFactory implements IEditorSessionFactory {
 
 	public async createFromFileSystem(
 		fileSystemService: IFileSystemService,
-		editorConfigService: IEditorConfigurationService
+		editorConfigService: IEditorConfigurationService,
+		localization?: EditorLocalizationOptions
 	): Promise<Result<IEditorSession, CreateEditorSessionError>> {
+		const messages: EditorMessages = resolveEditorMessages(localization);
 		const workspace: EditorWorkspaceV2 = new EditorWorkspaceV2(
 			fileSystemService,
-			editorConfigService
+			editorConfigService,
+			messages
 		);
 		await workspace.initialize();
-		const session: IEditorSession = new EditorSession(workspace);
+		const session: IEditorSession = new EditorSession(workspace, messages);
 		return success(session);
 	}
 
 	public async createFromFileSystemMap(
 		fileSystemMap: FileSystemMapReadonly,
-		editorConfigService: IEditorConfigurationService
+		editorConfigService: IEditorConfigurationService,
+		localization?: EditorLocalizationOptions
 	): Promise<Result<IEditorSession, CreateEditorSessionError>> {
 		const loadResult: Result<IFileSystemEngine, OperationError> =
 			await FileSystemLoader.load(fileSystemMap);
@@ -66,20 +75,23 @@ export class EditorSessionFactory implements IEditorSessionFactory {
 		);
 		const fileSystemService: IFileSystemService = new FileSystemService(engine, commandFactory);
 
+		const messages: EditorMessages = resolveEditorMessages(localization);
 		const workspace: EditorWorkspaceV2 = new EditorWorkspaceV2(
 			fileSystemService,
 			editorConfigService,
+			messages,
 			userSpaceStateService
 		);
 		await workspace.initialize();
 
-		const session: IEditorSession = new EditorSession(workspace);
+		const session: IEditorSession = new EditorSession(workspace, messages);
 		return success(session);
 	}
 
 	public async createFromZip(
 		zipData: Blob,
-		editorConfigService: IEditorConfigurationService
+		editorConfigService: IEditorConfigurationService,
+		localization?: EditorLocalizationOptions
 	): Promise<Result<IEditorSession, CreateEditorSessionFromZipError>> {
 		const importResult: Result<ImportedFileSystemState, ZipImportError> =
 			await this.zipImporter.import(zipData);
@@ -87,7 +99,11 @@ export class EditorSessionFactory implements IEditorSessionFactory {
 			return failure(importResult.error);
 		}
 
-		return this.createFromFileSystemMap(importResult.value.fileSystemMap, editorConfigService);
+		return this.createFromFileSystemMap(
+			importResult.value.fileSystemMap,
+			editorConfigService,
+			localization
+		);
 	}
 
 	private buildFileSystemLoadError(causeMessage: string): CreateEditorSessionError {

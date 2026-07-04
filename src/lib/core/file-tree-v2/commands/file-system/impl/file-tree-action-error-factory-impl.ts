@@ -63,7 +63,9 @@ export class FileTreeActionErrorFactory implements IFileTreeActionErrorFactory {
 		const message: string = FileTreeActionErrorMessages.FILE_SYSTEM_ERROR(operationError.message);
 		const error: FileTreeActionError = {
 			kind: FileTreeActionErrorKind.FILE_SYSTEM_ERROR,
-			message: message
+			message: message,
+			params: operationError.params,
+			code: operationError.code
 		};
 		return error;
 	}

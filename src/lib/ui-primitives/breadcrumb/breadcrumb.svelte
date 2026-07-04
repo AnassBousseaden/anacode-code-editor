@@ -2,6 +2,8 @@
 	import type { WithElementRef } from '$lib/utils/cn.js';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { cn } from '$lib/utils/cn.js';
+	import type { EditorMessages } from '$lib/core/localization/localization-models';
+	import { getEditorMessages } from '$lib/core/localization/messages-context';
 
 	let {
 		ref = $bindable(null),
@@ -9,12 +11,14 @@
 		children,
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLElement>> = $props();
+
+	const messages: EditorMessages = getEditorMessages();
 </script>
 
 <nav
 	bind:this={ref}
 	data-slot="breadcrumb"
-	aria-label="breadcrumb"
+	aria-label={messages['breadcrumb.ariaLabel']}
 	class={cn('cn-breadcrumb', className)}
 	{...restProps}
 >

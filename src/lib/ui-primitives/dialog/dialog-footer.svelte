@@ -3,6 +3,8 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { Dialog as DialogPrimitive } from 'bits-ui';
 	import { Button } from '$lib/ui-primitives/button/index.js';
+	import type { EditorMessages } from '$lib/core/localization/localization-models';
+	import { getEditorMessages } from '$lib/core/localization/messages-context';
 
 	let {
 		ref = $bindable(null),
@@ -13,6 +15,8 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
 		showCloseButton?: boolean;
 	} = $props();
+
+	const messages: EditorMessages = getEditorMessages();
 </script>
 
 <div
@@ -25,7 +29,7 @@
 	{#if showCloseButton}
 		<DialogPrimitive.Close>
 			{#snippet child({ props })}
-				<Button variant="outline" {...props}>Close</Button>
+				<Button variant="outline" {...props}>{messages['common.close']}</Button>
 			{/snippet}
 		</DialogPrimitive.Close>
 	{/if}

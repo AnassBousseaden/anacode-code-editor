@@ -24,6 +24,21 @@ export interface ITransactionEventSource<TTransaction> {
 
 export interface OperationError {
 	readonly message: string;
+	/**
+	 * Runtime values for presentation-layer message interpolation (e.g. a
+	 * conflicting file `name`). Kept localization-free on purpose: the domain
+	 * only carries the raw values, and the presentation edge maps the error
+	 * kind to a localized template and substitutes these params. `message`
+	 * stays a diagnostic English string for logs.
+	 */
+	readonly params?: Readonly<Record<string, string | number>>;
+	/**
+	 * Stable machine-readable discriminant for presentation-layer mapping (e.g.
+	 * selecting a distinct localized template). Unlike `message`, which stays a
+	 * diagnostic English string, `code` is safe for equality checks across
+	 * boundaries.
+	 */
+	readonly code?: string;
 }
 
 export interface OperationFailure<K extends string> extends OperationError {

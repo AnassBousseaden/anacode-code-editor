@@ -10,6 +10,8 @@
 		CardTitle
 	} from '$lib/ui-primitives/card';
 
+	import { formatMessage, type EditorMessages } from '$lib/core/localization/localization-models';
+	import { getEditorMessages } from '$lib/core/localization/messages-context';
 	import type { IEditorPromptStackViewModel } from '$lib/view-models/editor-prompt/editor-prompt-stack-view-model';
 	import type {
 		ConflictResolutionPromptViewItem,
@@ -27,6 +29,8 @@
 
 	let { item, viewModel }: Props = $props();
 
+	const messages: EditorMessages = getEditorMessages();
+
 	function dispatch(entry: PromptActionViewItem): void {
 		viewModel.perform(entry.promptID, entry.action);
 	}
@@ -36,16 +40,13 @@
 	<CardHeader class="px-2.5">
 		<CardTitle class="flex items-center gap-2 text-xs">
 			<MessageCircleWarning class="size-5 text-muted-foreground" />
-			File changed on disk
+			{messages['prompt.conflict.title']}
 		</CardTitle>
 	</CardHeader>
 	<CardContent class="px-2.5 text-xs text-muted-foreground">
-		<p>
-			<span class="font-medium text-foreground">{item.fileName}</span> changed on disk since you opened
-			it.
-		</p>
+		<p>{formatMessage(messages['prompt.conflict.body'], { fileName: item.fileName })}</p>
 		{#if item.state === ConflictPromptViewItemStateKind.FAILED}
-			<p class="mt-1 text-destructive">{item.errorMessage}</p>
+			<p class="mt-1 text-destructive">{messages[item.errorMessageKey]}</p>
 		{/if}
 	</CardContent>
 	<CardFooter class="gap-1.5 px-2.5">
@@ -59,7 +60,7 @@
 				{#if item.retry.state === PromptActionState.LOADING}
 					<LoaderCircle class="animate-spin" />
 				{/if}
-				Retry
+				{messages['common.retry']}
 			</Button>
 		{:else}
 			<Button
@@ -72,7 +73,7 @@
 				{#if item.reload.state === PromptActionState.LOADING}
 					<LoaderCircle class="animate-spin" />
 				{/if}
-				Reload from disk
+				{messages['prompt.conflict.reload']}
 			</Button>
 			<Button
 				size="xs"
@@ -83,7 +84,7 @@
 				{#if item.overwrite.state === PromptActionState.LOADING}
 					<LoaderCircle class="animate-spin" />
 				{/if}
-				Overwrite disk
+				{messages['prompt.conflict.overwrite']}
 			</Button>
 		{/if}
 		<Button

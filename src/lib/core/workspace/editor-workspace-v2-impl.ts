@@ -30,6 +30,7 @@ import { FileTreeSelectionIntentService } from '../state/selection/file-tree-sel
 import type { IEditorUserSpaceStateService } from '../state/user-space/editor-user-space-state';
 import { EditorUserSpaceStateService } from '../state/user-space/editor-user-space-state-impl';
 import type { IEditorConfigurationService } from '$lib/core/editor/configuration/editor-config-models';
+import type { EditorMessages } from '$lib/core/localization/localization-models';
 import { EditorDocumentFactory } from '$lib/core/editor/document-factory/editor-document-factory-model-impl';
 import type { FileSystemWriteOrigin } from '$lib/core/file-system/domain/file-system-models';
 import type {
@@ -173,6 +174,7 @@ export class EditorWorkspaceV2 implements IEditorWorkspaceV2 {
 	constructor(
 		fileSystemService: IFileSystemService,
 		editorConfigurationService: IEditorConfigurationService,
+		messages: EditorMessages,
 		userSpaceStateService: IEditorUserSpaceStateService = new EditorUserSpaceStateService()
 	) {
 		this.fileSystemService = fileSystemService;
@@ -261,6 +263,7 @@ export class EditorWorkspaceV2 implements IEditorWorkspaceV2 {
 		);
 
 		this.editorPromptManager = new EditorPromptManager(
+			messages,
 			this.conflictResolutionService,
 			this.invalidDocumentService,
 			this.intentService,

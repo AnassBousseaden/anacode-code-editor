@@ -49,6 +49,11 @@
 			"svelte": "./dist/config.js",
 			"default": "./dist/config.js"
 		},
+		"./localization": {
+			"types": "./dist/localization.d.ts",
+			"svelte": "./dist/localization.js",
+			"default": "./dist/localization.js"
+		},
 		"./icons": {
 			"types": "./dist/icons.d.ts",
 			"svelte": "./dist/icons.js",
