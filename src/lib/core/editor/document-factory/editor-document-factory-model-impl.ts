@@ -18,6 +18,7 @@ import type {
 import { isFileNode } from '$lib/core/file-system/domain/file-system-models';
 import type { IFileSystemService } from '$lib/core/file-system/services/file-system-service';
 import type { IContentHashService } from '$lib/core/file-system/hashing/content-hash';
+import type { IMonacoRuntime } from '$lib/core/editor/monaco/monaco-runtime';
 import type { Result } from '$lib/core/shared/models-utils';
 import { failure, success } from '$lib/core/shared/models-utils';
 
@@ -29,15 +30,18 @@ const ErrorMessages = {
 } as const;
 
 export class EditorDocumentFactory implements IEditorDocumentFactory {
+	private readonly monacoRuntime: IMonacoRuntime;
 	private readonly contentHashService: IContentHashService;
 	private readonly fileSystemService: IFileSystemService;
 	private readonly workspaceOrigin: FileSystemWriteOrigin;
 
 	public constructor(
+		monacoRuntime: IMonacoRuntime,
 		contentHashService: IContentHashService,
 		fileSystemService: IFileSystemService,
 		workspaceOrigin: FileSystemWriteOrigin
 	) {
+		this.monacoRuntime = monacoRuntime;
 		this.contentHashService = contentHashService;
 		this.fileSystemService = fileSystemService;
 		this.workspaceOrigin = workspaceOrigin;
@@ -69,6 +73,7 @@ export class EditorDocumentFactory implements IEditorDocumentFactory {
 
 		try {
 			const savableDocument: ISavableEditorDocument = new SavableEditorDocument(
+				this.monacoRuntime,
 				nodeID,
 				options,
 				hashResult.value,

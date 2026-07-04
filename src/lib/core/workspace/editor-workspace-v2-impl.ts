@@ -31,6 +31,7 @@ import type { IEditorUserSpaceStateService } from '../state/user-space/editor-us
 import { EditorUserSpaceStateService } from '../state/user-space/editor-user-space-state-impl';
 import type { IEditorConfigurationService } from '$lib/core/editor/configuration/editor-config-models';
 import type { EditorMessages } from '$lib/core/localization/localization-models';
+import type { IMonacoRuntime } from '$lib/core/editor/monaco/monaco-runtime';
 import { EditorDocumentFactory } from '$lib/core/editor/document-factory/editor-document-factory-model-impl';
 import type { FileSystemWriteOrigin } from '$lib/core/file-system/domain/file-system-models';
 import type {
@@ -172,6 +173,7 @@ export class EditorWorkspaceV2 implements IEditorWorkspaceV2 {
 	private readonly invalidDocumentService: IInvalidDocumentService;
 
 	constructor(
+		monacoRuntime: IMonacoRuntime,
 		fileSystemService: IFileSystemService,
 		editorConfigurationService: IEditorConfigurationService,
 		messages: EditorMessages,
@@ -190,6 +192,7 @@ export class EditorWorkspaceV2 implements IEditorWorkspaceV2 {
 		const fileURIBuilder: IFileURIBuilder = new FileURIBuilder();
 
 		const editorDocumentFactory: IEditorDocumentFactory = new EditorDocumentFactory(
+			monacoRuntime,
 			contentHashService,
 			fileSystemService,
 			workspaceOrigin
@@ -229,7 +232,7 @@ export class EditorWorkspaceV2 implements IEditorWorkspaceV2 {
 
 		this.viewStateRegistry = new EditorViewStateRegistry();
 
-		this.codeEditor = new CodeEditorComponentController(editorConfigurationService);
+		this.codeEditor = new CodeEditorComponentController(monacoRuntime, editorConfigurationService);
 		const attachmentPort: EditorAttachmentPort = new EditorAttachmentPort(this.codeEditor);
 
 		this.orchestration = new EditorOrchestrationService(

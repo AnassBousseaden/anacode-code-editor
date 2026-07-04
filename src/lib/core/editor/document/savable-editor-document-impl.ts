@@ -1,7 +1,8 @@
 import { get, type Readable, type Unsubscriber, type Writable, writable } from 'svelte/store';
-import { editor, type IDisposable, Uri } from 'monaco-editor';
+import type { editor, IDisposable, Uri } from 'monaco-editor';
 
 import { generateRandomID } from '$lib/core/shared/models-utils';
+import type { IMonacoRuntime } from '$lib/core/editor/monaco/monaco-runtime';
 import type {
 	AtomicEventPayload,
 	ContentHash,
@@ -86,6 +87,7 @@ export class SavableEditorDocument implements ISavableEditorDocument {
 	private pendingSaveCount: number;
 
 	public constructor(
+		monacoRuntime: IMonacoRuntime,
 		nodeID: NodeID,
 		editorDocumentOptions: SavableEditorDocumentOptions,
 		initialContentHash: ContentHash,
@@ -109,13 +111,17 @@ export class SavableEditorDocument implements ISavableEditorDocument {
 		this.disposed = false;
 		this.pendingSaveCount = 0;
 
-		const fileUri: Uri = Uri.parse(editorDocumentOptions.fileURI);
-		const existingModel: editor.ITextModel | null = editor.getModel(fileUri);
+		const fileUri: Uri = monacoRuntime.Uri.parse(editorDocumentOptions.fileURI);
+		const existingModel: editor.ITextModel | null = monacoRuntime.editor.getModel(fileUri);
 		if (existingModel !== null) {
 			throw new Error('SavableEditorDocument already exists for this file URI');
 		}
 
-		this._model = editor.createModel(editorDocumentOptions.content, undefined, fileUri);
+		this._model = monacoRuntime.editor.createModel(
+			editorDocumentOptions.content,
+			undefined,
+			fileUri
+		);
 		this.applyConfigurableOptions(configurableDocumentOptions);
 
 		const initialDraftStatus: DraftStatus = deriveInitialDraftStatus(

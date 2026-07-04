@@ -18,6 +18,12 @@ import type {
 	EditorMessages
 } from '$lib/core/localization/localization-models';
 import { resolveEditorMessages } from '$lib/core/localization/localization-models';
+import type {
+	IMonacoRuntime,
+	IMonacoRuntimeProvider,
+	MonacoRuntimeLoadError
+} from '$lib/core/editor/monaco/monaco-runtime';
+import { MonacoRuntimeProvider } from '$lib/core/editor/monaco/monaco-runtime-provider-impl';
 import { EditorUserSpaceStateService } from '$lib/core/state/user-space/editor-user-space-state-impl';
 import { EditorWorkspaceV2 } from '$lib/core/workspace/editor-workspace-v2-impl';
 import { failure, success, type Result } from '$lib/core/shared/models-utils';
@@ -36,9 +42,14 @@ import { EditorSession } from '$lib/core/session/editor-session-impl';
 
 export class EditorSessionFactory implements IEditorSessionFactory {
 	private readonly zipImporter: IFileSystemZipImporter;
+	private readonly monacoRuntimeProvider: IMonacoRuntimeProvider;
 
-	public constructor(zipImporter: IFileSystemZipImporter) {
+	public constructor(
+		zipImporter: IFileSystemZipImporter,
+		monacoRuntimeProvider: IMonacoRuntimeProvider = new MonacoRuntimeProvider()
+	) {
 		this.zipImporter = zipImporter;
+		this.monacoRuntimeProvider = monacoRuntimeProvider;
 	}
 
 	public async createFromFileSystem(
@@ -46,8 +57,15 @@ export class EditorSessionFactory implements IEditorSessionFactory {
 		editorConfigService: IEditorConfigurationService,
 		localization?: EditorLocalizationOptions
 	): Promise<Result<IEditorSession, CreateEditorSessionError>> {
+		const monacoRuntimeResult: Result<IMonacoRuntime, MonacoRuntimeLoadError> =
+			await this.monacoRuntimeProvider.load(localization?.locale);
+		if (!monacoRuntimeResult.ok) {
+			return failure(this.buildMonacoLoadError(monacoRuntimeResult.error.message));
+		}
+
 		const messages: EditorMessages = resolveEditorMessages(localization);
 		const workspace: EditorWorkspaceV2 = new EditorWorkspaceV2(
+			monacoRuntimeResult.value,
 			fileSystemService,
 			editorConfigService,
 			messages
@@ -75,8 +93,15 @@ export class EditorSessionFactory implements IEditorSessionFactory {
 		);
 		const fileSystemService: IFileSystemService = new FileSystemService(engine, commandFactory);
 
+		const monacoRuntimeResult: Result<IMonacoRuntime, MonacoRuntimeLoadError> =
+			await this.monacoRuntimeProvider.load(localization?.locale);
+		if (!monacoRuntimeResult.ok) {
+			return failure(this.buildMonacoLoadError(monacoRuntimeResult.error.message));
+		}
+
 		const messages: EditorMessages = resolveEditorMessages(localization);
 		const workspace: EditorWorkspaceV2 = new EditorWorkspaceV2(
+			monacoRuntimeResult.value,
 			fileSystemService,
 			editorConfigService,
 			messages,
@@ -111,6 +136,15 @@ export class EditorSessionFactory implements IEditorSessionFactory {
 			CreateEditorSessionErrorMessages[CreateEditorSessionErrorKind.FILE_SYSTEM_LOAD_FAILED];
 		return {
 			kind: CreateEditorSessionErrorKind.FILE_SYSTEM_LOAD_FAILED,
+			message: `${baseMessage}: ${causeMessage}`
+		};
+	}
+
+	private buildMonacoLoadError(causeMessage: string): CreateEditorSessionError {
+		const baseMessage: string =
+			CreateEditorSessionErrorMessages[CreateEditorSessionErrorKind.MONACO_LOAD_FAILED];
+		return {
+			kind: CreateEditorSessionErrorKind.MONACO_LOAD_FAILED,
 			message: `${baseMessage}: ${causeMessage}`
 		};
 	}

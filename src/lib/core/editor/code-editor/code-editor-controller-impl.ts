@@ -1,4 +1,4 @@
-import { editor } from 'monaco-editor';
+import type { editor } from 'monaco-editor';
 import type { IEditorDocument } from '$lib/core/editor/document/editor-document';
 import { get, type Unsubscriber } from 'svelte/store';
 import {
@@ -9,8 +9,7 @@ import {
 	StaticDefaultEditorConfigurationService
 } from '$lib/core/editor/configuration/editor-config-models';
 import type { ICodeEditorComponentController } from './code-editor-controller';
-import { initMonacoWorkers } from '$lib/core/editor/utils/workers/code-editor-workers';
-import { initCodeEditorThemes } from '$lib/core/editor/utils/themes/editor-themes';
+import type { IMonacoRuntime } from '$lib/core/editor/monaco/monaco-runtime';
 
 function mapLineNumbersOption(showLineNumbers: boolean): 'on' | 'off' {
 	if (showLineNumbers) {
@@ -47,14 +46,17 @@ export class CodeEditorComponentController implements ICodeEditorComponentContro
 	private editorInstance: editor.IStandaloneCodeEditor | null;
 	private currentEditorDocument: IEditorDocument | null;
 	private editorConfiguration: EditorConfiguration;
+	private readonly monacoRuntime: IMonacoRuntime;
 	private readonly configurationService: IEditorConfigurationService;
 	private readonly editorConfigUnsubscriber: Unsubscriber;
 	private readonly globalConfigUnsubscriber: Unsubscriber;
 	private readonly modelConfigUnsubscriber: Unsubscriber;
 
 	constructor(
+		monacoRuntime: IMonacoRuntime,
 		configurationService: IEditorConfigurationService = new StaticDefaultEditorConfigurationService()
 	) {
+		this.monacoRuntime = monacoRuntime;
 		this.configurationService = configurationService;
 		this.editorInstance = null;
 		this.currentEditorDocument = null;
@@ -77,9 +79,6 @@ export class CodeEditorComponentController implements ICodeEditorComponentContro
 				this.onModelConfigurationChanged(modelConfig);
 			}
 		);
-
-		initMonacoWorkers();
-		initCodeEditorThemes();
 	}
 
 	attach(domElement: HTMLElement): void {
@@ -92,7 +91,7 @@ export class CodeEditorComponentController implements ICodeEditorComponentContro
 				get(this.configurationService.editorModelConfig),
 				get(this.configurationService.editorGlobalConfig)
 			);
-		this.editorInstance = editor.create(domElement, constructionOptions);
+		this.editorInstance = this.monacoRuntime.editor.create(domElement, constructionOptions);
 
 		if (this.currentEditorDocument !== null) {
 			this.editorInstance.setModel(this.currentEditorDocument.model);

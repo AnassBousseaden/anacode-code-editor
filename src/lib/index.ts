@@ -28,6 +28,10 @@ export { default as EditorSession } from '$lib/components/EditorSession.svelte';
 export * from '$lib/core/session/editor-session';
 export * from '$lib/core/session/editor-session-factory-impl';
 
+// The Monaco runtime boundary the factory loads Monaco through.
+export * from '$lib/core/editor/monaco/monaco-runtime';
+export * from '$lib/core/editor/monaco/monaco-runtime-provider-impl';
+
 // Localization configuration types needed to localize the drop-in session.
 export type {
 	EditorLocale,

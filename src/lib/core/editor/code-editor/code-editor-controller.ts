@@ -1,4 +1,4 @@
-import { editor } from 'monaco-editor';
+import type { editor } from 'monaco-editor';
 import type { IEditorDocument } from '$lib/core/editor/document/editor-document';
 import type { EditorConfiguration } from '$lib/core/editor/configuration/editor-config-models';
 import type { IDisposable1 } from '$lib/core/shared/models-utils';

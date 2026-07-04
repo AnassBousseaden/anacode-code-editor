@@ -1,4 +1,4 @@
-import { editor } from 'monaco-editor';
+import type { editor } from 'monaco-editor';
 import type { Brand, IDisposable1 } from '$lib/core/shared/models-utils';
 
 export interface EditorDocumentOptions {

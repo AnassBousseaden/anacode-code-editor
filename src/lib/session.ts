@@ -10,3 +10,7 @@
 export * from '$lib/core/session/editor-session';
 export * from '$lib/core/session/editor-session-factory-impl';
 export * from '$lib/core/session/editor-session-impl';
+
+// The Monaco runtime boundary the factory loads Monaco through.
+export * from '$lib/core/editor/monaco/monaco-runtime';
+export * from '$lib/core/editor/monaco/monaco-runtime-provider-impl';

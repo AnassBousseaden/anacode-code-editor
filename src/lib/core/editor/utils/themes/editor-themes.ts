@@ -1,20 +1,21 @@
 import nightOwl from './Night Owl.json';
 import tomorrowTheme from './Tomorrow.json';
-import { editor } from 'monaco-editor';
+import type { editor } from 'monaco-editor';
 import { CodeEditorTheme } from '$lib/core/editor/configuration/editor-config-models';
+import type { MonacoEditorNamespace } from '$lib/core/editor/monaco/monaco-runtime';
 
 export { updateTheme };
 
-export function initCodeEditorThemes(): void {
+export function initCodeEditorThemes(monacoEditor: MonacoEditorNamespace): void {
 	const nightOwlVsCodeTheme: editor.IStandaloneThemeData = nightOwl as editor.IStandaloneThemeData;
 	const tomorrowVsCodeTheme: editor.IStandaloneThemeData =
 		tomorrowTheme as editor.IStandaloneThemeData;
 
-	editor.defineTheme(CodeEditorTheme.DARK, nightOwlVsCodeTheme);
-	editor.defineTheme(CodeEditorTheme.LIGHT, tomorrowVsCodeTheme);
+	monacoEditor.defineTheme(CodeEditorTheme.DARK, nightOwlVsCodeTheme);
+	monacoEditor.defineTheme(CodeEditorTheme.LIGHT, tomorrowVsCodeTheme);
 }
 
-function updateTheme(isDark: boolean): void {
+function updateTheme(monacoEditor: MonacoEditorNamespace, isDark: boolean): void {
 	const codeEditorTheme: CodeEditorTheme = isDark ? CodeEditorTheme.DARK : CodeEditorTheme.LIGHT;
-	editor.setTheme(codeEditorTheme);
+	monacoEditor.setTheme(codeEditorTheme);
 }

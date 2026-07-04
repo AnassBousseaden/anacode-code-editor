@@ -1,9 +1,9 @@
 // Demo-app locale persistence for the playground.
 //
 // The demo plays the host-app role: it persists the chosen locale, reloads the
-// page, loads Monaco's global NLS pack early (see src/hooks.client.ts), and then
-// creates editor sessions with the stored locale. Playground-only — outside
-// src/lib/, not published.
+// page, and creates editor sessions with the stored locale. The session
+// factory's MonacoRuntimeProvider loads the matching Monaco NLS pack before
+// Monaco first evaluates. Playground-only — outside src/lib/, not published.
 
 import type { EditorLocale } from '$lib';
 
@@ -36,7 +36,7 @@ export function getDemoLocale(): EditorLocale {
  * widget, …) through a page-global NLS pack that is bound when the
  * `monaco-editor` module first evaluates. That binding cannot change at
  * runtime, so switching languages must re-bootstrap the page (see
- * src/hooks.client.ts, which loads the pack before monaco evaluates).
+ * MonacoRuntimeProvider, which loads the pack before monaco evaluates).
  */
 export function setDemoLocale(locale: EditorLocale): void {
 	if (typeof localStorage === 'undefined') {
