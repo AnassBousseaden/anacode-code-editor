@@ -1,4 +1,4 @@
-import type { EditorLocale } from '$lib/core/localization/localization-models';
+import { EditorLocale } from '$lib/core/localization/localization-models';
 import type {
 	IMonacoRuntime,
 	IMonacoRuntimeProvider,
@@ -47,7 +47,7 @@ export class MonacoRuntimeProvider implements IMonacoRuntimeProvider {
 	}
 
 	public load(
-		locale: EditorLocale = 'en'
+		locale: EditorLocale = EditorLocale.EN
 	): Promise<Result<IMonacoRuntime, MonacoRuntimeLoadError>> {
 		if (this.cache.kind === MonacoCacheStateKind.NOT_LOADED) {
 			const pending: Promise<Result<IMonacoRuntime, MonacoRuntimeLoadError>> =
@@ -84,10 +84,10 @@ export class MonacoRuntimeProvider implements IMonacoRuntimeProvider {
 // Monaco binds its UI locale page-wide at first evaluation: the NLS pack must
 // finish importing before `monaco-editor` does.
 async function importMonacoRuntime(locale: EditorLocale): Promise<IMonacoRuntime> {
-	if (locale === 'fr') {
+	if (locale === EditorLocale.FR) {
 		// @ts-expect-error — monaco ships NLS packs as bare .js with no types.
 		await import('monaco-editor/esm/nls.messages.fr.js');
-	} else if (locale === 'es') {
+	} else if (locale === EditorLocale.ES) {
 		// @ts-expect-error — monaco ships NLS packs as bare .js with no types.
 		await import('monaco-editor/esm/nls.messages.es.js');
 	}
@@ -99,11 +99,11 @@ async function importMonacoRuntime(locale: EditorLocale): Promise<IMonacoRuntime
 	return { editor: monaco.editor, Uri: monaco.Uri };
 }
 
+// Diagnostic only — the factory resolves the user-facing sentence from the kind.
 function buildLoadError(error: unknown): MonacoRuntimeLoadError {
-	const causeMessage: string = error instanceof Error ? error.message : 'Unknown error';
 	return {
 		kind: MonacoRuntimeLoadErrorKind.LOAD_FAILED,
-		message: `Failed to load the Monaco runtime: ${causeMessage}`
+		message: error instanceof Error ? error.message : String(error)
 	};
 }
 
