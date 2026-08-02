@@ -111,7 +111,7 @@
 	<DialogHeader class="space-y-2">
 		<div class="flex items-center gap-3">
 			<span
-				class="flex size-9 shrink-0 items-center justify-center rounded-full bg-failure text-failure-foreground"
+				class="flex size-8 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive"
 			>
 				<AlertTriangle class="size-4" />
 			</span>
@@ -124,7 +124,7 @@
 		<p class="text-sm text-muted-foreground">{messages.dialogDeleteWarning}</p>
 
 		{#if dialogState.kind === DeleteDialogStateKind.SUBMIT_FAILED}
-			<p class="rounded-md bg-failure px-2.5 py-1.5 text-xs text-failure-foreground">
+			<p class="rounded-md bg-destructive/10 px-2.5 py-1.5 text-xs text-destructive">
 				{resolveFileTreeActionErrorContent(messages, dialogState.submitError)}
 			</p>
 		{/if}

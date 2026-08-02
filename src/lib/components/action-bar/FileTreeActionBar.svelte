@@ -176,15 +176,15 @@
 </script>
 
 <TooltipProvider>
-	<div class="flex h-11 shrink-0 items-center justify-between border-b border-border/40 px-1.5">
+	<div class="flex h-9 shrink-0 items-center justify-between border-b border-sidebar-border px-1.5">
 		<div class="flex items-center gap-0.5">
-			<div class="flex items-center rounded-md bg-muted/40 p-0.5">
+			<div class="flex items-center rounded-md bg-muted p-0.5">
 				<TooltipRoot>
 					<TooltipTrigger
 						class={buttonVariants({
 							variant: 'ghost',
-							size: 'icon',
-							className: 'size-7 rounded-md hover:bg-background/80'
+							size: 'icon-xs',
+							className: 'hover:bg-background dark:hover:bg-background'
 						})}
 						disabled={!isCollapseNodeEnabled}
 						onclick={handleCollapseNode}
@@ -198,8 +198,8 @@
 					<TooltipTrigger
 						class={buttonVariants({
 							variant: 'ghost',
-							size: 'icon',
-							className: 'size-7 rounded-md hover:bg-background/80'
+							size: 'icon-xs',
+							className: 'hover:bg-background dark:hover:bg-background'
 						})}
 						disabled={!isExpandNodeEnabled}
 						onclick={handleExpandNode}
@@ -210,15 +210,11 @@
 				</TooltipRoot>
 			</div>
 
-			<div class="mx-0.5 h-5 w-px bg-border/50"></div>
+			<div class="mx-0.5 h-5 w-px bg-border"></div>
 
 			<TooltipRoot>
 				<TooltipTrigger
-					class={buttonVariants({
-						variant: 'ghost',
-						size: 'icon',
-						className: 'size-7 rounded-md hover:bg-accent/80'
-					})}
+					class={buttonVariants({ variant: 'ghost', size: 'icon-xs' })}
 					disabled={!isLocateActiveFileEnabled}
 					onclick={handleLocateFile}
 				>
@@ -231,11 +227,7 @@
 				<TooltipRoot>
 					<TooltipTrigger>
 						<DropdownMenuTrigger
-							class={buttonVariants({
-								variant: 'ghost',
-								size: 'icon',
-								className: 'size-7 rounded-md hover:bg-accent/80'
-							})}
+							class={buttonVariants({ variant: 'ghost', size: 'icon-xs' })}
 							disabled={!isCreateEnabled}
 						>
 							<Plus class="size-3.5 text-muted-foreground" />
@@ -265,11 +257,7 @@
 
 			<TooltipRoot>
 				<TooltipTrigger
-					class={buttonVariants({
-						variant: 'ghost',
-						size: 'icon',
-						className: 'size-7 rounded-md hover:bg-accent/80'
-					})}
+					class={buttonVariants({ variant: 'ghost', size: 'icon-xs' })}
 					disabled={!isRenameEnabled}
 					onclick={handleRename}
 				>
@@ -280,11 +268,7 @@
 
 			<TooltipRoot>
 				<TooltipTrigger
-					class={buttonVariants({
-						variant: 'ghost',
-						size: 'icon',
-						className: 'size-7 rounded-md hover:bg-accent/80'
-					})}
+					class={buttonVariants({ variant: 'ghost', size: 'icon-xs' })}
 					disabled={!isDeleteEnabled}
 					onclick={handleDelete}
 				>
@@ -293,15 +277,11 @@
 				<TooltipContent side="bottom">{deletePresentation.label}</TooltipContent>
 			</TooltipRoot>
 
-			<div class="mx-0.5 h-5 w-px bg-border/50"></div>
+			<div class="mx-0.5 h-5 w-px bg-border"></div>
 
 			<TooltipRoot>
 				<TooltipTrigger
-					class={buttonVariants({
-						variant: 'ghost',
-						size: 'icon',
-						className: 'size-7 rounded-md hover:bg-accent/80'
-					})}
+					class={buttonVariants({ variant: 'ghost', size: 'icon-xs' })}
 					disabled={!isSaveAllEnabled}
 					onclick={handleSaveAll}
 				>
@@ -313,11 +293,7 @@
 
 		<TooltipRoot>
 			<TooltipTrigger
-				class={buttonVariants({
-					variant: 'ghost',
-					size: 'icon',
-					className: 'size-7 rounded-md hover:bg-accent/80'
-				})}
+				class={buttonVariants({ variant: 'ghost', size: 'icon-xs' })}
 				onclick={onCollapseSidebar}
 			>
 				<PanelLeftClose class="size-3.5 text-muted-foreground" />

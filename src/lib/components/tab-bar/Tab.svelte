@@ -16,6 +16,8 @@
 	} from '$lib/view-models/file-tree/icons/file-icon-factory';
 	import type { ITabBarViewModelV2 } from '$lib/view-models/tab-bar/tab-bar-view-model-v2';
 	import { cn } from '$lib/utils/cn';
+	import { TAB_BAR_NODE_ID_ATTRIBUTE } from '$lib/components/tab-bar/tab-bar-data-attributes';
+	import type { NodeID } from '$lib/core/file-system/domain/file-system-models';
 
 	interface Props {
 		viewModel: ITabBarViewModelV2;
@@ -31,6 +33,10 @@
 	let isHovered = $state(false);
 
 	const iconID: ThemedIconID = $derived(fileIconFactory.getThemedIconIDByFileName(tabEntry.name));
+
+	const nodeIDAttribute: Record<string, NodeID> = $derived({
+		[TAB_BAR_NODE_ID_ATTRIBUTE]: tabEntry.nodeID
+	});
 
 	function handleClick(): void {
 		viewModel.selectTab(tabEntry.nodeID);
@@ -58,12 +64,13 @@
 
 <div
 	aria-selected={tabEntry.isActive}
+	{...nodeIDAttribute}
 	class={cn(
-		'group relative flex h-full items-center rounded-t-lg',
-		'transition-all duration-150 ease-out',
+		'group relative flex h-full items-center border-r border-border',
+		'transition-colors duration-150 ease-out',
 		tabEntry.isActive
-			? 'bg-background text-foreground shadow-sm'
-			: 'bg-transparent text-muted-foreground hover:bg-muted/60 hover:text-foreground'
+			? 'bg-background text-foreground'
+			: 'bg-transparent text-muted-foreground hover:text-foreground'
 	)}
 	onmouseenter={() => (isHovered = true)}
 	onmouseleave={() => (isHovered = false)}
@@ -76,28 +83,28 @@
 		onkeydown={handleKeyDown}
 		title={tabEntry.name}
 	>
-		<ThemedIcon class="shrink-0 opacity-80" size={18} themed={iconID} />
+		<ThemedIcon class="shrink-0 opacity-80" size={16} themed={iconID} />
 		<span class="max-w-32 truncate">{tabEntry.name}</span>
 		{#if tabEntry.isReadOnly}
-			<Lock class="size-3 shrink-0 text-muted-foreground/60" />
+			<Lock class="size-3.5 shrink-0 text-muted-foreground" />
 		{/if}
 	</button>
 
 	{#if tabEntry.saveStatus.kind === TabSaveStatusKind.DIRTY}
 		{#if tabEntry.saveStatus.entryKind === SaveEntryKind.SAVEABLE}
 			<span class="ml-1 mr-2 flex shrink-0 items-center" title={messages.commonStatusUnsaved}>
-				<CircleDot class="size-4 text-foreground" />
+				<CircleDot class="size-3.5 text-foreground" />
 			</span>
 		{:else if tabEntry.saveStatus.entryKind === SaveEntryKind.CONFLICTED}
 			<span
 				class="ml-1 mr-2 flex shrink-0 items-center"
 				title={messages.commonStatusConflicted}
 			>
-				<CircleAlert class="size-4 text-primary" />
+				<CircleAlert class="size-3.5 text-warning-foreground" />
 			</span>
 		{:else if tabEntry.saveStatus.entryKind === SaveEntryKind.INVALID}
 			<span class="ml-1 mr-2 flex shrink-0 items-center" title={messages.commonStatusInvalid}>
-				<CircleAlert class="size-4 text-destructive" />
+				<CircleAlert class="size-3.5 text-destructive" />
 			</span>
 		{/if}
 	{/if}
@@ -105,10 +112,10 @@
 	<button
 		aria-label={messages.tabCloseAriaLabel({ name: tabEntry.name })}
 		class={cn(
-			'mr-2 flex size-5 items-center justify-center rounded-md',
+			'mr-2 flex size-4 items-center justify-center rounded-sm text-muted-foreground',
 			'transition-all duration-150 ease-out',
 			isHovered || tabEntry.isActive
-				? 'opacity-100 hover:bg-foreground/10'
+				? 'opacity-100 hover:text-foreground'
 				: 'pointer-events-none opacity-0'
 		)}
 		onclick={handleClose}
@@ -120,6 +127,6 @@
 	</button>
 
 	{#if tabEntry.isActive}
-		<div class="absolute bottom-0 left-1 right-1 h-[2px] rounded-full bg-primary"></div>
+		<div class="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"></div>
 	{/if}
 </div>

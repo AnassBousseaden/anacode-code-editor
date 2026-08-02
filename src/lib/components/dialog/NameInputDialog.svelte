@@ -286,7 +286,6 @@
 		>
 		<Input
 			bind:ref={inputElement}
-			class="h-10"
 			disabled={isInputDisabled}
 			id="name-input-dialog-input"
 			oninput={handleInput}
@@ -296,11 +295,11 @@
 		/>
 
 		{#if dialogState.kind === NameInputDialogStateKind.EDITING_INVALID}
-			<p class="text-xs text-failure-foreground">
+			<p class="text-xs text-destructive">
 				{resolveFileTreeActionErrorContent(messages, dialogState.validationError)}
 			</p>
 		{:else if dialogState.kind === NameInputDialogStateKind.SUBMIT_FAILED}
-			<p class="rounded-md bg-failure px-2.5 py-1.5 text-xs text-failure-foreground">
+			<p class="rounded-md bg-destructive/10 px-2.5 py-1.5 text-xs text-destructive">
 				{resolveFileTreeActionErrorContent(messages, dialogState.submitError)}
 			</p>
 		{/if}

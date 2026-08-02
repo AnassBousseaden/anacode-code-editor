@@ -167,7 +167,7 @@
 	{#if loadErrorMessage !== null}
 		<div class="flex flex-1 items-center justify-center p-6">
 			<div
-				class="max-w-xl rounded-lg border border-failure bg-card p-4 text-sm text-failure-foreground"
+				class="max-w-xl rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
 			>
 				{loadErrorMessage}
 			</div>

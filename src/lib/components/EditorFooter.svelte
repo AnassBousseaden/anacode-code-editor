@@ -10,7 +10,7 @@
 </script>
 
 <div
-	class="flex h-7 items-center justify-end gap-2 border-t border-border/40 bg-card/30 px-3 text-xs"
+	class="flex h-7 items-center justify-end gap-2 border-t border-border bg-muted px-3 text-xs"
 >
 	<EditorPromptNotificationBar {session} />
 </div>

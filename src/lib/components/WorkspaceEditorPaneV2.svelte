@@ -67,7 +67,7 @@
 		<ResizablePaneGroup class="h-full w-full" direction="horizontal">
 			<ResizablePane
 				bind:this={sidebarPane}
-				class="flex flex-col bg-card/50 backdrop-blur-sm"
+				class="flex flex-col bg-sidebar text-sidebar-foreground"
 				collapsedSize={SIDEBAR_COLLAPSED_SIZE}
 				collapsible={true}
 				defaultSize={SIDEBAR_DEFAULT_SIZE}
@@ -77,14 +77,10 @@
 				onExpand={handleExpand}
 			>
 				{#if isCollapsed}
-					<div class="flex h-11 items-center justify-center border-b border-border/40">
+					<div class="flex h-9 items-center justify-center border-b border-sidebar-border">
 						<TooltipRoot>
 							<TooltipTrigger
-								class={buttonVariants({
-									variant: 'ghost',
-									size: 'icon',
-									className: 'size-8 rounded-md hover:bg-accent/80'
-								})}
+								class={buttonVariants({ variant: 'ghost', size: 'icon-sm' })}
 								onclick={toggleSidebar}
 							>
 								<PanelLeft class="size-4 text-muted-foreground" />
@@ -108,7 +104,7 @@
 				{/if}
 			</ResizablePane>
 
-			<ResizableHandle class="w-px bg-border/50 transition-colors hover:bg-primary/50" />
+			<ResizableHandle class="w-px bg-border transition-colors hover:bg-primary" />
 
 			<ResizablePane class="flex min-w-0 flex-col bg-background" defaultSize={75}>
 				<TabBarV2 tabProjection={session.tabProjection} intentCommands={session.intent} />
