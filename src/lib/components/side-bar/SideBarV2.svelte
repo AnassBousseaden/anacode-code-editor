@@ -96,10 +96,10 @@
 <div class="flex h-full flex-col overflow-hidden">
 	<FileTreeActionBar viewModel={actionBarViewModel} {onCollapseSidebar} />
 
-	<div class="flex min-h-8 shrink-0 items-center gap-2 border-b border-border/30 px-2">
+	<div class="flex min-h-8 shrink-0 items-center gap-2 border-b border-sidebar-border px-2">
 		<Search class="size-4 shrink-0 text-muted-foreground" />
 		<input
-			class="h-6 w-full bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none"
+			class="h-6 w-full bg-transparent text-[13px] text-sidebar-foreground placeholder:text-muted-foreground focus:outline-none"
 			oninput={handleSearchInput}
 			placeholder={messages.sideBarSearchPlaceholder}
 			type="text"
@@ -107,7 +107,7 @@
 		/>
 		{#if searchQuery !== ''}
 			<button
-				class="shrink-0 text-muted-foreground hover:text-foreground"
+				class="shrink-0 text-muted-foreground hover:text-sidebar-foreground"
 				onclick={clearSearch}
 				type="button"
 			>
@@ -116,7 +116,7 @@
 		{/if}
 	</div>
 
-	<div class="min-h-0 flex-1 overflow-hidden border-r border-border/30">
+	<div class="min-h-0 flex-1 overflow-hidden border-r border-sidebar-border">
 		<FileTreeView
 			viewModel={fileTreeViewModel}
 			contextMenuViewModel={contextMenuViewModel}

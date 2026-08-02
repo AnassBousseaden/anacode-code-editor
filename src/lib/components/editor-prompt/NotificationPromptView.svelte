@@ -40,7 +40,7 @@
 <div
 	class="flex items-center gap-2 rounded-md border bg-card px-2.5 py-1.5 text-xs shadow-sm"
 >
-	<IconComponent class="size-5 text-muted-foreground" />
+	<IconComponent class="size-4 text-muted-foreground" />
 	<div class="min-w-0 flex-1">
 		<span class="font-medium text-foreground">{item.title}</span>
 		<span class="text-muted-foreground"> — {item.content}</span>

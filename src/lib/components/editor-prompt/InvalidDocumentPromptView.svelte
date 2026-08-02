@@ -36,10 +36,10 @@
 	}
 </script>
 
-<Card size="sm" class="min-w-[350px] gap-1 py-2">
+<Card size="sm" class="min-w-80 gap-1 py-2">
 	<CardHeader class="px-2.5">
 		<CardTitle class="flex items-center gap-2 text-nowrap text-xs">
-			<Shredder class="size-5 text-muted-foreground" />
+			<Shredder class="size-4 text-muted-foreground" />
 			{messages.promptInvalidDocTitle}
 		</CardTitle>
 	</CardHeader>

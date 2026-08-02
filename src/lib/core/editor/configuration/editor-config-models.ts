@@ -32,7 +32,7 @@ export const DEFAULT_EDITOR_MODEL_CONFIG: EditorModelConfiguration = {
 };
 
 export const DEFAULT_CONFIG: EditorConfiguration = {
-	fontSize: 16,
+	fontSize: 14,
 	wordWrap: 'on',
 	showLineNumbers: true,
 	minimapEnabled: false,

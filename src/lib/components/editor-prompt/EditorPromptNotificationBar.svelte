@@ -33,7 +33,7 @@
 
 {#if hiddenCount > 0}
 	<Button variant="ghost" size="xs" onclick={() => viewModel.showAll()}>
-		<MessageCircleWarning class="size-3 text-muted-foreground" />
+		<MessageCircleWarning class="text-muted-foreground" />
 		{messages.promptNotificationBarHidden({ count: hiddenCount })}
 	</Button>
 {/if}

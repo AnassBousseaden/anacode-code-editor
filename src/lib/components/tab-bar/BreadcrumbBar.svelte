@@ -36,17 +36,15 @@
 </script>
 
 {#if activeBreadcrumb.kind === ActiveBreadcrumbKind.PRESENT}
-	<div class="flex min-h-8 items-center bg-background/80 px-3 backdrop-blur-sm">
+	<div class="flex min-h-6 items-center bg-background px-3">
 		<BreadcrumbRoot>
 			<BreadcrumbList class="flex-nowrap gap-1 sm:gap-1">
 				{#each activeBreadcrumb.segments as segment, index (segment.fullPath)}
 					{#if index > 0}
-						<BreadcrumbSeparator class="text-muted-foreground/40 [&>svg]:size-3" />
+						<BreadcrumbSeparator class="text-muted-foreground [&>svg]:size-3" />
 					{/if}
 
-					<BreadcrumbItem
-						class="flex items-center gap-2 rounded-md px-1.5 py-0.5 transition-colors hover:bg-muted/50"
-					>
+					<BreadcrumbItem class="flex items-center gap-2 px-1.5 py-0.5">
 						{#if segment.isFile}
 							<ThemedIcon themed={getFileIconID(segment.name)} size={16} class="shrink-0 opacity-70" />
 						{:else}
