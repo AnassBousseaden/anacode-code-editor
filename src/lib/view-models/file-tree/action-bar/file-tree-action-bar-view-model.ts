@@ -200,10 +200,14 @@ export interface IFileTreeSaveCommandController {
 	triggerSaveAll(): Promise<void>;
 }
 
+export interface IFileTreeSaveCommandViewModel extends IFileTreeSaveCommandController {
+	readonly saveAll: Readable<SaveAllSaveCommandPresentation>;
+}
+
 export interface IFileTreeActionBarViewModel
 	extends IFileTreeActionBarRequestController,
 		IFileTreeUICommandController,
-		IFileTreeSaveCommandController {
+		IFileTreeSaveCommandViewModel {
 	readonly createFile: Readable<CreateFileActionBarPresentation>;
 	readonly createFolder: Readable<CreateFolderActionBarPresentation>;
 	readonly rename: Readable<RenameActionBarPresentation>;
@@ -212,6 +216,4 @@ export interface IFileTreeActionBarViewModel
 	readonly expandNode: Readable<ExpandNodeUICommandPresentation>;
 	readonly collapseNode: Readable<CollapseNodeUICommandPresentation>;
 	readonly locateActiveFile: Readable<LocateActiveFileUICommandPresentation>;
-
-	readonly saveAll: Readable<SaveAllSaveCommandPresentation>;
 }

@@ -7,7 +7,6 @@
 		PanelLeftClose,
 		Pen,
 		Plus,
-		SaveAll,
 		Trash2
 	} from '@lucide/svelte';
 	import type { Component } from 'svelte';
@@ -44,8 +43,7 @@
 		FileTreeActionIconKind,
 		type IFileTreeActionBarViewModel,
 		type LocateActiveFileUICommandPresentation,
-		type RenameActionBarPresentation,
-		type SaveAllSaveCommandPresentation
+		type RenameActionBarPresentation
 	} from '$lib/view-models/file-tree/action-bar/file-tree-action-bar-view-model';
 	import {
 		createFileIconFactory,
@@ -86,7 +84,6 @@
 	const locateActiveFileStore: Readable<LocateActiveFileUICommandPresentation> = $derived(
 		viewModel.locateActiveFile
 	);
-	const saveAllStore: Readable<SaveAllSaveCommandPresentation> = $derived(viewModel.saveAll);
 
 	const createFile: CreateFileActionBarPresentation = $derived($createFileStore);
 	const createFolder: CreateFolderActionBarPresentation = $derived($createFolderStore);
@@ -97,8 +94,6 @@
 	const locateActiveFilePresentation: LocateActiveFileUICommandPresentation = $derived(
 		$locateActiveFileStore
 	);
-	const saveAllPresentation: SaveAllSaveCommandPresentation = $derived($saveAllStore);
-
 	const isCreateFileEnabled: boolean = $derived(isAvailable(createFile));
 	const isCreateFolderEnabled: boolean = $derived(isAvailable(createFolder));
 	const isRenameEnabled: boolean = $derived(isAvailable(rename));
@@ -113,10 +108,6 @@
 	const isLocateActiveFileEnabled: boolean = $derived(
 		locateActiveFilePresentation.availability.kind === FileTreeActionAvailabilityKind.AVAILABLE
 	);
-	const isSaveAllEnabled: boolean = $derived(
-		saveAllPresentation.availability.kind === FileTreeActionAvailabilityKind.AVAILABLE
-	);
-
 	const RenameIcon: Component = $derived(resolveIcon(rename.icon));
 	const DeleteIcon: Component = $derived(resolveIcon(deletePresentation.icon));
 
@@ -168,10 +159,6 @@
 
 	function handleLocateFile(): void {
 		void viewModel.revealActiveFile();
-	}
-
-	function handleSaveAll(): void {
-		void viewModel.triggerSaveAll();
 	}
 </script>
 
@@ -277,18 +264,6 @@
 				<TooltipContent side="bottom">{deletePresentation.label}</TooltipContent>
 			</TooltipRoot>
 
-			<div class="mx-0.5 h-5 w-px bg-border"></div>
-
-			<TooltipRoot>
-				<TooltipTrigger
-					class={buttonVariants({ variant: 'ghost', size: 'icon-xs' })}
-					disabled={!isSaveAllEnabled}
-					onclick={handleSaveAll}
-				>
-					<SaveAll class="size-3.5 text-muted-foreground" />
-				</TooltipTrigger>
-				<TooltipContent side="bottom">{saveAllPresentation.label}</TooltipContent>
-			</TooltipRoot>
 		</div>
 
 		<TooltipRoot>
