@@ -5,6 +5,7 @@
 
 	import ActionDialog from '$lib/components/dialog/ActionDialog.svelte';
 	import FileTreeActionBar from '$lib/components/action-bar/FileTreeActionBar.svelte';
+	import FileTreeSaveFooter from '$lib/components/side-bar/FileTreeSaveFooter.svelte';
 	import FileTreeView from '$lib/components/file-tree/FileTreeView.svelte';
 	import type { EditorMessages } from '$lib/core/localization/localization-models';
 	import { getEditorMessages } from '$lib/core/localization/messages-context';
@@ -123,6 +124,8 @@
 			{fileIconFactory}
 		/>
 	</div>
+
+	<FileTreeSaveFooter viewModel={actionBarViewModel} />
 
 	{#if sidebarFooter}
 		{@render sidebarFooter()}
