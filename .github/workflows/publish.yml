@@ -3,18 +3,36 @@ name: Publish to npm
 # Publishes @anacode-editor/code-editor to the npm registry when a GitHub Release is
 # published. The release tag is the version (vX.Y.Z -> X.Y.Z). Publishing the
 # prebuilt package means consumers install it without building from source.
+#
+# The manual trigger is a fallback: release webhooks can be dropped during a
+# GitHub Actions incident, while dispatch is a direct API call and still gets
+# through. It takes the tag rather than a bare version so that both paths build
+# the tagged source and publish the version that tag names.
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to publish (e.g. v0.0.7)
+        required: true
+        type: string
 
 permissions:
   contents: read
+
+# On a release github.ref_name is the tag; on dispatch it is the branch, so the
+# supplied tag takes precedence and is null on every other event.
+env:
+  RELEASE_TAG: ${{ github.event.inputs.tag || github.ref_name }}
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_TAG }}
 
       - uses: actions/setup-node@v4
         with:
@@ -26,8 +44,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run package
 
-      # Use the release tag as the package version (strip the leading "v").
-      - run: npm version "${GITHUB_REF_NAME#v}" --no-git-tag-version --allow-same-version
+      # Use the tag as the package version (strip the leading "v").
+      - run: npm version "${RELEASE_TAG#v}" --no-git-tag-version --allow-same-version
 
       # Scoped packages default to restricted; --access public publishes it
       # openly so consumers can install it anonymously. --ignore-scripts skips
