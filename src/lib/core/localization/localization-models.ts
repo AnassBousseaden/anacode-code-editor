@@ -43,6 +43,7 @@ export interface EditorMessages {
 	readonly fileTreeUiCommandExpandNodeLabel: string;
 	readonly fileTreeUiCommandCollapseNodeLabel: string;
 	readonly fileTreeUiCommandLocateActiveFileLabel: string;
+	readonly fileTreeUiCommandRevealSearchLabel: string;
 
 	// File tree — save command labels (action-bar tooltips)
 	readonly fileTreeSaveCommandSaveLabel: string;
@@ -77,6 +78,7 @@ export interface EditorMessages {
 
 	// Side bar
 	readonly sideBarSearchPlaceholder: string;
+	readonly sideBarSearchDismiss: string;
 	readonly sideBarCollapse: string;
 	readonly sideBarExpand: string;
 

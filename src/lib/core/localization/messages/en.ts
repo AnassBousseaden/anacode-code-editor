@@ -27,6 +27,7 @@ export const en: EditorMessages = {
 	fileTreeUiCommandExpandNodeLabel: 'Expand All',
 	fileTreeUiCommandCollapseNodeLabel: 'Collapse All',
 	fileTreeUiCommandLocateActiveFileLabel: 'Locate File',
+	fileTreeUiCommandRevealSearchLabel: 'Search Files',
 
 	fileTreeSaveCommandSaveLabel: 'Save',
 	fileTreeSaveCommandSaveAllLabel: 'Save All',
@@ -56,6 +57,7 @@ export const en: EditorMessages = {
 	fileTreeErrorSaveFailed: 'Could not save the file.',
 
 	sideBarSearchPlaceholder: 'Search',
+	sideBarSearchDismiss: 'Clear and close search',
 	sideBarCollapse: 'Collapse Sidebar',
 	sideBarExpand: 'Expand Sidebar',
 

@@ -26,6 +26,7 @@ export const es: EditorMessageCatalog = {
 	fileTreeUiCommandExpandNodeLabel: 'Expandir todo',
 	fileTreeUiCommandCollapseNodeLabel: 'Contraer todo',
 	fileTreeUiCommandLocateActiveFileLabel: 'Localizar archivo',
+	fileTreeUiCommandRevealSearchLabel: 'Buscar archivos',
 
 	fileTreeSaveCommandSaveLabel: 'Guardar',
 	fileTreeSaveCommandSaveAllLabel: 'Guardar todo',
@@ -55,6 +56,7 @@ export const es: EditorMessageCatalog = {
 	fileTreeErrorSaveFailed: 'No se pudo guardar el archivo.',
 
 	sideBarSearchPlaceholder: 'Buscar',
+	sideBarSearchDismiss: 'Borrar y cerrar la búsqueda',
 	sideBarCollapse: 'Contraer barra lateral',
 	sideBarExpand: 'Expandir barra lateral',
 

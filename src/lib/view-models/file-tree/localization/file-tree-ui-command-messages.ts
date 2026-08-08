@@ -16,6 +16,8 @@ export function resolveFileTreeUICommandLabel(
 			return messages.fileTreeUiCommandCollapseNodeLabel;
 		case FileTreeUICommandID.LOCATE_ACTIVE_FILE:
 			return messages.fileTreeUiCommandLocateActiveFileLabel;
+		case FileTreeUICommandID.REVEAL_SEARCH:
+			return messages.fileTreeUiCommandRevealSearchLabel;
 	}
 }
 

@@ -77,6 +77,7 @@ import {
 	type IFileTreeActionBarViewModel,
 	type LocateActiveFileUICommandPresentation,
 	type RenameActionBarPresentation,
+	type RevealSearchUICommandPresentation,
 	type SaveAllSaveCommandPresentation
 } from '$lib/view-models/file-tree/action-bar/file-tree-action-bar-view-model';
 
@@ -113,6 +114,11 @@ const COLLAPSE_NODE_ICON: FileTreeActionIcon = {
 const LOCATE_ACTIVE_FILE_ICON: FileTreeActionIcon = {
 	kind: FileTreeActionIconKind.NAMED,
 	name: 'crosshair'
+};
+
+const REVEAL_SEARCH_ICON: FileTreeActionIcon = {
+	kind: FileTreeActionIconKind.NAMED,
+	name: 'search'
 };
 
 const SAVE_ALL_ICON: FileTreeActionIcon = {
@@ -192,6 +198,7 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 	public readonly expandNode: Readable<ExpandNodeUICommandPresentation>;
 	public readonly collapseNode: Readable<CollapseNodeUICommandPresentation>;
 	public readonly locateActiveFile: Readable<LocateActiveFileUICommandPresentation>;
+	public readonly revealSearch: Readable<RevealSearchUICommandPresentation>;
 	public readonly saveAll: Readable<SaveAllSaveCommandPresentation>;
 
 	private readonly commandRegistry: ICommandRegistry;
@@ -246,6 +253,9 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 			FileTreeUICommandError
 		> = this.commandRegistry.getCommand(FileTreeUICommandID.LOCATE_ACTIVE_FILE);
 
+		const revealSearchBundle: IBundledCommand<FileTreeUICommandID, void, FileTreeUICommandError> =
+			this.commandRegistry.getCommand(FileTreeUICommandID.REVEAL_SEARCH);
+
 		const saveAllBundle: IBundledCommand<
 			FileTreeSaveCommandID,
 			SaveAllCommandResult,
@@ -273,6 +283,10 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 		const locateActiveFileLabel: string = resolveFileTreeUICommandLabel(
 			messages,
 			locateBundle.descriptor.id
+		);
+		const revealSearchLabel: string = resolveFileTreeUICommandLabel(
+			messages,
+			revealSearchBundle.descriptor.id
 		);
 		const saveAllLabel: string = resolveFileTreeSaveCommandLabel(
 			messages,
@@ -437,6 +451,24 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 			}
 		);
 
+		this.revealSearch = derived(
+			revealSearchBundle.availability,
+			(
+				bundleAvail: CommandAvailability<FileTreeUICommandError>
+			): RevealSearchUICommandPresentation => {
+				const availability: FileTreeUICommandAvailability =
+					mapCommandBundleAvailability(bundleAvail);
+				const presentation: RevealSearchUICommandPresentation = {
+					kind: FileTreeUICommandPresentationKind.REVEAL_SEARCH,
+					label: revealSearchLabel,
+					icon: REVEAL_SEARCH_ICON,
+					accelerator: NO_ACCELERATOR,
+					availability: availability
+				};
+				return presentation;
+			}
+		);
+
 		this.saveAll = derived(
 			saveAllBundle.availability,
 			(
@@ -501,6 +533,18 @@ export class FileTreeActionBarViewModelImpl implements IFileTreeActionBarViewMod
 			this.publishError(
 				this.messages.fileTreeNotificationSaveFailed,
 				resolveFileTreeSaveCommandErrorContent(this.messages, result.error)
+			);
+		}
+	}
+
+	public async triggerRevealSearch(): Promise<void> {
+		const bundle: IBundledCommand<FileTreeUICommandID, void, FileTreeUICommandError> =
+			this.commandRegistry.getCommand(FileTreeUICommandID.REVEAL_SEARCH);
+		const result: Result<void, FileTreeUICommandError> = await bundle.perform();
+		if (!result.ok) {
+			this.publishError(
+				this.messages.fileTreeNotificationActionFailed,
+				resolveFileTreeUICommandErrorContent(this.messages, result.error)
 			);
 		}
 	}

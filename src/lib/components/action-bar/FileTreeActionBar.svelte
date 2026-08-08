@@ -7,6 +7,7 @@
 		PanelLeftClose,
 		Pen,
 		Plus,
+		Search,
 		Trash2
 	} from '@lucide/svelte';
 	import type { Component } from 'svelte';
@@ -43,7 +44,8 @@
 		FileTreeActionIconKind,
 		type IFileTreeActionBarViewModel,
 		type LocateActiveFileUICommandPresentation,
-		type RenameActionBarPresentation
+		type RenameActionBarPresentation,
+		type RevealSearchUICommandPresentation
 	} from '$lib/view-models/file-tree/action-bar/file-tree-action-bar-view-model';
 	import {
 		createFileIconFactory,
@@ -84,6 +86,9 @@
 	const locateActiveFileStore: Readable<LocateActiveFileUICommandPresentation> = $derived(
 		viewModel.locateActiveFile
 	);
+	const revealSearchStore: Readable<RevealSearchUICommandPresentation> = $derived(
+		viewModel.revealSearch
+	);
 
 	const createFile: CreateFileActionBarPresentation = $derived($createFileStore);
 	const createFolder: CreateFolderActionBarPresentation = $derived($createFolderStore);
@@ -94,6 +99,7 @@
 	const locateActiveFilePresentation: LocateActiveFileUICommandPresentation = $derived(
 		$locateActiveFileStore
 	);
+	const revealSearchPresentation: RevealSearchUICommandPresentation = $derived($revealSearchStore);
 	const isCreateFileEnabled: boolean = $derived(isAvailable(createFile));
 	const isCreateFolderEnabled: boolean = $derived(isAvailable(createFolder));
 	const isRenameEnabled: boolean = $derived(isAvailable(rename));
@@ -107,6 +113,9 @@
 	);
 	const isLocateActiveFileEnabled: boolean = $derived(
 		locateActiveFilePresentation.availability.kind === FileTreeActionAvailabilityKind.AVAILABLE
+	);
+	const isRevealSearchEnabled: boolean = $derived(
+		revealSearchPresentation.availability.kind === FileTreeActionAvailabilityKind.AVAILABLE
 	);
 	const RenameIcon: Component = $derived(resolveIcon(rename.icon));
 	const DeleteIcon: Component = $derived(resolveIcon(deletePresentation.icon));
@@ -160,6 +169,10 @@
 	function handleLocateFile(): void {
 		void viewModel.revealActiveFile();
 	}
+
+	function handleRevealSearch(): void {
+		void viewModel.triggerRevealSearch();
+	}
 </script>
 
 <TooltipProvider>
@@ -208,6 +221,17 @@
 					<Crosshair class="size-3.5 text-muted-foreground" />
 				</TooltipTrigger>
 				<TooltipContent side="bottom">{locateActiveFilePresentation.label}</TooltipContent>
+			</TooltipRoot>
+
+			<TooltipRoot>
+				<TooltipTrigger
+					class={buttonVariants({ variant: 'ghost', size: 'icon-xs' })}
+					disabled={!isRevealSearchEnabled}
+					onclick={handleRevealSearch}
+				>
+					<Search class="size-3.5 text-muted-foreground" />
+				</TooltipTrigger>
+				<TooltipContent side="bottom">{revealSearchPresentation.label}</TooltipContent>
 			</TooltipRoot>
 
 			<DropdownMenuRoot>

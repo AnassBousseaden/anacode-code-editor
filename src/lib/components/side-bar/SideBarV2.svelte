@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { onDestroy } from 'svelte';
-	import { Search, X } from '@lucide/svelte';
 
 	import ActionDialog from '$lib/components/dialog/ActionDialog.svelte';
 	import FileTreeActionBar from '$lib/components/action-bar/FileTreeActionBar.svelte';
 	import FileTreeSaveFooter from '$lib/components/side-bar/FileTreeSaveFooter.svelte';
+	import FileTreeSearchBar from '$lib/components/side-bar/FileTreeSearchBar.svelte';
 	import FileTreeView from '$lib/components/file-tree/FileTreeView.svelte';
 	import type { EditorMessages } from '$lib/core/localization/localization-models';
 	import { getEditorMessages } from '$lib/core/localization/messages-context';
@@ -27,6 +27,8 @@
 		createFileIconFactory,
 		type IFileIconFactory
 	} from '$lib/view-models/file-tree/icons/file-icon-factory';
+	import { FileTreeSearchViewModelImpl } from '$lib/view-models/file-tree/search/file-tree-search-view-model-impl';
+	import type { IFileTreeSearchViewModel } from '$lib/view-models/file-tree/search/file-tree-search-view-model';
 
 	interface Props {
 		fileTreeWorkspace: IEditorFileTreeWorkspaceV2;
@@ -74,48 +76,24 @@
 		fileTreeWorkspace.fileTreeDragController,
 		fileTreeWorkspace.commandRegistry
 	);
+	const searchViewModel: IFileTreeSearchViewModel = new FileTreeSearchViewModelImpl(
+		messages,
+		fileTreeWorkspace.fileTreeSearchService,
+		fileTreeWorkspace.fileTreeSearchService
+	);
 	const fileIconFactory: IFileIconFactory = createFileIconFactory();
-
-	const searchQueryStore = $derived(fileTreeWorkspace.fileTreeSearchService.searchQuery);
-	const searchQuery: string = $derived($searchQueryStore);
-
-	function handleSearchInput(event: Event): void {
-		const input: HTMLInputElement = event.currentTarget as HTMLInputElement;
-		fileTreeWorkspace.fileTreeSearchService.setSearchQuery(input.value);
-	}
-
-	function clearSearch(): void {
-		fileTreeWorkspace.fileTreeSearchService.setSearchQuery('');
-	}
 
 	onDestroy((): void => {
 		fileTreeViewModel.dispose();
 		actionDialogViewModel.dispose();
+		searchViewModel.dispose();
 	});
 </script>
 
 <div class="flex h-full flex-col overflow-hidden">
 	<FileTreeActionBar viewModel={actionBarViewModel} {onCollapseSidebar} />
 
-	<div class="flex min-h-8 shrink-0 items-center gap-2 border-b border-sidebar-border px-2">
-		<Search class="size-4 shrink-0 text-muted-foreground" />
-		<input
-			class="h-6 w-full bg-transparent text-[13px] text-sidebar-foreground placeholder:text-muted-foreground focus:outline-none"
-			oninput={handleSearchInput}
-			placeholder={messages.sideBarSearchPlaceholder}
-			type="text"
-			value={searchQuery}
-		/>
-		{#if searchQuery !== ''}
-			<button
-				class="shrink-0 text-muted-foreground hover:text-sidebar-foreground"
-				onclick={clearSearch}
-				type="button"
-			>
-				<X class="size-4" />
-			</button>
-		{/if}
-	</div>
+	<FileTreeSearchBar viewModel={searchViewModel} />
 
 	<div class="min-h-0 flex-1 overflow-hidden border-r border-sidebar-border">
 		<FileTreeView

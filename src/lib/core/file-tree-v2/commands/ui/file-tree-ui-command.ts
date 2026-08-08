@@ -8,7 +8,8 @@ import type {
 export enum FileTreeUICommandID {
 	EXPAND_NODE = 'file-tree.ui.expand-node',
 	COLLAPSE_NODE = 'file-tree.ui.collapse-node',
-	LOCATE_ACTIVE_FILE = 'file-tree.ui.locate-active-file'
+	LOCATE_ACTIVE_FILE = 'file-tree.ui.locate-active-file',
+	REVEAL_SEARCH = 'file-tree.ui.reveal-search'
 }
 
 export type FileTreeUICommandDescriptor = CommandDescriptor<FileTreeUICommandID>;
@@ -29,6 +30,12 @@ export const LOCATE_ACTIVE_FILE_UI_COMMAND_DESCRIPTOR: FileTreeUICommandDescript
 	id: FileTreeUICommandID.LOCATE_ACTIVE_FILE,
 	label: 'Locate File',
 	description: 'Reveal the active file in the file tree'
+};
+
+export const REVEAL_SEARCH_UI_COMMAND_DESCRIPTOR: FileTreeUICommandDescriptor = {
+	id: FileTreeUICommandID.REVEAL_SEARCH,
+	label: 'Search',
+	description: 'Reveal the file tree search field'
 };
 
 export interface LocateActiveFileUICommandResult {

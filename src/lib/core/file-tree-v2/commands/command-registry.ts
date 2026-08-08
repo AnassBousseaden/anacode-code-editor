@@ -85,6 +85,11 @@ export interface FileTreeUICommandBundleTypeMap {
 		LocateActiveFileUICommandResult,
 		FileTreeUICommandError
 	>;
+	[FileTreeUICommandID.REVEAL_SEARCH]: IBundledCommand<
+		FileTreeUICommandID,
+		void,
+		FileTreeUICommandError
+	>;
 }
 
 export interface FileTreeSaveCommandBundleTypeMap {
@@ -120,6 +125,7 @@ export interface FileTreeUICommandPrimitiveTypeMap {
 	[FileTreeUICommandID.EXPAND_NODE]: IFileTreeUICommand;
 	[FileTreeUICommandID.COLLAPSE_NODE]: IFileTreeUICommand;
 	[FileTreeUICommandID.LOCATE_ACTIVE_FILE]: IFileTreeUICommand<LocateActiveFileUICommandResult>;
+	[FileTreeUICommandID.REVEAL_SEARCH]: IFileTreeUICommand;
 }
 
 export interface FileTreeSaveCommandPrimitiveTypeMap {
