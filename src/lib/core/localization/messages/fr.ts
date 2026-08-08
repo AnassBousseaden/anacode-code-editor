@@ -92,7 +92,7 @@ export const fr: EditorMessageCatalog = {
 	promptCloseFailureUnsavedDraftContent:
 		'Enregistrez ou ignorez les modifications avant de fermer.',
 
-	promptNotificationBarHidden: (params: { readonly count: number }): string =>
+	promptStackHiddenCount: (params: { readonly count: number }): string =>
 		`${params.count} masquées`,
 
 	breadcrumbAriaLabel: 'fil d’Ariane',

@@ -48,7 +48,7 @@ describe('resolveEditorMessages', () => {
 		expect(english.tabCloseAriaLabel({ name: 'index.ts' })).toBe('Close index.ts');
 
 		const spanish: EditorMessages = resolveEditorMessages({ locale: EditorLocale.ES });
-		expect(spanish.promptNotificationBarHidden({ count: 3 })).toBe('3 ocultas');
+		expect(spanish.promptStackHiddenCount({ count: 3 })).toBe('3 ocultas');
 	});
 
 	it('returns a frozen record that cannot be mutated', () => {

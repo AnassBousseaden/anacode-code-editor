@@ -91,7 +91,7 @@ export const es: EditorMessageCatalog = {
 	promptCloseFailureUnsavedDraftTitle: 'Cambios sin guardar',
 	promptCloseFailureUnsavedDraftContent: 'Guarda o descarta los cambios antes de cerrar.',
 
-	promptNotificationBarHidden: (params: { readonly count: number }): string =>
+	promptStackHiddenCount: (params: { readonly count: number }): string =>
 		`${params.count} ocultas`,
 
 	breadcrumbAriaLabel: 'ruta de navegación',

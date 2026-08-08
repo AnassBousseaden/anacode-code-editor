@@ -92,7 +92,7 @@ export const en: EditorMessages = {
 	promptCloseFailureUnsavedDraftTitle: 'Unsaved changes',
 	promptCloseFailureUnsavedDraftContent: 'Save or discard before closing.',
 
-	promptNotificationBarHidden: (params: { readonly count: number }): string =>
+	promptStackHiddenCount: (params: { readonly count: number }): string =>
 		`${params.count} hidden`,
 
 	breadcrumbAriaLabel: 'breadcrumb',

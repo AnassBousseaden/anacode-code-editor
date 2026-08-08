@@ -122,8 +122,8 @@ export interface EditorMessages {
 	readonly promptCloseFailureUnsavedDraftTitle: string;
 	readonly promptCloseFailureUnsavedDraftContent: string;
 
-	// Prompt notification bar
-	promptNotificationBarHidden(params: { readonly count: number }): string;
+	// Prompt stack — hidden-prompt pill
+	promptStackHiddenCount(params: { readonly count: number }): string;
 
 	// Breadcrumb
 	readonly breadcrumbAriaLabel: string;
