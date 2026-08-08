@@ -321,8 +321,7 @@ src/lib/
   components/                               # Svelte UI components
     EditorSession.svelte                    #   Layer 3 entry point
     EditorSessionMountGate.svelte           #   remounts on session change
-    WorkspaceEditorPaneV2.svelte            #   layout: sidebar + tabs + editor + prompts + footer
-    EditorFooter.svelte
+    WorkspaceEditorPaneV2.svelte            #   layout: sidebar + tabs + editor + prompts
     editor/                                 #   CodeEditorViewV3 (Monaco mount point)
     side-bar/                               #   SideBarV2
     tab-bar/                                #   TabBarV2, Tab, BreadcrumbBar
@@ -758,7 +757,7 @@ EditorSession.svelte (entry point — takes IEditorSession)
             |-- CodeEditorViewV3.svelte (Monaco mount point — binds to codeEditor controller)
             |-- EditorPromptStack.svelte (from IEditorPromptManager)
             |     |-- ConflictResolutionPromptView / InvalidDocumentPromptView / NotificationPromptView
-            |-- EditorFooter.svelte (save state, status)
+            |     |-- HiddenPromptsPill.svelte (collapsed-stack pill, tail of the overlay)
 ```
 
 ### 6.3 Component responsibility boundaries

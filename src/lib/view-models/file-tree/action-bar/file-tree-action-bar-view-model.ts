@@ -125,7 +125,8 @@ export type FileTreeUICommandAvailability =
 export enum FileTreeUICommandPresentationKind {
 	EXPAND_NODE = 'expand-node',
 	COLLAPSE_NODE = 'collapse-node',
-	LOCATE_ACTIVE_FILE = 'locate-active-file'
+	LOCATE_ACTIVE_FILE = 'locate-active-file',
+	REVEAL_SEARCH = 'reveal-search'
 }
 
 export interface ExpandNodeUICommandPresentation {
@@ -152,10 +153,19 @@ export interface LocateActiveFileUICommandPresentation {
 	readonly availability: FileTreeUICommandAvailability;
 }
 
+export interface RevealSearchUICommandPresentation {
+	readonly kind: FileTreeUICommandPresentationKind.REVEAL_SEARCH;
+	readonly label: string;
+	readonly icon: FileTreeActionIcon;
+	readonly accelerator: FileTreeActionAccelerator;
+	readonly availability: FileTreeUICommandAvailability;
+}
+
 export type FileTreeUICommandPresentation =
 	| ExpandNodeUICommandPresentation
 	| CollapseNodeUICommandPresentation
-	| LocateActiveFileUICommandPresentation;
+	| LocateActiveFileUICommandPresentation
+	| RevealSearchUICommandPresentation;
 
 export interface FileTreeSaveCommandAvailableAvailability {
 	readonly kind: FileTreeActionAvailabilityKind.AVAILABLE;
@@ -194,6 +204,8 @@ export interface IFileTreeUICommandController {
 	collapseAll(): Promise<void>;
 
 	revealActiveFile(): Promise<void>;
+
+	triggerRevealSearch(): Promise<void>;
 }
 
 export interface IFileTreeSaveCommandController {
@@ -216,4 +228,5 @@ export interface IFileTreeActionBarViewModel
 	readonly expandNode: Readable<ExpandNodeUICommandPresentation>;
 	readonly collapseNode: Readable<CollapseNodeUICommandPresentation>;
 	readonly locateActiveFile: Readable<LocateActiveFileUICommandPresentation>;
+	readonly revealSearch: Readable<RevealSearchUICommandPresentation>;
 }

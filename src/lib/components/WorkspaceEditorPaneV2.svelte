@@ -3,7 +3,6 @@
 	import { type Readable } from 'svelte/store';
 	import SideBarV2 from '$lib/components/side-bar/SideBarV2.svelte';
 	import TabBarV2 from '$lib/components/tab-bar/TabBarV2.svelte';
-	import EditorFooter from '$lib/components/EditorFooter.svelte';
 	import CodeEditorViewV3 from '$lib/components/editor/CodeEditorViewV3.svelte';
 	import EditorPromptStack from '$lib/components/editor-prompt/EditorPromptStack.svelte';
 	import {
@@ -108,15 +107,12 @@
 
 			<ResizablePane class="flex min-w-0 flex-col bg-background" defaultSize={75}>
 				<TabBarV2 tabProjection={session.tabProjection} intentCommands={session.intent} />
-				<div class="flex min-h-0 flex-1 flex-col">
-					<div class="relative flex min-h-0 flex-1">
-						<div class="absolute inset-0 flex bg-background" id="editor-container">
-							<CodeEditorViewV3 viewModel={session.codeEditor} />
-						</div>
-
-						<EditorPromptStack {session} />
+				<div class="relative flex min-h-0 flex-1">
+					<div class="absolute inset-0 flex bg-background" id="editor-container">
+						<CodeEditorViewV3 viewModel={session.codeEditor} />
 					</div>
-					<EditorFooter {session} />
+
+					<EditorPromptStack {session} />
 				</div>
 			</ResizablePane>
 		</ResizablePaneGroup>

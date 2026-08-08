@@ -26,6 +26,7 @@ export const fr: EditorMessageCatalog = {
 	fileTreeUiCommandExpandNodeLabel: 'Tout développer',
 	fileTreeUiCommandCollapseNodeLabel: 'Tout réduire',
 	fileTreeUiCommandLocateActiveFileLabel: 'Localiser le fichier',
+	fileTreeUiCommandRevealSearchLabel: 'Rechercher des fichiers',
 
 	fileTreeSaveCommandSaveLabel: 'Enregistrer',
 	fileTreeSaveCommandSaveAllLabel: 'Tout enregistrer',
@@ -55,6 +56,7 @@ export const fr: EditorMessageCatalog = {
 	fileTreeErrorSaveFailed: 'Impossible d’enregistrer le fichier.',
 
 	sideBarSearchPlaceholder: 'Rechercher',
+	sideBarSearchDismiss: 'Effacer et fermer la recherche',
 	sideBarCollapse: 'Réduire la barre latérale',
 	sideBarExpand: 'Développer la barre latérale',
 
@@ -92,7 +94,7 @@ export const fr: EditorMessageCatalog = {
 	promptCloseFailureUnsavedDraftContent:
 		'Enregistrez ou ignorez les modifications avant de fermer.',
 
-	promptNotificationBarHidden: (params: { readonly count: number }): string =>
+	promptStackHiddenCount: (params: { readonly count: number }): string =>
 		`${params.count} masquées`,
 
 	breadcrumbAriaLabel: 'fil d’Ariane',

@@ -125,6 +125,7 @@ class EditorFileTreeWorkspaceV2 implements IEditorFileTreeWorkspaceV2 {
 			intentState,
 			intentCommands,
 			uiCommandErrorFactory,
+			this.fileTreeSearchService,
 			editorSaveService,
 			editorSaveService
 		);

@@ -16,9 +16,11 @@ import {
 
 const EMPTY_COMMAND_CONTEXT: FileTreeCommandContext = {};
 
-export class ExpandAllUICommandBundle
-	implements IBundledCommand<FileTreeUICommandID, void, FileTreeUICommandError>
-{
+export class AlwaysAvailableUICommandBundle implements IBundledCommand<
+	FileTreeUICommandID,
+	void,
+	FileTreeUICommandError
+> {
 	public readonly descriptor: FileTreeUICommandDescriptor;
 	public readonly availability: Readable<CommandAvailability<FileTreeUICommandError>>;
 	public readonly commandContext: Readable<FileTreeCommandContext>;

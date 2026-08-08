@@ -26,6 +26,7 @@ export const es: EditorMessageCatalog = {
 	fileTreeUiCommandExpandNodeLabel: 'Expandir todo',
 	fileTreeUiCommandCollapseNodeLabel: 'Contraer todo',
 	fileTreeUiCommandLocateActiveFileLabel: 'Localizar archivo',
+	fileTreeUiCommandRevealSearchLabel: 'Buscar archivos',
 
 	fileTreeSaveCommandSaveLabel: 'Guardar',
 	fileTreeSaveCommandSaveAllLabel: 'Guardar todo',
@@ -55,6 +56,7 @@ export const es: EditorMessageCatalog = {
 	fileTreeErrorSaveFailed: 'No se pudo guardar el archivo.',
 
 	sideBarSearchPlaceholder: 'Buscar',
+	sideBarSearchDismiss: 'Borrar y cerrar la búsqueda',
 	sideBarCollapse: 'Contraer barra lateral',
 	sideBarExpand: 'Expandir barra lateral',
 
@@ -91,7 +93,7 @@ export const es: EditorMessageCatalog = {
 	promptCloseFailureUnsavedDraftTitle: 'Cambios sin guardar',
 	promptCloseFailureUnsavedDraftContent: 'Guarda o descarta los cambios antes de cerrar.',
 
-	promptNotificationBarHidden: (params: { readonly count: number }): string =>
+	promptStackHiddenCount: (params: { readonly count: number }): string =>
 		`${params.count} ocultas`,
 
 	breadcrumbAriaLabel: 'ruta de navegación',

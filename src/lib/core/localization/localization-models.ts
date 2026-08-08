@@ -43,6 +43,7 @@ export interface EditorMessages {
 	readonly fileTreeUiCommandExpandNodeLabel: string;
 	readonly fileTreeUiCommandCollapseNodeLabel: string;
 	readonly fileTreeUiCommandLocateActiveFileLabel: string;
+	readonly fileTreeUiCommandRevealSearchLabel: string;
 
 	// File tree — save command labels (action-bar tooltips)
 	readonly fileTreeSaveCommandSaveLabel: string;
@@ -77,6 +78,7 @@ export interface EditorMessages {
 
 	// Side bar
 	readonly sideBarSearchPlaceholder: string;
+	readonly sideBarSearchDismiss: string;
 	readonly sideBarCollapse: string;
 	readonly sideBarExpand: string;
 
@@ -122,8 +124,8 @@ export interface EditorMessages {
 	readonly promptCloseFailureUnsavedDraftTitle: string;
 	readonly promptCloseFailureUnsavedDraftContent: string;
 
-	// Prompt notification bar
-	promptNotificationBarHidden(params: { readonly count: number }): string;
+	// Prompt stack — hidden-prompt pill
+	promptStackHiddenCount(params: { readonly count: number }): string;
 
 	// Breadcrumb
 	readonly breadcrumbAriaLabel: string;

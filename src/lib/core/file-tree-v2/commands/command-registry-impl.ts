@@ -30,14 +30,15 @@ import { SaveAllCommandBundle } from '$lib/core/file-tree-v2/commands/save/bundl
 import { FileTreeSaveCommandID } from '$lib/core/file-tree-v2/commands/save/file-tree-save-command';
 import { FileTreeSaveCommandErrorFactory } from '$lib/core/file-tree-v2/commands/save/impl/file-tree-save-command-error-factory-impl';
 import { SaveAllCommand } from '$lib/core/file-tree-v2/commands/save/impl/save-all-command';
-import { CollapseAllUICommandBundle } from '$lib/core/file-tree-v2/commands/ui/bundles/collapse-all-command-bundle';
-import { ExpandAllUICommandBundle } from '$lib/core/file-tree-v2/commands/ui/bundles/expand-all-command-bundle';
+import { AlwaysAvailableUICommandBundle } from '$lib/core/file-tree-v2/commands/ui/bundles/always-available-ui-command-bundle';
 import { LocateActiveFileUICommandBundle } from '$lib/core/file-tree-v2/commands/ui/bundles/locate-active-file-command-bundle';
 import { FileTreeUICommandID } from '$lib/core/file-tree-v2/commands/ui/file-tree-ui-command';
 import type { IFileTreeUICommandErrorFactory } from '$lib/core/file-tree-v2/commands/ui/file-tree-ui-command-error-factory';
 import { CollapseCommand } from '$lib/core/file-tree-v2/commands/ui/impl/collapse-command';
 import { ExpandCommand } from '$lib/core/file-tree-v2/commands/ui/impl/expand-command';
 import { LocateActiveFileCommand } from '$lib/core/file-tree-v2/commands/ui/impl/locate-active-file-command';
+import { RevealSearchCommand } from '$lib/core/file-tree-v2/commands/ui/impl/reveal-search-command';
+import type { IFileTreeSearchCommands } from '$lib/core/file-tree-v2/search/file-tree-search-service';
 import type { IFileTree } from '$lib/core/file-tree-v2/tree/file-tree';
 import type {
 	IEditorIntentCommands,
@@ -65,6 +66,7 @@ export class CommandRegistryImpl implements ICommandRegistry, IPrimitiveCommandR
 		intentState: IObservableEditorIntentState,
 		intentCommands: IEditorIntentCommands,
 		uiCommandErrorFactory: IFileTreeUICommandErrorFactory,
+		searchCommands: IFileTreeSearchCommands,
 		editorSaveCommand: IEditorSaveCommand,
 		editorSaveState: IObservableEditorSaveState
 	) {
@@ -96,6 +98,7 @@ export class CommandRegistryImpl implements ICommandRegistry, IPrimitiveCommandR
 			fileTree,
 			uiCommandErrorFactory
 		);
+		const revealSearchCommand: RevealSearchCommand = new RevealSearchCommand(searchCommands);
 
 		const saveCommandErrorFactory: FileTreeSaveCommandErrorFactory =
 			new FileTreeSaveCommandErrorFactory();
@@ -114,6 +117,7 @@ export class CommandRegistryImpl implements ICommandRegistry, IPrimitiveCommandR
 			[FileTreeUICommandID.EXPAND_NODE]: expandCommand,
 			[FileTreeUICommandID.COLLAPSE_NODE]: collapseCommand,
 			[FileTreeUICommandID.LOCATE_ACTIVE_FILE]: locateActiveFileCommand,
+			[FileTreeUICommandID.REVEAL_SEARCH]: revealSearchCommand,
 			[FileTreeSaveCommandID.SAVE_ALL]: saveAllCommand
 		};
 		this.primitives = primitives;
@@ -153,13 +157,18 @@ export class CommandRegistryImpl implements ICommandRegistry, IPrimitiveCommandR
 			actionErrorFactory
 		);
 
-		const expandBundle: ExpandAllUICommandBundle = new ExpandAllUICommandBundle(expandCommand);
-		const collapseBundle: CollapseAllUICommandBundle = new CollapseAllUICommandBundle(
+		const expandBundle: AlwaysAvailableUICommandBundle = new AlwaysAvailableUICommandBundle(
+			expandCommand
+		);
+		const collapseBundle: AlwaysAvailableUICommandBundle = new AlwaysAvailableUICommandBundle(
 			collapseCommand
 		);
 		const locateBundle: LocateActiveFileUICommandBundle = new LocateActiveFileUICommandBundle(
 			locateActiveFileCommand,
 			intentState
+		);
+		const revealSearchBundle: AlwaysAvailableUICommandBundle = new AlwaysAvailableUICommandBundle(
+			revealSearchCommand
 		);
 
 		const saveAllBundle: SaveAllCommandBundle = new SaveAllCommandBundle(
@@ -177,6 +186,7 @@ export class CommandRegistryImpl implements ICommandRegistry, IPrimitiveCommandR
 			[FileTreeUICommandID.EXPAND_NODE]: expandBundle,
 			[FileTreeUICommandID.COLLAPSE_NODE]: collapseBundle,
 			[FileTreeUICommandID.LOCATE_ACTIVE_FILE]: locateBundle,
+			[FileTreeUICommandID.REVEAL_SEARCH]: revealSearchBundle,
 			[FileTreeSaveCommandID.SAVE_ALL]: saveAllBundle
 		};
 		this.bundles = bundles;
@@ -191,6 +201,7 @@ export class CommandRegistryImpl implements ICommandRegistry, IPrimitiveCommandR
 			expandBundle,
 			collapseBundle,
 			locateBundle,
+			revealSearchBundle,
 			saveAllBundle
 		];
 		this.disposables = disposables;
